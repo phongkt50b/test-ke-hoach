@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Bản đồ tài chính cá nhân</title>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <link href="style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    @media print{
+      .no-print{ display:none !important; }
+      body{ background:#fff; }
+      .shadow-sm, .shadow { box-shadow:none !important; }
+      .border-aia-red{ border-color:#D9232D !important; }
+      .page-break{ page-break-after:always; }
+    }
+    .chip{ display:inline-flex; align-items:center; border-radius:9999px; background:#F3F4F6; border:1px solid #E5E7EB; padding:.25rem .6rem; font-size:.9rem; margin-right:.5rem; margin-bottom:.5rem; }
+    .chip button{ margin-left:.5rem; color:#6B7280; }
+    .card{ background:#fff; padding:1.5rem; border-radius:.75rem; box-shadow:0 1px 2px rgba(0,0,0,.05); border:1px solid #E5E7EB; }
+    .section-title{ font-size:1.25rem; font-weight:700; color:#C81E26; margin-bottom:1rem; }
+    .form-input, .form-select{ width:100%; background:#fff; border:1px solid #D1D5DB; border-radius:.5rem; padding:.6rem .75rem; }
+    .text-aia-red{ color:#C81E26; }
+    .border-aia-red{ border-color:#C81E26; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+    <header class="flex items-center justify-between pb-6 border-b-2 border-aia-red mb-6">
+      <div class="flex items-center gap-3">
+        <img src="https://www.aia.com.vn/content/dam/group-wise/images/system/icons/aia-logo-red.svg" alt="AIA Logo" class="h-8"/>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Bản đồ tài chính cá nhân</h1>
+      </div>
+      <div class="no-print flex items-center gap-2">
+        <button id="btn-preview" class="px-4 py-2 rounded-lg border border-gray-300">Xem bản in</button>
+        <button id="btn-print" class="px-4 py-2 rounded-lg bg-[#C81E26] text-white font-semibold">Xuất PDF</button>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-6">
+        <section class="card">
+          <h2 class="section-title">Thông tin chung</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="font-medium block mb-1">Họ và tên</label><input id="fullname" type="text" class="form-input" placeholder="Nguyễn Văn A"/></div>
+            <div><label class="font-medium block mb-1">Ngày sinh</label><input id="dob" type="date" class="form-input"/></div>
+            <div><label class="font-medium block mb-1">Nghề nghiệp</label><input id="job" type="text" class="form-input" placeholder="Chuyên viên tài chính..."/></div>
+            <div><label class="font-medium block mb-1">Người phụ thuộc trực tiếp</label><input id="dep-direct" type="text" class="form-input" placeholder="Vợ/chồng, con nhỏ..."/></div>
+            <div><label class="font-medium block mb-1">Người phụ thuộc gián tiếp</label><input id="dep-indirect" type="text" class="form-input" placeholder="Bố mẹ, thân nhân..."/></div>
+            <div><label class="font-medium block mb-1">Video 1: Chiếc thuyền ra khơi (URL)</label><input id="vid-boat" type="url" class="form-input" placeholder="https://..."/></div>
+            <div><label class="font-medium block mb-1">Video 2: Gặp bão (URL)</label><input id="vid-storm" type="url" class="form-input" placeholder="https://..."/></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">2) Mục tiêu / Kế hoạch tài chính</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2">
+              <label class="font-medium block mb-1">Thêm mục tiêu</label>
+              <input id="goal-input" class="form-input" list="goal-suggest" placeholder="Ví dụ: Vận hành gia đình"/>
+              <datalist id="goal-suggest">
+                <option value="Vận hành gia đình"></option>
+                <option value="Quỹ học vấn cho con"></option>
+                <option value="Quỹ hưu trí"></option>
+                <option value="Trả nợ"></option>
+                <option value="Gia tăng tài sản/ Để lại di sản"></option>
+                <option value="Mở doanh nghiệp riêng"></option>
+              </datalist>
+            </div>
+            <div class="flex items-end"><button id="add-goal" class="w-full px-4 py-2 rounded-lg bg-[#C81E26] text-white font-semibold">+ Thêm</button></div>
+          </div>
+          <div id="goals" class="mt-3"></div>
+
+          <div class="mt-6">
+            <label class="font-medium block mb-1">3) Mục tiêu bắt buộc phải làm (chọn nhiều)</label>
+            <select id="must-goals" multiple size="6" class="form-select"></select>
+            <p class="text-sm text-gray-600 mt-1">Giữ Ctrl/Cmd để chọn nhiều.</p>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">4) Lý do bắt buộc hoàn thành</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2"><label class="font-medium block mb-1">Thêm lý do</label><input id="reason-input" type="text" class="form-input" placeholder="Ví dụ: Bảo vệ con cái trước rủi ro"/></div>
+            <div class="flex items-end"><button id="add-reason" class="w-full px-4 py-2 rounded-lg bg-[#C81E26] text-white font-semibold">+ Thêm</button></div>
+          </div>
+          <div id="reasons" class="mt-3"></div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">5) Thứ tự ưu tiên mục tiêu</h2>
+          <p class="text-gray-600 mb-2">Sắp xếp từ <b>quan trọng nhất</b> đến <b>ít quan trọng nhất</b> (kéo thả).</p>
+          <div id="priority-list" class="space-y-2"></div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">6) Đồng hành & 7) Thời hạn</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2">
+              <label class="font-medium block mb-1">Có ai cùng thực hiện mục tiêu này không?</label>
+              <div class="flex items-center gap-6">
+                <label class="inline-flex items-center gap-2"><input type="radio" name="partner" value="no" checked/> Không</label>
+                <label class="inline-flex items-center gap-2"><input type="radio" name="partner" value="yes"/> Có</label>
+              </div>
+            </div>
+            <div id="partner-perc-wrap" class="hidden">
+              <label class="font-medium block mb-1">% công sức của anh/chị</label>
+              <input id="partner-perc" type="number" min="0" max="100" step="1" class="form-input" placeholder="%"/>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+            <div><label class="font-medium block mb-1">Dự định hoàn thành tất cả trong (năm)</label><input id="years-all" type="number" min="0" step="1" class="form-input" placeholder="Số năm"/></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">9–11) Rào cản & phương án thay thế</h2>
+          <div class="space-y-6">
+            <div>
+              <label class="font-medium block mb-1">9) Thêm yếu tố cản trở</label>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input id="risk-input" type="text" class="form-input md:col-span-2" placeholder="Ví dụ: Ốm đau, thất nghiệp..."/>
+                <button id="add-risk" class="px-4 py-2 rounded-lg bg-[#C81E26] text-white font-semibold">+ Thêm</button>
+              </div>
+              <div id="risks" class="mt-3"></div>
+            </div>
+            <div>
+              <label class="font-medium block mb-1">10) Yếu tố không thể lường trước/khắc phục (chọn nhiều)</label>
+              <select id="unmit-select" multiple size="6" class="form-select"></select>
+            </div>
+            <div>
+              <label class="font-medium block mb-1">11) Phương án thay thế</label>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input id="alt-input" type="text" class="form-input md:col-span-2" placeholder="Ví dụ: Dự phòng 12 tháng chi tiêu..."/>
+                <button id="add-alt" class="px-4 py-2 rounded-lg bg-[#C81E26] text-white font-semibold">+ Thêm</button>
+              </div>
+              <div id="alts" class="mt-3"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">12) Các quỹ cần thiết (theo ưu tiên đã sắp)</h2>
+          <details id="fund-family" class="mb-4" open>
+            <summary class="cursor-pointer font-semibold text-gray-800">Vận hành gia đình</summary>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+              <div><label class="font-medium block mb-1">Chi phí thiết yếu / tháng (₫)</label><input id="fam-monthly" type="number" min="0" step="1000" class="form-input"/></div>
+              <div><label class="font-medium block mb-1">Trang trải tối thiểu trong (năm)</label><input id="fam-years" type="number" min="0" step="1" class="form-input"/></div>
+              <div><label class="font-medium block mb-1">Quỹ cần có</label><div id="fam-total" class="font-bold text-aia-red mt-2">₫0</div></div>
+            </div>
+          </details>
+
+          <details id="fund-edu" class="mb-4">
+            <summary class="cursor-pointer font-semibold text-gray-800">Quỹ học vấn đại học cho con</summary>
+            <div id="children" class="mt-3 space-y-3"></div>
+            <div class="flex items-center gap-3 mt-3">
+              <button id="add-child" class="px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">+ Thêm con</button>
+              <span class="text-sm text-gray-600">Tối đa 6 con</span>
+            </div>
+            <div class="mt-3"><label class="font-medium block mb-1">Tổng quỹ học vấn</label><div id="edu-total" class="font-bold text-aia-red">₫0</div></div>
+          </details>
+
+          <details id="fund-retire" class="mb-4">
+            <summary class="cursor-pointer font-semibold text-gray-800">Quỹ hưu trí</summary>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+              <div><label class="font-medium block mb-1">Tuổi nghỉ hưu</label><input id="ret-age" type="number" min="0" step="1" class="form-input"/></div>
+              <div><label class="font-medium block mb-1">Sống an nhàn trong (năm) – xx</label><input id="ret-years" type="number" min="0" step="1" class="form-input"/></div>
+              <div><label class="font-medium block mb-1">Chi tiêu cá nhân / tháng – yy (₫)</label><input id="ret-month" type="number" min="0" step="1000" class="form-input"/></div>
+            </div>
+            <div class="mt-3"><label class="font-medium block mb-1">Tổng quỹ hưu trí = xx × yy × 12</label><div id="ret-total" class="font-bold text-aia-red">₫0</div></div>
+          </details>
+
+          <details id="fund-debt" class="mb-4">
+            <summary class="cursor-pointer font-semibold text-gray-800">Thanh khoản các khoản nợ</summary>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+              <div><label class="font-medium block mb-1">Khoản nợ hiện tại (₫)</label><input id="debt-amt" type="number" min="0" step="1000" class="form-input"/></div>
+              <div><label class="font-medium block mb-1">Thời hạn cần trả (năm)</label><input id="debt-years" type="number" min="0" step="1" class="form-input"/></div>
+            </div>
+          </details>
+
+          <details id="fund-legacy">
+            <summary class="cursor-pointer font-semibold text-gray-800">Gia tăng tài sản / Để lại di sản</summary>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+              <div><label class="font-medium block mb-1">Giá trị tài sản kỳ vọng (₫)</label><input id="legacy-amt" type="number" min="0" step="1000" class="form-input"/></div>
+              <div><label class="font-medium block mb-1">Thời gian dự kiến (năm)</label><input id="legacy-years" type="number" min="0" step="1" class="form-input"/></div>
+            </div>
+          </details>
+        </section>
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div class="bg-white p-5 rounded-xl shadow-sm border-2 border-aia-red sticky top-8 space-y-4">
+          <h2 class="text-base font-semibold text-gray-700">Tổng hợp quỹ trách nhiệm</h2>
+
+          <div class="flex items-center justify-between">
+            <span class="text-gray-700">Tổng quy năm (ước tính)</span>
+            <span id="grand-total" class="text-2xl font-extrabold text-aia-red tracking-tight">₫0</span>
+          </div>
+
+          <div class="border-t pt-3">
+            <h3 class="font-semibold">Số tiền trách nhiệm – <span class="text-gray-600">cần sẵn sàng</span></h3>
+            <ul id="resp-list" class="text-base space-y-1 mt-2"></ul>
+            <div class="flex justify-between font-semibold mt-2"><span>Tổng</span><span id="resp-total" class="text-aia-red">₫0</span></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+              <div><label class="font-medium block mb-1">Đã chuẩn bị (₫)</label><input id="resp-prepared" type="number" class="form-input" min="0" step="1000"/></div>
+              <div class="flex flex-col"><span class="text-gray-700">Khoảng thiếu</span><span id="resp-gap" class="font-bold text-red-600 text-lg mt-1">₫0</span></div>
+            </div>
+          </div>
+
+          <div class="border-t pt-3">
+            <h3 class="font-semibold">Số tiền phải tích luỹ – <span class="text-gray-600">tương lai</span></h3>
+            <ul id="save-list" class="text-base space-y-1 mt-2"></ul>
+            <div class="flex justify-between font-semibold mt-2"><span>Tổng</span><span id="save-total" class="text-aia-red">₫0</span></div>
+            <div class="mt-2"><label class="font-medium block mb-1">Mong muốn hoàn thành (%)</label><input id="goal-percent" type="number" min="0" max="100" step="1" class="form-input" placeholder="%"/></div>
+          </div>
+
+          <div class="no-print pt-2">
+            <button id="btn-recalc" class="w-full bg-[#C81E26] text-white font-bold py-3 px-4 rounded-lg">Cập nhật tổng hợp</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <section id="print-view" class="mt-10 hidden">
+      <div class="card">
+        <h2 class="section-title">Tóm tắt khách hàng</h2>
+        <div id="print-client" class="space-y-2"></div>
+      </div>
+      <div class="card page-break">
+        <h2 class="section-title">Mục tiêu & Ưu tiên</h2>
+        <div id="print-goals" class="space-y-2"></div>
+      </div>
+      <div class="card page-break">
+        <h2 class="section-title">Các quỹ & Tổng hợp</h2>
+        <div id="print-funds" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <footer class="text-center text-gray-500 mt-12 py-4 border-t">
+      Tài liệu tham khảo cá nhân – không phải bảng minh họa chính thức của AIA.
+    </footer>
+  </div>
+
+  <script>
+    const el = id => document.getElementById(id);
+    const fmt = new Intl.NumberFormat('vi-VN');
+    const money = v => '₫' + fmt.format(Number(v||0));
+
+    const state = { goals: [], mustGoals: [], reasons: [], risks: [], unmitigable: [], alts: [], children: [], priority: [] };
+
+    function renderChips(arr, mountId){
+      const host = el(mountId); host.innerHTML='';
+      arr.forEach((txt, i)=>{
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.innerHTML = \`\${txt}<button title="Xoá">×</button>\`;
+        chip.querySelector('button').onclick = ()=>{ arr.splice(i,1); renderAll(); };
+        host.appendChild(chip);
+      });
+    }
+
+    document.getElementById('add-goal').onclick = ()=>{
+      const v = document.getElementById('goal-input').value.trim();
+      if(v && !state.goals.includes(v)) state.goals.push(v);
+      document.getElementById('goal-input').value = '';
+      renderAll();
+    };
+    document.getElementById('add-reason').onclick = ()=>{
+      const v = document.getElementById('reason-input').value.trim();
+      if(v) state.reasons.push(v);
+      document.getElementById('reason-input').value = '';
+      renderAll();
+    };
+    document.getElementById('add-risk').onclick = ()=>{
+      const v = document.getElementById('risk-input').value.trim();
+      if(v) state.risks.push(v);
+      document.getElementById('risk-input').value = '';
+      renderAll();
+    };
+    document.getElementById('add-alt').onclick = ()=>{
+      const v = document.getElementById('alt-input').value.trim();
+      if(v) state.alts.push(v);
+      document.getElementById('alt-input').value = '';
+      renderAll();
+    };
+
+    document.getElementById('must-goals').addEventListener('change', (e)=>{
+      state.mustGoals = Array.from(e.target.selectedOptions).map(o=>o.value);
+      state.priority = state.mustGoals.slice();
+      renderAll();
+    });
+    document.getElementById('unmit-select').addEventListener('change', (e)=>{
+      state.unmitigable = Array.from(e.target.selectedOptions).map(o=>o.value);
+    });
+
+    document.querySelectorAll('input[name="partner"]').forEach(r=>{
+      r.addEventListener('change', ()=>{
+        document.getElementById('partner-perc-wrap').classList.toggle('hidden', !(r.value==='yes' && r.checked));
+      });
+    });
+
+    function renderPriority(){
+      const host = document.getElementById('priority-list'); host.innerHTML='';
+      state.priority.forEach((g, idx)=>{
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between border border-gray-200 rounded-lg px-3 py-2 bg-white';
+        row.draggable = true;
+        row.innerHTML = \`
+          <div class="flex items-center gap-3"><span class="text-gray-500">☰</span><span class="font-medium">\${g}</span></div>
+          <span class="text-gray-500">#\${idx+1}</span>\`;
+        row.addEventListener('dragstart', e=>{ row.classList.add('opacity-60'); e.dataTransfer.setData('text/plain', idx); });
+        row.addEventListener('dragend', ()=> row.classList.remove('opacity-60'));
+        row.addEventListener('dragover', e=> e.preventDefault());
+        row.addEventListener('drop', e=>{
+          e.preventDefault();
+          const from = Number(e.dataTransfer.getData('text/plain'));
+          const to = idx;
+          const item = state.priority.splice(from,1)[0];
+          state.priority.splice(to,0,item);
+          renderAll();
+        });
+        host.appendChild(row);
+      });
+    }
+
+    const childMax = 6;
+    function renderChildren(){
+      const mount = document.getElementById('children'); mount.innerHTML='';
+      state.children.forEach((c,i)=>{
+        const card = document.createElement('div');
+        card.className = 'bg-gray-50 p-3 rounded border border-gray-200';
+        card.innerHTML = \`
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div><label class="block text-sm mb-1">Con #\${i+1} - Họ tên</label><input data-k="name" class="form-input" value="\${c.name||''}" placeholder="Tên con"/></div>
+            <div><label class="block text-sm mb-1">Trường dự định</label><input data-k="school" class="form-input" value="\${c.school||''}" placeholder="Tên trường"/></div>
+            <div><label class="block text-sm mb-1">Chi phí 1 năm (₫)</label><input data-k="cost" type="number" min="0" step="1000" class="form-input" value="\${c.cost||''}"/></div>
+            <div><label class="block text-sm mb-1">Số năm học</label><input data-k="years" type="number" min="0" step="1" class="form-input" value="\${c.years||''}"/></div>
+          </div>
+          <div class="flex items-center justify-between mt-2">
+            <div class="text-sm text-gray-600">Tổng học phí #\${i+1}:</div>
+            <div class="font-bold text-aia-red" id="child-total-\${i}">₫0</div>
+          </div>
+          <div class="mt-2 text-right"><button class="text-red-600 font-semibold" data-del="\${i}">Xoá</button></div>\`;
+        card.querySelectorAll('input[data-k]').forEach(inp=>{
+          inp.addEventListener('input', ()=>{
+            const k = inp.getAttribute('data-k');
+            state.children[i][k] = inp.type==='number' ? Number(inp.value||0) : inp.value;
+            recalc();
+          });
+        });
+        card.querySelector('[data-del]').onclick = () => { state.children.splice(i,1); renderChildren(); recalc(); };
+        mount.appendChild(card);
+      });
+    }
+    document.getElementById('add-child').onclick = ()=>{
+      if(state.children.length>=childMax) return alert('Tối đa 6 con');
+      state.children.push({name:'',school:'',cost:0,years:0});
+      renderChildren(); recalc();
+    };
+
+    function val(id){ return Number((document.getElementById(id).value||'').replace(/,/g,'')||0); }
+    function recalc(){
+      const fam = val('fam-monthly')*12*val('fam-years'); document.getElementById('fam-total').textContent = money(fam);
+      let edu = 0;
+      state.children.forEach((c,i)=>{ const t = Number(c.cost||0)*Number(c.years||0); edu += t; const e = document.getElementById('child-total-'+i); if(e) e.textContent = money(t); });
+      document.getElementById('edu-total').textContent = money(edu);
+      const ret = val('ret-years')*val('ret-month')*12; document.getElementById('ret-total').textContent = money(ret);
+      const debt = val('debt-amt'); const legacy = val('legacy-amt');
+
+      const resp = [];
+      if(!document.getElementById('fund-family').classList.contains('hidden')) resp.push(['Vận hành gia đình', fam]);
+      if(!document.getElementById('fund-edu').classList.contains('hidden')) resp.push(['Quỹ học vấn cho con', edu]);
+      if(!document.getElementById('fund-debt').classList.contains('hidden')) resp.push(['Thanh khoản các khoản nợ', debt]);
+      if(!document.getElementById('fund-legacy').classList.contains('hidden')) resp.push(['Để lại di sản', legacy]);
+
+      const save = [];
+      if(!document.getElementById('fund-retire').classList.contains('hidden')) save.push(['Quỹ hưu trí', ret]);
+      if(!document.getElementById('fund-edu').classList.contains('hidden')) save.push(['Quỹ học vấn cho con', edu]);
+
+      const respList = document.getElementById('resp-list'); respList.innerHTML = resp.map(([k,v])=>\`<li class="flex justify-between"><span>\${k}</span><span>\${money(v)}</span></li>\`).join('');
+      const respSum = resp.reduce((a, [,v])=>a+Number(v||0), 0); document.getElementById('resp-total').textContent = money(respSum);
+
+      const saveList = document.getElementById('save-list'); saveList.innerHTML = save.map(([k,v])=>\`<li class="flex justify-between"><span>\${k}</span><span>\${money(v)}</span></li>\`).join('');
+      const saveSum = save.reduce((a, [,v])=>a+Number(v||0), 0); document.getElementById('save-total').textContent = money(saveSum);
+
+      const prepared = val('resp-prepared'); document.getElementById('resp-gap').textContent = money(Math.max(respSum - prepared, 0));
+      document.getElementById('grand-total').textContent = money(respSum + saveSum);
+    }
+    ['fam-monthly','fam-years','ret-years','ret-month','debt-amt','legacy-amt','resp-prepared'].forEach(id => document.getElementById(id).addEventListener('input', recalc));
+
+    function syncSelects(){
+      const must = document.getElementById('must-goals'); must.innerHTML=''; state.goals.forEach(g=>{ const op = document.createElement('option'); op.value=g; op.textContent=g; must.appendChild(op); });
+      Array.from(must.options).forEach(o => o.selected = state.mustGoals.includes(o.value));
+      const un = document.getElementById('unmit-select'); un.innerHTML=''; state.risks.forEach(r=>{ const op = document.createElement('option'); op.value=r; op.textContent=r; un.appendChild(op); });
+      Array.from(un.options).forEach(o => o.selected = state.unmitigable.includes(o.value));
+    }
+
+    function updateFundsVisibility(){
+      const names = state.priority.map(s => s.toLowerCase());
+      const show = {
+        'fund-family': names.includes('vận hành gia đình'),
+        'fund-edu': names.includes('quỹ học vấn cho con'),
+        'fund-retire': names.includes('quỹ hưu trí'),
+        'fund-debt': names.includes('trả nợ'),
+        'fund-legacy': names.includes('gia tăng tài sản/ để lại di sản') || names.includes('gia tăng tài sản') || names.includes('để lại di sản')
+      };
+      Object.entries(show).forEach(([id, on])=>{
+        const elx = document.getElementById(id);
+        if(on){ elx.classList.remove('hidden'); } else { elx.classList.add('hidden'); }
+      });
+    }
+
+    function renderAll(){
+      renderChips(state.goals,'goals');
+      renderChips(state.reasons,'reasons');
+      renderChips(state.risks,'risks');
+      renderChips(state.alts,'alts');
+      syncSelects();
+      if(state.priority.length===0) state.priority = state.mustGoals.slice();
+      renderPriority();
+      updateFundsVisibility();
+      recalc();
+    }
+
+    function buildPrint(){
+      const client = [
+        ['Họ và tên', el('fullname').value||''], ['Ngày sinh', el('dob').value||''], ['Nghề nghiệp', el('job').value||''],
+        ['Phụ thuộc trực tiếp', el('dep-direct').value||''], ['Phụ thuộc gián tiếp', el('dep-indirect').value||''],
+        ['Video: Chiếc thuyền (URL)', el('vid-boat').value||''], ['Video: Gặp bão (URL)', el('vid-storm').value||'']
+      ].map(([k,v])=>\`<div class="flex justify-between"><span class="text-gray-600">\${k}</span><span class="font-medium">\${v}</span></div>\`).join('');
+      el('print-client').innerHTML = client;
+
+      const goalsHtml = \`
+        <div><span class="text-gray-600">Tất cả mục tiêu:</span> <span class="font-medium">\${state.goals.join(' · ')||'—'}</span></div>
+        <div><span class="text-gray-600">Mục tiêu bắt buộc:</span> <span class="font-medium">\${state.mustGoals.join(' · ')||'—'}</span></div>
+        <div><span class="text-gray-600">Ưu tiên:</span><div class="mt-1">\${state.priority.map((g,i)=>\`\${i+1}. \${g}\`).join('<br/>')||'—'}</div></div>
+        <hr class="my-2"/>
+        <div><span class="text-gray-600">Lý do:</span> <span class="font-medium">\${state.reasons.join(' · ')||'—'}</span></div>
+        <div><span class="text-gray-600">Yếu tố cản trở:</span> <span class="font-medium">\${state.risks.join(' · ')||'—'}</span></div>
+        <div><span class="text-gray-600">Không lường trước/khó khắc phục:</span> <span class="font-medium">\${state.unmitigable.join(' · ')||'—'}</span></div>
+        <div><span class="text-gray-600">Phương án thay thế:</span> <span class="font-medium">\${state.alts.join(' · ')||'—'}</span></div>
+        <div class="mt-2"><span class="text-gray-600">Có đồng hành:</span> <span class="font-medium">\${document.querySelector('input[name="partner"]:checked')?.value==='yes'?'Có':'Không'}</span></div>
+        <div><span class="text-gray-600">% đóng góp:</span> <span class="font-medium">\${el('partner-perc').value||'—'}</span></div>
+        <div><span class="text-gray-600">Thời gian hoàn thành (năm):</span> <span class="font-medium">\${el('years-all').value||'—'}</span></div>\`;
+      el('print-goals').innerHTML = goalsHtml;
+
+      const fundsHtml = \`
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div><h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3><div>\${el('resp-list').outerHTML}</div>
+            <div class="flex justify-between font-semibold mt-2"><span>Tổng</span><span>\${el('resp-total').textContent}</span></div></div>
+          <div><h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3><div>\${el('save-list').outerHTML}</div>
+            <div class="flex justify-between font-semibold mt-2"><span>Tổng</span><span>\${el('save-total').textContent}</span></div></div>
+        </div>
+        <div class="mt-3 flex justify-between text-lg font-bold"><span>Tổng quy năm (ước tính)</span><span>\${el('grand-total').textContent}</span></div>\`;
+      el('print-funds').innerHTML = fundsHtml;
+    }
+
+    document.getElementById('btn-preview').onclick = ()=>{ buildPrint(); document.getElementById('print-view').classList.remove('hidden'); window.scrollTo(0, document.getElementById('print-view').offsetTop); };
+    document.getElementById('btn-print').onclick = ()=>{ buildPrint(); window.print(); };
+    document.getElementById('btn-recalc').onclick = ()=>{ recalc(); };
+
+    renderAll();
+  </script>
+</body>
+</html>
