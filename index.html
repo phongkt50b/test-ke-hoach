@@ -55,7 +55,7 @@
       </div>
 
       <!-- 4: Quỹ cần thiết -->
-      <div id="funds"></div>
+      <div id="funds" class="space-y-6"></div>
     </section>
 
     <!-- 5 + 6 -->
@@ -149,53 +149,21 @@
     const money = v => '₫' + fmt.format(+v||0);
     const digits = s => (s||'').replace(/\D/g,'');
     const bindMoney = inp => {
-      inp.addEventListener('input', e=>{
+      inp.addEventListener('input', ()=>{
         let val = digits(inp.value);
         inp.value = val ? fmt.format(+val) : '';
         calc();
       });
     };
 
-    // state
-    const state = { goals:[], must:[], reasons:[], pos:[], neg:[], unmit:[], alts:[] };
+    const state = { goals:[], must:[], reasons:[], pos:[], neg:[], unmit:[], alts:[], children:[] };
 
-    // add goal
-    document.getElementById('add-goal').onclick = ()=>{
-      const v = document.getElementById('goal-input').value.trim();
-      if(v && !state.goals.includes(v)){ state.goals.push(v); }
-      document.getElementById('goal-input').value='';
-      render();
-    };
-    // add reason
-    document.getElementById('add-reason').onclick = ()=>{
-      const v=document.getElementById('reason-input').value.trim();
-      if(v){ state.reasons.push(v); }
-      document.getElementById('reason-input').value='';
-      render();
-    };
-    // positives
-    document.getElementById('add-pos').onclick = ()=>{
-      const v=document.getElementById('pos-input').value.trim();
-      if(v){ state.pos.push(v); }
-      document.getElementById('pos-input').value='';
-      render();
-    };
-    // negatives
-    document.getElementById('add-neg').onclick = ()=>{
-      const v=document.getElementById('neg-input').value.trim();
-      if(v){ state.neg.push(v); }
-      document.getElementById('neg-input').value='';
-      render();
-    };
-    // alternatives
-    document.getElementById('add-alt').onclick = ()=>{
-      const v=document.getElementById('alt-input').value.trim();
-      if(v){ state.alts.push(v); }
-      document.getElementById('alt-input').value='';
-      render();
-    };
-
-    // render lists
+    // helpers
+    function val(id){ return +digits(document.getElementById(id)?.value)||0; }
+    function addChip(arr, idInput, idBox){
+      const v=document.getElementById(idInput).value.trim();
+      if(v){ arr.push(v); document.getElementById(idInput).value=''; render(); }
+    }
     function renderChips(arr,id){
       const box=document.getElementById(id); box.innerHTML='';
       arr.forEach((txt,i)=>{
@@ -206,8 +174,19 @@
       });
     }
 
+    // events
+    document.getElementById('add-goal').onclick=()=>{ addChip(state.goals,'goal-input'); };
+    document.getElementById('add-reason').onclick=()=>{ addChip(state.reasons,'reason-input','reasons'); };
+    document.getElementById('add-pos').onclick=()=>{ addChip(state.pos,'pos-input','positives'); };
+    document.getElementById('add-neg').onclick=()=>{ addChip(state.neg,'neg-input','negatives'); };
+    document.getElementById('add-alt').onclick=()=>{ addChip(state.alts,'alt-input','alts'); };
+
+    document.querySelectorAll('[name="partner"]').forEach(r=>r.onchange=()=>{
+      document.getElementById('partner-extra').classList.toggle('hidden', r.value!=='yes');
+    });
+
+    // render
     function render(){
-      // must goals
       const must=document.getElementById('must-goals'); must.innerHTML='';
       state.goals.forEach(g=>{
         const s=document.createElement('div');
@@ -217,7 +196,6 @@
         s.onclick=()=>{ if(state.must.includes(g)) state.must=state.must.filter(x=>x!==g); else state.must.push(g); render(); };
         must.appendChild(s);
       });
-      // chips
       renderChips(state.reasons,'reasons');
       renderChips(state.pos,'positives');
       renderChips(state.neg,'negatives');
@@ -226,30 +204,36 @@
       calc();
     }
 
-    // calc quỹ
-    function val(id){ return +digits(document.getElementById(id)?.value)||0; }
+    // calc
     function calc(){
       let respSum=0, saveSum=0;
       const respList=document.getElementById('resp-list'); respList.innerHTML='';
       const saveList=document.getElementById('save-list'); saveList.innerHTML='';
 
-      // demo: chỉ add các mục chính nếu có trong must
+      // Vận hành gia đình
       if(state.must.includes('Vận hành gia đình')){
-        const x=val('fam')*val('fam-years'); respSum+=x;
+        const x=val('fam-monthly')*12*val('fam-years'); respSum+=x;
         respList.innerHTML+=`<li>Vận hành gia đình: ${money(x)}</li>`;
       }
+      // Học vấn
       if(state.must.includes('Quỹ học vấn cho con')){
-        const x=0; respSum+=x; saveSum+=x;
-        respList.innerHTML+=`<li>Quỹ học vấn: ${money(x)}</li>`;
-        saveList.innerHTML+=`<li>Quỹ học vấn: ${money(x)}</li>`;
+        let total=0;
+        state.children.forEach((c,i)=>{ total+= (c.cost||0)*(c.years||0); });
+        respSum+=total; saveSum+=total;
+        respList.innerHTML+=`<li>Quỹ học vấn: ${money(total)}</li>`;
+        saveList.innerHTML+=`<li>Quỹ học vấn: ${money(total)}</li>`;
       }
+      // Hưu trí
       if(state.must.includes('Quỹ hưu trí')){
-        const x=0; saveSum+=x; saveList.innerHTML+=`<li>Quỹ hưu trí: ${money(x)}</li>`;
+        const x=val('ret-years')*val('ret-month')*12; saveSum+=x;
+        saveList.innerHTML+=`<li>Quỹ hưu trí: ${money(x)}</li>`;
       }
+      // Nợ
       if(state.must.includes('Trả nợ')){
         const x=val('debt'); respSum+=x;
         respList.innerHTML+=`<li>Trả nợ: ${money(x)}</li>`;
       }
+      // Di sản
       if(state.must.includes('Gia tăng tài sản/ Để lại di sản')){
         const x=val('legacy'); respSum+=x;
         respList.innerHTML+=`<li>Di sản: ${money(x)}</li>`;
@@ -261,7 +245,7 @@
       document.getElementById('resp-gap').textContent=money(Math.max(respSum-prepared,0));
     }
 
-    // bind money inputs
+    // money mask
     document.querySelectorAll('[data-money]').forEach(bindMoney);
 
     render();
