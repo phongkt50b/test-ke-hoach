@@ -4,39 +4,147 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Bản đồ tài chính cá nhân — Thiết kế + Quy tắc gốc</title>
-  <!-- Tailwind dùng cho layout nhất quán (nếu môi trường bạn chặn CDN thì vẫn chạy logic bình thường;
-       chỉ khác nhẹ phần thẩm mỹ). Có thể bỏ dòng này nếu không cần. -->
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <!-- Giữ nguyên style.css của bạn cạnh file HTML -->
-  <link href="style.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    :root{ --ink:#1f2937; --muted:#6b7280; --aia:#C81E26; }
-    body{ font-family:"Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
-    .card{ background:#fff; border:1px solid #E5E7EB; border-radius:.75rem; box-shadow:0 1px 2px rgba(0,0,0,.05); }
-    .section-title{ font-size:1.25rem; font-weight:700; color:var(--aia); }
-    .form-input, .form-select{ width:100%; background:#fff; border:1px solid #D1D5DB; border-radius:.5rem; padding:.6rem .75rem; }
-    .btn{ display:inline-flex; align-items:center; justify-content:center; padding:.6rem .9rem; border-radius:.6rem; font-weight:600; }
-    .btn-primary{ background:var(--aia); color:#fff; }
-    .btn-ghost{ background:#fff; border:1px solid #E5E7EB; color:#111827; }
-    .chip{ display:inline-flex; align-items:center; border-radius:9999px; background:#F3F4F6; border:1px solid #E5E7EB; padding:.25rem .6rem; font-size:.9rem; margin-right:.5rem; margin-bottom:.5rem; }
-    .chip button{ margin-left:.5rem; color:#6B7280; }
-    .dnd .item{ padding:10px 12px; border:1px dashed #cbd5e1; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:space-between; cursor:grab; }
-    .dnd .item.dragging{ opacity:.6 }
-    .mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
-    @media print{
-      .no-print{ display:none !important; }
-      .page-break{ page-break-after:always; }
-      body{ background:#fff; }
-      .card{ box-shadow:none; border:0 }
-      #unmit-select option.selected-option {
-  background-color: var(--aia);
-  color: white;
-  font-weight: 600;
-}
-
+    :root {
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --aia: #C81E26;
+    }
+    body {
+      font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: .75rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--aia);
+    }
+    .form-input,
+    .form-select {
+      width: 100%;
+      background: #fff;
+      border: 1px solid #D1D5DB;
+      border-radius: .5rem;
+      padding: .6rem .75rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .6rem .9rem;
+      border-radius: .6rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-primary {
+      background: var(--aia);
+      color: #fff;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: #a81921;
+    }
+    .btn-ghost {
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      color: #111827;
+      transition: background-color 0.3s ease;
+    }
+    .btn-ghost:hover {
+      background: #f9fafb;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      background: #F3F4F6;
+      border: 1px solid #E5E7EB;
+      padding: .25rem .6rem;
+      font-size: .9rem;
+      margin-right: .5rem;
+      margin-bottom: .5rem;
+    }
+    .chip button {
+      margin-left: .5rem;
+      color: #6B7280;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+    }
+    .dnd .item {
+      padding: 10px 12px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .dnd .item:hover {
+      background-color: #fee2e2;
+    }
+    .dnd .item.selected {
+      background-color: var(--aia);
+      color: #fff;
+      font-weight: 600;
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    #unmit-select option.selected-option {
+      background-color: var(--aia);
+      color: white;
+      font-weight: 600;
+    }
+    /* Scroll for priority list if too long */
+    #priority-list {
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid #D1D5DB;
+      border-radius: .5rem;
+      padding: 0.5rem;
+      background: #fff;
+    }
+    #priority-list .item {
+      margin-bottom: 6px;
+    }
+    /* Scrollbar style for modern browsers */
+    #priority-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    #priority-list::-webkit-scrollbar-thumb {
+      background-color: var(--aia);
+      border-radius: 4px;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .page-break {
+        page-break-after: always;
+      }
+      body {
+        background: #fff;
+      }
+      .card {
+        box-shadow: none;
+        border: 0;
+      }
     }
   </style>
 </head>
@@ -71,6 +179,7 @@
             <div><label class="block text-sm text-gray-600 mb-1">Người phụ thuộc gián tiếp</label><input id="dep-indirect" class="form-input" placeholder="Bố mẹ, thân nhân..."/></div>
           </div>
         </section>
+
         <!-- Mục tiêu & bắt buộc -->
         <section class="card p-5">
           <div class="flex items-center justify-between mb-4">
@@ -93,17 +202,19 @@
               <div class="flex items-end"><button class="btn btn-primary w-full" id="add-goal">Thêm mục tiêu</button></div>
             </div>
             <div class="mt-3" id="goals"></div>
-            <div class="my-4 border-t"></div>
+
+            <label class="block text-sm text-gray-600 mt-6 mb-1">Mục tiêu bắt buộc (chọn nhiều)</label>
+            <select id="must-goals" multiple size="5" class="form-select w-full mb-4"></select>
           </div>
         </section>
-        
+
         <!-- Ưu tiên -->
         <section class="card p-5">
           <div class="flex items-center justify-between mb-4">
             <h2 class="section-title">Mục tiêu nào là quan trọng nhất, phải làm bằng mọi giá </h2><span class="text-xs text-gray-600">Phần 5</span>
           </div>
-          <p class="text-gray-600 text-sm mb-2">Kéo thả từ <b>quan trọng nhất</b> xuống <b>ít quan trọng nhất</b>. Danh sách lấy từ mục 3.</p>
-          <div class="dnd space-y-2" id="priority-list"></div>
+          <p class="text-gray-600 text-sm mb-2">Click chọn mục tiêu để đánh dấu quan trọng nhất.</p>
+          <div class="dnd space-y-2" id="priority-list" aria-label="Danh sách mục tiêu ưu tiên"></div>
         </section>
 
         <!-- Lý do -->
@@ -126,12 +237,18 @@
           <div class="flex items-center justify-between mb-4">
             <h2 class="section-title">Đo lường kế hoạch tài chính </h2><span class="text-xs text-gray-600">Tự động hiển thị theo ưu tiên</span>
           </div>
-          <div id="funds">
+          <div id="funds" class="space-y-6">
             <details id="fund-family" open data-match="Vận hành gia đình" class="mb-4">
               <summary class="cursor-pointer font-semibold">Vận hành gia đình</summary>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-                <div><label class="block text-sm text-gray-600 mb-1">Chi phí thiết yếu / tháng (₫)</label><input id="fam-monthly" type="number" min="0" step="1000" class="form-input" placeholder="XX"/></div>
-                <div><label class="block text-sm text-gray-600 mb-1">Trang trải tối thiểu trong (năm)</label><input id="fam-years" type="number" min="0" step="1" class="form-input" placeholder="YY"/></div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Chi phí thiết yếu / tháng (₫)</label>
+                  <input id="fam-monthly" type="text" class="form-input" placeholder="XX"/>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Trang trải tối thiểu trong (năm)</label>
+                  <input id="fam-years" type="text" class="form-input" placeholder="YY"/>
+                </div>
                 <div>
                   <label class="block text-sm text-gray-600 mb-1">Quỹ vận hành gia đình cần có</label>
                   <div id="fam-total" class="font-bold text-[var(--aia)] mono mt-2">₫0</div>
@@ -155,9 +272,18 @@
             <details id="fund-retire" data-match="Quỹ hưu trí" class="mb-4">
               <summary class="cursor-pointer font-semibold">Quỹ hưu trí</summary>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-                <div><label class="block text-sm text-gray-600 mb-1">Tuổi nghỉ hưu</label><input id="ret-age" type="number" min="0" step="1" class="form-input"/></div>
-                <div><label class="block text-sm text-gray-600 mb-1">Sống an nhàn trong (năm) – xx</label><input id="ret-years" type="number" min="0" step="1" class="form-input"/></div>
-                <div><label class="block text-sm text-gray-600 mb-1">Chi tiêu cá nhân / tháng – yy (₫)</label><input id="ret-month" type="number" min="0" step="1000" class="form-input"/></div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Tuổi nghỉ hưu</label>
+                  <input id="ret-age" type="text" class="form-input"/>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Sống an nhàn trong (năm) – xx</label>
+                  <input id="ret-years" type="text" class="form-input"/>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Chi tiêu cá nhân / tháng – yy (₫)</label>
+                  <input id="ret-month" type="text" class="form-input"/>
+                </div>
               </div>
               <div class="mt-3">
                 <label class="block text-sm text-gray-600 mb-1">Tổng quỹ hưu trí = xx × yy × 12</label>
@@ -168,21 +294,33 @@
             <details id="fund-debt" data-match="Trả nợ" class="mb-4">
               <summary class="cursor-pointer font-semibold">Thanh khoản các khoản nợ</summary>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-                <div><label class="block text-sm text-gray-600 mb-1">Khoản nợ hiện tại (₫)</label><input id="debt-amt" type="number" min="0" step="1000" class="form-input"/></div>
-                <div><label class="block text-sm text-gray-600 mb-1">Thời hạn cần trả (năm)</label><input id="debt-years" type="number" min="0" step="1" class="form-input"/></div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Khoản nợ hiện tại (₫)</label>
+                  <input id="debt-amt" type="text" class="form-input"/>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Thời hạn cần trả (năm)</label>
+                  <input id="debt-years" type="text" class="form-input"/>
+                </div>
               </div>
             </details>
 
             <details id="fund-legacy" data-match="Gia tăng tài sản/ Để lại di sản">
               <summary class="cursor-pointer font-semibold">Gia tăng tài sản / Để lại di sản</summary>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-                <div><label class="block text-sm text-gray-600 mb-1">Giá trị tài sản kỳ vọng (₫)</label><input id="legacy-amt" type="number" min="0" step="1000" class="form-input"/></div>
-                <div><label class="block text-sm text-gray-600 mb-1">Thời gian dự kiến (năm)</label><input id="legacy-years" type="number" min="0" step="1" class="form-input"/></div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Giá trị tài sản kỳ vọng (₫)</label>
+                  <input id="legacy-amt" type="text" class="form-input"/>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-600 mb-1">Thời gian dự kiến (năm)</label>
+                  <input id="legacy-years" type="text" class="form-input"/>
+                </div>
               </div>
             </details>
           </div>
         </section>
-        
+
         <!-- Đồng hành & thời hạn -->
         <section class="card p-5">
           <div class="flex items-center justify-between mb-4">
@@ -198,11 +336,11 @@
             </div>
             <div id="partner-perc-wrap" style="display:none">
               <label class="block text-sm text-gray-600 mb-1">% công sức của anh/chị</label>
-              <input id="partner-perc" type="number" min="0" max="100" step="1" class="form-input" placeholder="%"/>
+              <input id="partner-perc" type="text" class="form-input" placeholder="%"/>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-            <div><label class="block text-sm text-gray-600 mb-1">Dự định hoàn thành tất cả trong (năm)</label><input id="years-all" type="number" min="0" step="1" class="form-input" placeholder="Số năm"/></div>
+            <div><label class="block text-sm text-gray-600 mb-1">Dự định hoàn thành tất cả trong (năm)</label><input id="years-all" type="text" class="form-input" placeholder="Số năm"/></div>
           </div>
         </section>
 
@@ -214,7 +352,10 @@
           <details open class="mb-4">
             <summary class="cursor-pointer font-semibold">9) Yếu tố khiến không đạt mục tiêu</summary>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-              <div class="md:col-span-2"><label class="block text-sm text-gray-600 mb-1">Thêm yếu tố</label><input id="risk-input" class="form-input" placeholder="Ví dụ: Ốm đau, thất nghiệp..."/></div>
+              <div class="md:col-span-2">
+                <label class="block text-sm text-gray-600 mb-1">Thêm yếu tố</label>
+                <input id="risk-input" class="form-input" placeholder="Ví dụ: Ốm đau, thất nghiệp..."/>
+              </div>
               <div class="flex items-end"><button class="btn btn-primary w-full" id="add-risk">Thêm yếu tố</button></div>
             </div>
             <div id="risks" class="mt-3"></div>
@@ -229,7 +370,10 @@
           <details open>
             <summary class="cursor-pointer font-semibold">11) Phương án thay thế</summary>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-              <div class="md:col-span-2"><label class="block text-sm text-gray-600 mb-1">Thêm phương án</label><input id="alt-input" class="form-input" placeholder="Ví dụ: Dự phòng 12 tháng chi tiêu..."/></div>
+              <div class="md:col-span-2">
+                <label class="block text-sm text-gray-600 mb-1">Thêm phương án</label>
+                <input id="alt-input" class="form-input" placeholder="Ví dụ: Dự phòng 12 tháng chi tiêu..."/>
+              </div>
               <div class="flex items-end"><button class="btn btn-primary w-full" id="add-alt">Thêm phương án</button></div>
             </div>
             <div id="alts" class="mt-3"></div>
@@ -239,32 +383,59 @@
 
       <!-- RIGHT 1/3: Totals -->
       <aside class="lg:col-span-1">
-        <section class="card p-5 sticky top-8">
-          <div class="flex items-center justify-between mb-2">
-            <h2 class="font-semibold">Tổng hợp quỹ trách nhiệm</h2>
-            <button class="btn btn-ghost no-print" id="btn-calc">Cập nhật tổng hợp</button>
+        <section class="card p-5 sticky top-8 space-y-6">
+          <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-lg">Tổng hợp quỹ trách nhiệm</h2>
+            <button class="btn btn-ghost no-print text-sm" id="btn-calc" title="Cập nhật tổng hợp">Cập nhật</button>
           </div>
-          <div class="grid grid-cols-1 gap-4">
-            <div>
-              <h3 class="font-semibold">Số tiền trách nhiệm – <span class="text-gray-500">cần luôn sẵn sàng</span></h3>
-              <table class="w-full text-sm mt-2">
-                <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
-                <tbody id="resp-body"></tbody>
-                <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td id="resp-total" class="py-2 text-right font-semibold mono">₫0</td></tr></tfoot>
-              </table>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-                <div><label class="block text-sm text-gray-600 mb-1">Số tiền trách nhiệm đã chuẩn bị (₫)</label><input id="resp-prepared" type="number" min="0" step="1000" class="form-input"/></div>
-                <div class="flex flex-col"><span class="text-gray-700">Khoảng thiếu (ước tính)</span><span id="resp-gap" class="font-bold text-red-600 mono text-lg mt-1">₫0</span></div>
+          <div>
+            <h3 class="font-semibold mb-2 text-[var(--aia)]">Số tiền trách nhiệm – <span class="text-gray-500 font-normal">cần luôn sẵn sàng</span></h3>
+            <table class="w-full text-sm border border-gray-200 rounded-md overflow-hidden">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="py-2 px-3 text-left">Mục</th>
+                  <th class="py-2 px-3 text-right">Số tiền (₫)</th>
+                </tr>
+              </thead>
+              <tbody id="resp-body" class="divide-y divide-gray-100"></tbody>
+              <tfoot class="bg-gray-50 font-semibold">
+                <tr>
+                  <td class="py-2 px-3">Tổng</td>
+                  <td id="resp-total" class="py-2 px-3 text-right mono">₫0</td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+              <div>
+                <label class="block text-sm text-gray-600 mb-1">Số tiền trách nhiệm đã chuẩn bị (₫)</label>
+                <input id="resp-prepared" type="text" class="form-input" placeholder="Nhập số tiền"/>
+              </div>
+              <div class="flex flex-col justify-center">
+                <span class="text-gray-700">Khoảng thiếu (ước tính)</span>
+                <span id="resp-gap" class="font-bold text-red-600 mono text-lg mt-1">₫0</span>
               </div>
             </div>
-            <div>
-              <h3 class="font-semibold">Số tiền phải tích luỹ – <span class="text-gray-500">dùng trong tương lai</span></h3>
-              <table class="w-full text-sm mt-2">
-                <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
-                <tbody id="save-body"></tbody>
-                <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td id="save-total" class="py-2 text-right font-semibold mono">₫0</td></tr></tfoot>
-              </table>
-              <div class="mt-3"><label class="block text-sm text-gray-600 mb-1">Mong muốn hoàn thành (%)</label><input id="goal-percent" type="number" min="0" max="100" step="1" class="form-input" placeholder="%"/></div>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2 text-[var(--aia)]">Số tiền phải tích luỹ – <span class="text-gray-500 font-normal">dùng trong tương lai</span></h3>
+            <table class="w-full text-sm border border-gray-200 rounded-md overflow-hidden">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="py-2 px-3 text-left">Mục</th>
+                  <th class="py-2 px-3 text-right">Số tiền (₫)</th>
+                </tr>
+              </thead>
+              <tbody id="save-body" class="divide-y divide-gray-100"></tbody>
+              <tfoot class="bg-gray-50 font-semibold">
+                <tr>
+                  <td class="py-2 px-3">Tổng</td>
+                  <td id="save-total" class="py-2 px-3 text-right mono">₫0</td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="mt-3">
+              <label class="block text-sm text-gray-600 mb-1">Mong muốn hoàn thành (%)</label>
+              <input id="goal-percent" type="text" class="form-input" placeholder="%"/>
             </div>
           </div>
         </section>
@@ -299,363 +470,220 @@
   </div>
 
   <script>
-  // ===== Utilities & shared state (khớp với bản quy tắc) =====
-  const fmt = new Intl.NumberFormat('vi-VN');
-  const el = id => document.getElementById(id);
-  const money = v => '₫' + fmt.format(Number(v||0));
+    // ===== Utilities & shared state =====
+    const fmt = new Intl.NumberFormat('vi-VN');
+    const el = id => document.getElementById(id);
+    const money = v => '₫' + fmt.format(Number(v || 0));
 
-  const state = {
-    goals: [], mustGoals: [], reasons: [], risks: [], unmitigable: [], alts: [],
-    children: [],  // {name, school, cost, years}
-    _priority: []  // mục tiêu quan trọng nhất
-  };
-
-  // ===== Render chips =====
-  function renderChips(arr, mountId){
-    const mount = el(mountId);
-    mount.innerHTML = '';
-    arr.forEach((txt, i)=>{
-      const chip = document.createElement('span');
-      chip.className = 'chip';
-      chip.innerHTML = '<span>'+txt+'</span><button title="Xóa" data-i="'+i+'">×</button>';
-      chip.querySelector('button').onclick = ()=>{ arr.splice(i,1); render(); };
-      mount.appendChild(chip);
-    });
-  }
-  function uniquePush(arr, item){
-    const s = (item||'').trim();
-    if(!s) return;
-    if(!arr.includes(s)) arr.push(s);
-  }
-  function syncMustGoals(){
-    const sel = el('must-goals');
-    sel.innerHTML = '';
-    state.goals.forEach(g=>{
-      const opt = document.createElement('option');
-      opt.value = g; opt.textContent = g;
-      sel.appendChild(opt);
-    });
-    Array.from(sel.options).forEach(op=> op.selected = state.mustGoals.includes(op.value));
-  }
-  function syncUnmitigable(){
-    const sel = el('unmit-select');
-    sel.innerHTML = '';
-    state.risks.forEach(r=>{
-      const opt = document.createElement('option');
-      opt.value = r; opt.textContent = r;
-      sel.appendChild(opt);
-    });
-    Array.from(sel.options).forEach(op=> op.selected = state.unmitigable.includes(op.value));
-    updateUnmitSelectStyles();
-  }
-
-  // ===== Priority (mục tiêu quan trọng nhất) =====
-  function buildPriorityList(){
-    const mount = el('priority-list');
-    mount.innerHTML = '';
-
-    if (!Array.isArray(state._priority)) state._priority = [];
-
-    state.goals.forEach((goal) => {
-      const item = document.createElement('div');
-      item.className = 'item';
-      item.textContent = goal;
-      item.style.cursor = 'pointer';
-
-      if (state._priority.includes(goal)) {
-        item.style.backgroundColor = 'var(--aia)';
-        item.style.color = '#fff';
-        item.style.fontWeight = '600';
-      } else {
-        item.style.backgroundColor = '';
-        item.style.color = '';
-        item.style.fontWeight = '';
-      }
-
-      item.addEventListener('click', () => {
-        const index = state._priority.indexOf(goal);
-        if (index === -1) {
-          state._priority.push(goal);
-        } else {
-          state._priority.splice(index, 1);
-        }
-        buildPriorityList();
-        updateFundsVisibility();
-      });
-
-      mount.appendChild(item);
-    });
-  }
-
-  // ===== Events =====
-  el('add-goal').onclick = ()=>{ uniquePush(state.goals, el('goal-input').value); el('goal-input').value=''; render(); };
-  el('add-reason').onclick = ()=>{ uniquePush(state.reasons, el('reason-input').value); el('reason-input').value=''; render(); };
-  el('add-risk').onclick = ()=>{ uniquePush(state.risks, el('risk-input').value); el('risk-input').value=''; render(); };
-  el('add-alt').onclick = ()=>{ uniquePush(state.alts, el('alt-input').value); el('alt-input').value=''; render(); };
-
-  el('must-goals').addEventListener('change', ()=>{
-    const sel = el('must-goals');
-    state.mustGoals = Array.from(sel.selectedOptions).map(o=>o.value);
-    render();
-  });
-
-  el('unmit-select').addEventListener('change', () => {
-    const sel = el('unmit-select');
-    state.unmitigable = Array.from(sel.selectedOptions).map(o => o.value);
-    updateUnmitSelectStyles();
-  });
-
-  // ===== Style cho các option được chọn trong unmit-select =====
-  function updateUnmitSelectStyles() {
-    const unmitSelect = el('unmit-select');
-    Array.from(unmitSelect.options).forEach(opt => {
-      if (state.unmitigable.includes(opt.value)) {
-        opt.classList.add('selected-option');
-      } else {
-        opt.classList.remove('selected-option');
-      }
-    });
-  }
-
-  // ===== Visibility rules =====
-  function goalMatchName(txt){ return (txt||'').trim().toLowerCase(); }
-  const NAME_FAMILY = goalMatchName('Vận hành gia đình');
-  const NAME_EDU = goalMatchName('Quỹ học vấn cho con');
-  const NAME_RET = goalMatchName('Quỹ hưu trí');
-  const NAME_DEBT = goalMatchName('Trả nợ');
-  const NAME_LEG = goalMatchName('Gia tăng tài sản/ Để lại di sản');
-
-  function updateFundsVisibility(){
-    const pr = (state._priority||[]).map(goalMatchName);
-    const map = {
-      'fund-family': pr.includes(NAME_FAMILY),
-      'fund-edu': pr.includes(NAME_EDU),
-      'fund-retire': pr.includes(NAME_RET),
-      'fund-debt': pr.includes(NAME_DEBT),
-      'fund-legacy': pr.includes(NAME_LEG),
+    const state = {
+      goals: [], mustGoals: [], reasons: [], risks: [], unmitigable: [], alts: [],
+      children: [],  // {name, school, cost, years}
+      _priority: []  // mục tiêu quan trọng nhất
     };
-    Object.entries(map).forEach(([id, show])=>{
-      const d = el(id);
-      if(!d) return;
-      d.style.display = show ? 'block' : 'none';
-    });
-  }
 
-  // ===== Children (6 tối đa) =====
-  const childMax = 6;
-  function childRow(idx, data){
-    const wrap = document.createElement('div');
-    wrap.className='card p-4 mt-3 border border-gray-200';
-    wrap.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div><label class="block text-sm text-gray-600 mb-1">Con thứ #${idx+1} - Họ tên</label><input data-k="name" class="form-input" value="${data?.name||''}" placeholder="Tên con"/></div>
-        <div><label class="block text-sm text-gray-600 mb-1">Trường dự định</label><input data-k="school" class="form-input" value="${data?.school||''}" placeholder="Tên trường"/></div>
-        <div><label class="block text-sm text-gray-600 mb-1">Chi phí 1 năm (₫)</label><input data-k="cost" type="number" min="0" step="1000" class="form-input" value="${data?.cost||''}"/></div>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-        <div><label class="block text-sm text-gray-600 mb-1">Số năm học đại học</label><input data-k="years" type="number" min="0" step="1" class="form-input" value="${data?.years||''}"/></div>
-        <div class="flex flex-col justify-center"><div class="text-sm text-gray-600">Tổng học phí (#${idx+1})</div><div class="font-bold text-[var(--aia)] mono child-total">₫0</div></div>
-        <div class="flex items-center justify-end"><button class="btn btn-ghost border text-red-600">Xoá</button></div>
-      </div>`;
-    wrap.querySelectorAll('input[data-k]').forEach(inp=>{
-      inp.addEventListener('input', ()=>{
-        const k = inp.getAttribute('data-k');
-        state.children[idx][k] = inp.type==='number' ? Number(inp.value||0) : inp.value;
-        calcEdu();
+    // ===== Render chips =====
+    function renderChips(arr, mountId) {
+      const mount = el(mountId);
+      mount.innerHTML = '';
+      arr.forEach((txt, i) => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.innerHTML = '<span>' + txt + '</span><button title="Xóa" data-i="' + i + '">×</button>';
+        chip.querySelector('button').onclick = () => { arr.splice(i, 1); render(); };
+        mount.appendChild(chip);
       });
+    }
+    function uniquePush(arr, item) {
+      const s = (item || '').trim();
+      if (!s) return;
+      if (!arr.includes(s)) arr.push(s);
+    }
+    function syncMustGoals() {
+      const sel = el('must-goals');
+      sel.innerHTML = '';
+      state.goals.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g; opt.textContent = g;
+        sel.appendChild(opt);
+      });
+      Array.from(sel.options).forEach(op => op.selected = state.mustGoals.includes(op.value));
+    }
+    function syncUnmitigable() {
+      const sel = el('unmit-select');
+      sel.innerHTML = '';
+      state.risks.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r; opt.textContent = r;
+        sel.appendChild(opt);
+      });
+      Array.from(sel.options).forEach(op => op.selected = state.unmitigable.includes(op.value));
+      updateUnmitSelectStyles();
+    }
+
+    // ===== Priority (mục tiêu quan trọng nhất) =====
+    function buildPriorityList() {
+      const mount = el('priority-list');
+      mount.innerHTML = '';
+
+      if (!Array.isArray(state._priority)) state._priority = [];
+
+      state.goals.forEach((goal) => {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.textContent = goal;
+        item.setAttribute('tabindex', '0');
+        item.setAttribute('role', 'button');
+        item.setAttribute('aria-pressed', state._priority.includes(goal));
+        item.style.cursor = 'pointer';
+
+        if (state._priority.includes(goal)) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+
+        item.addEventListener('click', () => {
+          const index = state._priority.indexOf(goal);
+          if (index === -1) {
+            state._priority.push(goal);
+          } else {
+            state._priority.splice(index, 1);
+          }
+          buildPriorityList();
+          updateFundsVisibility();
+        });
+
+        item.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            item.click();
+          }
+        });
+
+        mount.appendChild(item);
+      });
+    }
+
+    // ===== Events =====
+    el('add-goal').onclick = () => {
+      uniquePush(state.goals, el('goal-input').value);
+      el('goal-input').value = '';
+      render();
+    };
+    el('add-reason').onclick = () => {
+      uniquePush(state.reasons, el('reason-input').value);
+      el('reason-input').value = '';
+      render();
+    };
+    el('add-risk').onclick = () => {
+      uniquePush(state.risks, el('risk-input').value);
+      el('risk-input').value = '';
+      render();
+    };
+    el('add-alt').onclick = () => {
+      uniquePush(state.alts, el('alt-input').value);
+      el('alt-input').value = '';
+      render();
+    };
+
+    el('must-goals').addEventListener('change', () => {
+      const sel = el('must-goals');
+      state.mustGoals = Array.from(sel.selectedOptions).map(o => o.value);
+      render();
     });
-    wrap.querySelector('button').onclick = ()=>{
-      state.children.splice(idx,1);
+
+    el('unmit-select').addEventListener('change', () => {
+      const sel = el('unmit-select');
+      state.unmitigable = Array.from(sel.selectedOptions).map(o => o.value);
+      updateUnmitSelectStyles();
+    });
+
+    function updateUnmitSelectStyles() {
+      const unmitSelect = el('unmit-select');
+      Array.from(unmitSelect.options).forEach(opt => {
+        if (state.unmitigable.includes(opt.value)) {
+          opt.classList.add('selected-option');
+        } else {
+          opt.classList.remove('selected-option');
+        }
+      });
+    }
+
+    // ===== Visibility rules =====
+    function goalMatchName(txt) { return (txt || '').trim().toLowerCase(); }
+    const NAME_FAMILY = goalMatchName('Vận hành gia đình');
+    const NAME_EDU = goalMatchName('Quỹ học vấn cho con');
+    const NAME_RET = goalMatchName('Quỹ hưu trí');
+    const NAME_DEBT = goalMatchName('Trả nợ');
+    const NAME_LEG = goalMatchName('Gia tăng tài sản/ Để lại di sản');
+
+    function updateFundsVisibility() {
+      const pr = (state._priority || []).map(goalMatchName);
+      const map = {
+        'fund-family': pr.includes(NAME_FAMILY),
+        'fund-edu': pr.includes(NAME_EDU),
+        'fund-retire': pr.includes(NAME_RET),
+        'fund-debt': pr.includes(NAME_DEBT),
+        'fund-legacy': pr.includes(NAME_LEG),
+      };
+      Object.entries(map).forEach(([id, show]) => {
+        const d = el(id);
+        if (!d) return;
+        d.style.display = show ? 'block' : 'none';
+      });
+    }
+
+    // ===== Children (6 tối đa) =====
+    const childMax = 6;
+    function childRow(idx, data) {
+      const wrap = document.createElement('div');
+      wrap.className = 'card p-4 mt-3 border border-gray-200';
+      wrap.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div><label class="block text-sm text-gray-600 mb-1">Con thứ #${idx + 1} - Họ tên</label><input data-k="name" class="form-input" value="${data?.name || ''}" placeholder="Tên con"/></div>
+          <div><label class="block text-sm text-gray-600 mb-1">Trường dự định</label><input data-k="school" class="form-input" value="${data?.school || ''}" placeholder="Tên trường"/></div>
+          <div><label class="block text-sm text-gray-600 mb-1">Chi phí 1 năm (₫)</label><input data-k="cost" type="text" class="form-input" value="${data?.cost || ''}"/></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+          <div><label class="block text-sm text-gray-600 mb-1">Số năm học đại học</label><input data-k="years" type="text" class="form-input" value="${data?.years || ''}"/></div>
+          <div class="flex flex-col justify-center"><div class="text-sm text-gray-600">Tổng học phí (#${idx + 1})</div><div class="font-bold text-[var(--aia)] mono child-total">₫0</div></div>
+          <div class="flex items-center justify-end"><button class="btn btn-ghost border text-red-600">Xoá</button></div>
+        </div>`;
+      wrap.querySelectorAll('input[data-k]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          const k = inp.getAttribute('data-k');
+          if (inp.type === 'text') {
+            // Parse number with commas removed
+            state.children[idx][k] = parseNumber(inp.value);
+            inp.value = formatNumber(state.children[idx][k]);
+          } else {
+            state.children[idx][k] = inp.value;
+          }
+          calcEdu();
+        });
+      });
+      wrap.querySelector('button').onclick = () => {
+        state.children.splice(idx, 1);
+        renderChildren();
+      };
+      return wrap;
+    }
+    function renderChildren() {
+      const mount = el('children');
+      mount.innerHTML = '';
+      state.children.forEach((c, i) => mount.appendChild(childRow(i, c)));
+      calcEdu();
+    }
+    el('add-child').onclick = () => {
+      if (state.children.length >= childMax) { alert('Tối đa 6 con.'); return; }
+      state.children.push({ name: '', school: '', cost: 0, years: 0 });
       renderChildren();
     };
-    return wrap;
-  }
-  function renderChildren(){
-    const mount = el('children');
-    mount.innerHTML='';
-    state.children.forEach((c,i)=> mount.appendChild(childRow(i,c)));
-    calcEdu();
-  }
-  el('add-child').onclick = ()=>{
-    if(state.children.length >= childMax){ alert('Tối đa 6 con.'); return; }
-    state.children.push({name:'', school:'', cost:0, years:0});
-    renderChildren();
-  };
 
-  // ===== Tính toán =====
-  function calcFamily(){
-    const monthly = parseNumber(el('fam-monthly').value);
-    const years = parseNumber(el('fam-years').value);
-    const total = monthly * 12 * years;
-    el('fam-total').textContent = money(total);
-    return total;
-  }
-  function calcEdu(){
-    let sum = 0;
-    state.children.forEach((c, i)=>{
-      const t = Number(c.cost||0) * Number(c.years||0);
-      sum += t;
-      const mount = el('children').children[i];
-      if(mount){
-        const tv = mount.querySelector('.child-total');
-        if(tv) tv.textContent = money(t);
-      }
-    });
-    el('edu-total').textContent = money(sum);
-    return sum;
-  }
-  function calcRetire(){
-    const xx = parseNumber(el('ret-years').value);
-    const yy = parseNumber(el('ret-month').value);
-    const total = xx * yy * 12;
-    el('ret-total').textContent = money(total);
-    return total;
-  }
-  function calcDebt(){ return parseNumber(el('debt-amt').value); }
-  function calcLegacy(){ return parseNumber(el('legacy-amt').value); }
-
-  function calcAll(){
-    const fam = calcFamily();
-    const edu = calcEdu();
-    const ret = calcRetire();
-    const debt = calcDebt();
-    const leg = calcLegacy();
-
-    const respItems = [];
-    if(el('fund-family').style.display!=='none') respItems.push(['Vận hành gia đình', fam]);
-    if(el('fund-edu').style.display!=='none') respItems.push(['Quỹ học vấn cho con', edu]);
-    if(el('fund-debt').style.display!=='none') respItems.push(['Thanh khoản các khoản nợ', debt]);
-    if(el('fund-legacy').style.display!=='none') respItems.push(['Để lại di sản', leg]);
-    const respBody = el('resp-body');
-    respBody.innerHTML = respItems.map(([k,v])=> `<tr><td class="py-1">${k}</td><td class="py-1 text-right mono">${money(v)}</td></tr>`).join('');
-    const respSum = respItems.reduce((a, [,v])=>a+Number(v||0), 0);
-    el('resp-total').textContent = money(respSum);
-
-    const prepared = parseNumber(el('resp-prepared').value);
-    el('resp-gap').textContent = money(Math.max(respSum - prepared, 0));
-
-    const saveItems = [];
-    if(el('fund-retire').style.display!=='none') saveItems.push(['Quỹ hưu trí', ret]);
-    if(el('fund-edu').style.display!=='none') saveItems.push(['Quỹ học vấn cho con', edu]);
-    const saveBody = el('save-body');
-    saveBody.innerHTML = saveItems.map(([k,v])=> `<tr><td class="py-1">${k}</td><td class="py-1 text-right mono">${money(v)}</td></tr>`).join('');
-    const saveSum = saveItems.reduce((a, [,v])=>a+Number(v||0), 0);
-    el('save-total').textContent = money(saveSum);
-  }
-
-  // Hàm parse số từ chuỗi có dấu chấm ngăn cách
-  function parseNumber(str){
-    if(!str) return 0;
-    return Number(str.toString().replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
-  }
-
-  // ===== Format input số có dấu chấm ngăn cách phần nghìn =====
-  function formatNumberInput(input) {
-    let value = input.value.replace(/\./g, '').replace(/[^0-9]/g, '');
-    if (value === '') {
-      input.value = '';
-      return;
-    }
-    let num = parseInt(value, 10);
-    if (isNaN(num)) {
-      input.value = '';
-      return;
-    }
-    input.value = num.toLocaleString('vi-VN');
-  }
-
-  // Áp dụng format cho tất cả input tiền, bỏ tự động tính khi nhập
-  ['fam-monthly','fam-years','ret-years','ret-month','debt-amt','legacy-amt','resp-prepared'].forEach(id => {
-    const input = el(id);
-    input.removeEventListener('input', calcAll); // Bỏ tự động tính
-    input.addEventListener('input', () => {
-      formatNumberInput(input);
-    });
-  });
-
-  // Nút cập nhật tổng hợp vẫn giữ tính năng
-  el('btn-calc').onclick = calcAll;
-
-  // ===== Print =====
-  function buildPrint(){
-    const client = `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div><div class="text-sm text-gray-500">Họ và tên</div><div class="mono">${el('fullname').value||''}</div></div>
-        <div><div class="text-sm text-gray-500">Ngày sinh</div><div class="mono">${el('dob').value||''}</div></div>
-        <div><div class="text-sm text-gray-500">Nghề nghiệp</div><div class="mono">${el('job').value||''}</div></div>
-        <div><div class="text-sm text-gray-500">Phụ thuộc trực tiếp</div><div class="mono">${el('dep-direct').value||''}</div></div>
-        <div><div class="text-sm text-gray-500">Phụ thuộc gián tiếp</div><div class="mono">${el('dep-indirect').value||''}</div></div>
-        <div><div class="text-sm text-gray-500">Video: Chiếc thuyền (URL)</div><div class="mono">${el('vid-boat')?.value||''}</div></div>
-        <div class="md:col-span-2"><div class="text-sm text-gray-500">Video: Gặp bão (URL)</div><div class="mono">${el('vid-storm')?.value||''}</div></div>
-      </div>`;
-    el('print-client').innerHTML = client;
-
-    const goalsHtml = `
-      <div><span class="text-gray-600">Tất cả mục tiêu:</span> <span class="font-medium">${state.goals.join(' · ')||'—'}</span></div>
-      <div><span class="text-gray-600">Mục tiêu bắt buộc:</span> <span class="font-medium">${state.mustGoals.join(' · ')||'—'}</span></div>
-      <div><span class="text-gray-600">Ưu tiên:</span><div class="mt-1">${(state._priority||[]).map((g,i)=> (i+1)+'. '+g).join('<br/>') || '—'}</div></div>
-      <hr class="my-2"/>
-      <div><span class="text-gray-600">Lý do:</span> <span class="font-medium">${state.reasons.join(' · ')||'—'}</span></div>
-      <div><span class="text-gray-600">Yếu tố cản trở:</span> <span class="font-medium">${state.risks.join(' · ')||'—'}</span></div>
-      <div><span class="text-gray-600">Không lường trước/khó khắc phục:</span> <span class="font-medium">${state.unmitigable.join(' · ')||'—'}</span></div>
-      <div><span class="text-gray-600">Phương án thay thế:</span> <span class="font-medium">${state.alts.join(' · ')||'—'}</span></div>
-      <div class="mt-2"><span class="text-gray-600">Có đồng hành:</span> <span class="font-medium">${document.querySelector('input[name="partner"]:checked')?.value==='yes'?'Có':'Không'}</span></div>
-      <div><span class="text-gray-600">% đóng góp:</span> <span class="font-medium">${el('partner-perc').value||'—'}</span></div>
-      <div><span class="text-gray-600">Thời gian hoàn thành (năm):</span> <span class="font-medium">${el('years-all').value||'—'}</span></div>`;
-    el('print-goals').innerHTML = goalsHtml;
-
-    calcAll();
-    const fundsHtml = `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
-          <table class="w-full text-sm">
-            <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
-            <tbody>${el('resp-body').innerHTML}</tbody>
-            <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td class="py-2 text-right font-semibold mono">${el('resp-total').textContent}</td></tr></tfoot>
-          </table>
-        </div>
-        <div>
-          <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
-          <table class="w-full text-sm">
-            <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
-            <tbody>${el('save-body').innerHTML}</tbody>
-            <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td class="py-2 text-right font-semibold mono">${el('save-total').textContent}</td></tr></tfoot>
-          </table>
-        </div>
-      </div>`;
-    el('print-funds').innerHTML = fundsHtml;
-  }
-
-  // ===== Buttons =====
-  el('btn-preview').onclick = ()=>{ buildPrint(); el('print-view').classList.remove('hidden'); window.scrollTo(0, el('print-view').offsetTop); };
-  el('btn-print').onclick = ()=>{ buildPrint(); window.print(); };
-  el('btn-print-2').onclick = ()=>{ buildPrint(); window.print(); };
-
-  // Reset
-  el('btn-reset').onclick = ()=>{
-    if(!confirm('Xoá toàn bộ dữ liệu đã nhập?')) return;
-    Object.assign(state, {goals:[], mustGoals:[], reasons:[], risks:[], unmitigable:[], alts:[], children:[], _priority:[]});
-    document.querySelectorAll('input').forEach(i=>{
-      if(i.type==='radio'){ if(i.value==='no') i.checked=true; } else i.value='';
-    });
-    renderChildren();
-    render();
-  };
-
-  // ===== Initial render =====
-  function render(){
-    renderChips(state.goals, 'goals');
-    syncMustGoals();
-    renderChips(state.reasons, 'reasons');
-    renderChips(state.risks, 'risks');
-    syncUnmitigable();
-    renderChips(state.alts, 'alts');
-    buildPriorityList();
-    updateFundsVisibility();
-    calcAll();
-  }
-  render();
-</script>
-</body>
-</html>
+    // ===== Tính toán =====
+    function calcFamily() {
+      const monthly = parseNumber(el('fam-monthly').value);
+      const years = parseNumber(el('fam-years').value);
+      const total = monthly * 12 * years;
+      el('fam-total').textContent = money(total);
+      return total
