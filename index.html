@@ -63,23 +63,12 @@
             <div><label class="block text-sm text-gray-600 mb-1">Nghề nghiệp</label><input id="job" class="form-input" placeholder="Chuyên viên tài chính..."/></div>
             <div><label class="block text-sm text-gray-600 mb-1">Người phụ thuộc trực tiếp</label><input id="dep-direct" class="form-input" placeholder="Vợ/chồng, con nhỏ..."/></div>
             <div><label class="block text-sm text-gray-600 mb-1">Người phụ thuộc gián tiếp</label><input id="dep-indirect" class="form-input" placeholder="Bố mẹ, thân nhân..."/></div>
-            <div><label class="block text-sm text-gray-600 mb-1">Video 1: Chiếc thuyền ra khơi (URL)</label><input id="vid-boat" type="url" class="form-input" placeholder="https://..."/><p class="text-xs text-gray-500 mt-1">Nhập URL – sẽ chèn video sau.</p></div>
           </div>
         </section>
-
-        <!-- Video gặp bão -->
-        <section class="card p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="section-title">Video gặp bão</h2><span class="text-xs text-gray-600">Phần 8</span>
-          </div>
-          <label class="block text-sm text-gray-600 mb-1">Video 2: Đi biển gặp bão (URL)</label>
-          <input id="vid-storm" type="url" class="form-input" placeholder="https://..."/>
-        </section>
-
         <!-- Mục tiêu & bắt buộc -->
         <section class="card p-5">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="section-title">Mục tiêu/Kế hoạch</h2><span class="text-xs text-gray-600">Phần 2 &amp; 3</span>
+            <h2 class="section-title">Mục tiêu/ Kế hoạch tài chính </h2><span class="text-xs text-gray-600">Phần 2 &amp; 3</span>
           </div>
           <div>
             <label class="block text-sm text-gray-600 mb-1">Thêm mục tiêu (gợi ý)</label>
@@ -100,11 +89,15 @@
             <div class="mt-3" id="goals"></div>
             <div class="my-4 border-t"></div>
           </div>
-          <div>
-            <label class="block text-sm text-gray-600 mb-1">Những mục tiêu bắt buộc phải làm bằng mọi giá (chọn nhiều)</label>
-            <select id="must-goals" multiple size="6" class="form-select"></select>
-            <p class="text-xs text-gray-500 mt-1">Giữ Ctrl/Cmd để chọn nhiều.</p>
+        </section>
+        
+        <!-- Ưu tiên -->
+        <section class="card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="section-title">Mục tiêu nào là quan trọng nhất, phải làm bằng mọi giá </h2><span class="text-xs text-gray-600">Phần 5</span>
           </div>
+          <p class="text-gray-600 text-sm mb-2">Kéo thả từ <b>quan trọng nhất</b> xuống <b>ít quan trọng nhất</b>. Danh sách lấy từ mục 3.</p>
+          <div class="dnd space-y-2" id="priority-list"></div>
         </section>
 
         <!-- Lý do -->
@@ -122,72 +115,10 @@
           <div class="mt-3" id="reasons"></div>
         </section>
 
-        <!-- Ưu tiên -->
-        <section class="card p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="section-title">Ưu tiên mục tiêu</h2><span class="text-xs text-gray-600">Phần 5</span>
-          </div>
-          <p class="text-gray-600 text-sm mb-2">Kéo thả từ <b>quan trọng nhất</b> xuống <b>ít quan trọng nhất</b>. Danh sách lấy từ mục 3.</p>
-          <div class="dnd space-y-2" id="priority-list"></div>
-        </section>
-
-        <!-- Đồng hành & thời hạn -->
-        <section class="card p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="section-title">Thành viên cùng thực hiện &amp; Thời hạn</h2><span class="text-xs text-gray-600">Phần 6 &amp; 7</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm text-gray-600 mb-1">Có ai cùng thực hiện mục tiêu không?</label>
-              <div class="flex items-center gap-6">
-                <label class="inline-flex items-center gap-2"><input type="radio" name="partner" value="no" checked/> Không</label>
-                <label class="inline-flex items-center gap-2"><input type="radio" name="partner" value="yes"/> Có</label>
-              </div>
-            </div>
-            <div id="partner-perc-wrap" style="display:none">
-              <label class="block text-sm text-gray-600 mb-1">% công sức của anh/chị</label>
-              <input id="partner-perc" type="number" min="0" max="100" step="1" class="form-input" placeholder="%"/>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-            <div><label class="block text-sm text-gray-600 mb-1">Dự định hoàn thành tất cả trong (năm)</label><input id="years-all" type="number" min="0" step="1" class="form-input" placeholder="Số năm"/></div>
-          </div>
-        </section>
-
-        <!-- Rào cản & phương án -->
-        <section class="card p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="section-title">Rào cản &amp; Phương án</h2><span class="text-xs text-gray-600">Phần 9–11</span>
-          </div>
-          <details open class="mb-4">
-            <summary class="cursor-pointer font-semibold">9) Yếu tố khiến không đạt mục tiêu</summary>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-              <div class="md:col-span-2"><label class="block text-sm text-gray-600 mb-1">Thêm yếu tố</label><input id="risk-input" class="form-input" placeholder="Ví dụ: Ốm đau, thất nghiệp..."/></div>
-              <div class="flex items-end"><button class="btn btn-primary w-full" id="add-risk">Thêm yếu tố</button></div>
-            </div>
-            <div id="risks" class="mt-3"></div>
-          </details>
-          <div class="border-t my-3"></div>
-          <details open class="mb-4">
-            <summary class="cursor-pointer font-semibold">10) Yếu tố không thể lường trước &amp; không thể khắc phục (chọn nhiều)</summary>
-            <select id="unmit-select" multiple size="6" class="form-select w-full mt-2"></select>
-            <p class="text-xs text-gray-500">Chọn từ danh sách đã nhập ở câu 9.</p>
-          </details>
-          <div class="border-t my-3"></div>
-          <details open>
-            <summary class="cursor-pointer font-semibold">11) Phương án thay thế</summary>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-              <div class="md:col-span-2"><label class="block text-sm text-gray-600 mb-1">Thêm phương án</label><input id="alt-input" class="form-input" placeholder="Ví dụ: Dự phòng 12 tháng chi tiêu..."/></div>
-              <div class="flex items-end"><button class="btn btn-primary w-full" id="add-alt">Thêm phương án</button></div>
-            </div>
-            <div id="alts" class="mt-3"></div>
-          </details>
-        </section>
-
         <!-- Các quỹ cần thiết -->
         <section class="card p-5">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="section-title">12) Các quỹ cần thiết</h2><span class="text-xs text-gray-600">Tự động hiển thị theo ưu tiên</span>
+            <h2 class="section-title">Đo lường kế hoạch tài chính </h2><span class="text-xs text-gray-600">Tự động hiển thị theo ưu tiên</span>
           </div>
           <div id="funds">
             <details id="fund-family" open data-match="Vận hành gia đình" class="mb-4">
@@ -245,6 +176,61 @@
             </details>
           </div>
         </section>
+        
+        <!-- Đồng hành & thời hạn -->
+        <section class="card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="section-title">Thành viên cùng thực hiện &amp; Thời hạn</h2><span class="text-xs text-gray-600">Phần 6 &amp; 7</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Có ai cùng thực hiện mục tiêu không?</label>
+              <div class="flex items-center gap-6">
+                <label class="inline-flex items-center gap-2"><input type="radio" name="partner" value="no" checked/> Không</label>
+                <label class="inline-flex items-center gap-2"><input type="radio" name="partner" value="yes"/> Có</label>
+              </div>
+            </div>
+            <div id="partner-perc-wrap" style="display:none">
+              <label class="block text-sm text-gray-600 mb-1">% công sức của anh/chị</label>
+              <input id="partner-perc" type="number" min="0" max="100" step="1" class="form-input" placeholder="%"/>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+            <div><label class="block text-sm text-gray-600 mb-1">Dự định hoàn thành tất cả trong (năm)</label><input id="years-all" type="number" min="0" step="1" class="form-input" placeholder="Số năm"/></div>
+          </div>
+        </section>
+
+        <!-- Rào cản & phương án -->
+        <section class="card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="section-title">Rào cản &amp; Phương án</h2><span class="text-xs text-gray-600">Phần 9–11</span>
+          </div>
+          <details open class="mb-4">
+            <summary class="cursor-pointer font-semibold">9) Yếu tố khiến không đạt mục tiêu</summary>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+              <div class="md:col-span-2"><label class="block text-sm text-gray-600 mb-1">Thêm yếu tố</label><input id="risk-input" class="form-input" placeholder="Ví dụ: Ốm đau, thất nghiệp..."/></div>
+              <div class="flex items-end"><button class="btn btn-primary w-full" id="add-risk">Thêm yếu tố</button></div>
+            </div>
+            <div id="risks" class="mt-3"></div>
+          </details>
+          <div class="border-t my-3"></div>
+          <details open class="mb-4">
+            <summary class="cursor-pointer font-semibold">10) Yếu tố không thể lường trước &amp; không thể khắc phục (chọn nhiều)</summary>
+            <select id="unmit-select" multiple size="6" class="form-select w-full mt-2"></select>
+            <p class="text-xs text-gray-500">Chọn từ danh sách đã nhập ở câu 9.</p>
+          </details>
+          <div class="border-t my-3"></div>
+          <details open>
+            <summary class="cursor-pointer font-semibold">11) Phương án thay thế</summary>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+              <div class="md:col-span-2"><label class="block text-sm text-gray-600 mb-1">Thêm phương án</label><input id="alt-input" class="form-input" placeholder="Ví dụ: Dự phòng 12 tháng chi tiêu..."/></div>
+              <div class="flex items-end"><button class="btn btn-primary w-full" id="add-alt">Thêm phương án</button></div>
+            </div>
+            <div id="alts" class="mt-3"></div>
+          </details>
+        </section>
+
+        
       </div>
 
       <!-- RIGHT 1/3: Totals -->
