@@ -94,7 +94,68 @@
       </div>
     </section>
 
-    <!-- ================= PHẦN 2 + 3 (bạn có thể giữ nguyên như trước) ================= -->
+    <!-- ================= PHẦN 2 ================= -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">Phần 2: Những yếu tố ảnh hưởng</h2>
+
+      <div class="mb-6">
+        <label>7. Thuận lợi</label>
+        <div class="flex gap-2">
+          <input id="pos-input" class="flex-1 border rounded px-3 py-2">
+          <button id="add-pos" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
+        </div>
+        <div id="positives" class="mt-2 flex flex-wrap"></div>
+      </div>
+
+      <div class="mb-6">
+        <label>8. Khó khăn</label>
+        <div class="flex gap-2">
+          <input id="neg-input" class="flex-1 border rounded px-3 py-2">
+          <button id="add-neg" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
+        </div>
+        <div id="negatives" class="mt-2 flex flex-wrap"></div>
+      </div>
+
+      <div class="mb-6">
+        <label>9. Khó khăn không thể khắc phục</label>
+        <div id="unmit" class="flex flex-wrap"></div>
+      </div>
+
+      <div>
+        <label>10. Phương án thay thế</label>
+        <div class="flex gap-2">
+          <input id="alt-input" class="flex-1 border rounded px-3 py-2">
+          <button id="add-alt" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
+        </div>
+        <div id="alts" class="mt-2 flex flex-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ================= PHẦN 3 ================= -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">Phần 3: Tổng hợp</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
+          <ul id="resp-list" class="space-y-1"></ul>
+          <div class="font-bold mt-2">Tổng: <span id="resp-total">₫0</span></div>
+          <div class="mt-4">
+            <label>Đã chuẩn bị</label>
+            <input id="resp-prepared" data-money class="border rounded px-3 py-2 w-40">
+          </div>
+          <div class="mt-2 font-bold text-red-600">Khoảng thiếu: <span id="resp-gap">₫0</span></div>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
+          <ul id="save-list" class="space-y-1"></ul>
+          <div class="font-bold mt-2">Tổng: <span id="save-total">₫0</span></div>
+          <div class="mt-4">
+            <label>Mong muốn hoàn thành (%)</label>
+            <input id="goal-percent" type="number" class="border rounded px-3 py-2 w-32">
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="no-print flex gap-4">
       <button onclick="window.print()" class="px-6 py-3 bg-red-600 text-white rounded">Xuất PDF</button>
@@ -116,7 +177,7 @@
       });
     }
 
-    // render children
+    // children
     function renderChildren(){
       const box=document.getElementById('children'); box.innerHTML='';
       state.children.forEach((c,i)=>{
@@ -158,36 +219,71 @@
 
     function calc(){
       let resp=0, save=0;
+      const respList=document.getElementById('resp-list'); respList.innerHTML='';
+      const saveList=document.getElementById('save-list'); saveList.innerHTML='';
+
       // gia đình
       if(state.must.includes('Vận hành gia đình')){
         const x=getNum('fam-monthly')*12*getNum('fam-years');
         resp+=x; document.getElementById('fam-total').textContent=money(x);
+        respList.innerHTML+=`<li>Vận hành gia đình: ${money(x)}</li>`;
       }
       // học vấn
       if(state.must.includes('Quỹ học vấn cho con')){
         let total=0; state.children.forEach(c=> total+=(c.cost||0)*(c.years||0));
         resp+=total; save+=total;
         document.getElementById('edu-total').textContent=money(total);
+        respList.innerHTML+=`<li>Quỹ học vấn: ${money(total)}</li>`;
+        saveList.innerHTML+=`<li>Quỹ học vấn: ${money(total)}</li>`;
       }
       // hưu trí
       if(state.must.includes('Quỹ hưu trí')){
         const x=getNum('ret-years')*getNum('ret-month')*12;
         save+=x; document.getElementById('ret-total').textContent=money(x);
+        saveList.innerHTML+=`<li>Quỹ hưu trí: ${money(x)}</li>`;
       }
       // nợ
-      if(state.must.includes('Trả nợ')) resp+=getNum('debt');
+      if(state.must.includes('Trả nợ')){
+        const x=getNum('debt'); resp+=x;
+        respList.innerHTML+=`<li>Trả nợ: ${money(x)}</li>`;
+      }
       // di sản
-      if(state.must.includes('Gia tăng tài sản/ Để lại di sản')) resp+=getNum('legacy');
+      if(state.must.includes('Gia tăng tài sản/ Để lại di sản')){
+        const x=getNum('legacy'); resp+=x;
+        respList.innerHTML+=`<li>Di sản: ${money(x)}</li>`;
+      }
 
-      document.getElementById('resp-total')?.textContent=money(resp);
-      document.getElementById('save-total')?.textContent=money(save);
+      document.getElementById('resp-total').textContent=money(resp);
+      document.getElementById('save-total').textContent=money(save);
       const prepared=getNum('resp-prepared');
-      document.getElementById('resp-gap')?.textContent=money(Math.max(resp-prepared,0));
+      document.getElementById('resp-gap').textContent=money(Math.max(resp-prepared,0));
     }
 
     // init
     document.querySelectorAll('[data-money]').forEach(bindMoney);
-    document.getElementById('add-child').onclick=()=>{ if(state.children.length<6){ state.children.push({}); renderChildren(); } };
+    document.getElementById('add-goal').onclick=()=>{ const v=document.getElementById('goal-input').value.trim(); if(v){ state.goals.push(v); document.getElementById('goal-input').value=''; render(); } };
+    document.getElementById('add-reason').onclick=()=>{ const v=document.getElementById('reason-input').value.trim(); if(v){ state.reasons.push(v); document.getElementById('reason-input').value=''; render(); } };
+    document.getElementById('add-pos').onclick=()=>{ const v=document.getElementById('pos-input').value.trim(); if(v){ state.pos.push(v); document.getElementById('pos-input').value=''; render(); } };
+    document.getElementById('add-neg').onclick=()=>{ const v=document.getElementById('neg-input').value.trim(); if(v){ state.neg.push(v); document.getElementById('neg-input').value=''; render(); } };
+    document.getElementById('add-alt').onclick=()=>{ const v=document.getElementById('alt-input').value.trim(); if(v){ state.alts.push(v); document.getElementById('alt-input').value=''; render(); } };
+    document.getElementById('add-child').onclick=()=>{ if(state.children.length<6){ state.children.push({}); renderChildren(); calc(); } };
+
+    function render(){
+      const must=document.getElementById('must-goals'); must.innerHTML='';
+      state.goals.forEach(g=>{
+        const s=document.createElement('div');
+        s.className='px-3 py-1 border rounded cursor-pointer mr-2 mb-2';
+        if(state.must.includes(g)){ s.classList.add('font-bold','bg-red-50'); }
+        s.textContent=g;
+        s.onclick=()=>{ if(state.must.includes(g)) state.must=state.must.filter(x=>x!==g); else state.must.push(g); render(); };
+        must.appendChild(s);
+      });
+      renderChildren();
+      updateFundsVisibility();
+      calc();
+    }
+
+    render();
   </script>
 </body>
 </html>
