@@ -1,860 +1,270 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Bản đồ tài chính cá nhân</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root{
-      --bg:#f7f7fb;
-      --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --primary:#2563eb;
-      --accent:#10b981;
-      --danger:#ef4444;
-      --shadow:0 10px 25px rgba(0,0,0,.06);
-      --radius:16px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--ink);
-      background:linear-gradient(180deg,#eef2ff 0%, #f8fafc 100%);
-    }
-    header{
-      position:sticky; top:0; z-index:999;
-      backdrop-filter:saturate(1.1) blur(8px);
-      background:rgba(255,255,255,.7);
-      border-bottom:1px solid #e5e7eb;
-    }
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    h1{
-      margin:8px 0 0 0;
-      font-size:28px; letter-spacing:.3px;
-    }
-    .sub{color:var(--muted); font-size:14px; margin-top:4px}
-    .grid{
-      display:grid; gap:18px;
-      grid-template-columns: 1.1fr 1fr;
-    }
-    .card{
-      background:var(--card);
-      border:1px solid #e5e7eb;
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-    .card .hd{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 16px; border-bottom:1px solid #eef2f7;
-    }
-    .card .hd h2{margin:0; font-size:18px}
-    .card .bd{padding:16px}
-    .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-    .row-3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px}
-    label{font-size:13px; color:var(--muted); display:block; margin-bottom:6px}
-    input[type="text"], input[type="number"], input[type="date"], input[type="url"], select, textarea{
-      width:100%; padding:10px 12px; font-size:14px;
-      border:1px solid #d1d5db; border-radius:10px; outline:none;
-      background:#fff;
-    }
-    textarea{min-height:86px; resize:vertical}
-    .hint{font-size:12px; color:var(--muted)}
-    .btn{
-      appearance:none; border:0; border-radius:12px; padding:10px 14px;
-      background:var(--primary); color:#fff; cursor:pointer; font-weight:600;
-      box-shadow:0 6px 14px rgba(37,99,235,.2);
-    }
-    .btn.secondary{background:#111827; box-shadow:0 6px 14px rgba(17,24,39,.15)}
-    .btn.ghost{background:transparent; color:var(--primary); border:1px solid #c7d2fe; box-shadow:none}
-    .btn.danger{background:var(--danger)}
-    .actions{display:flex; gap:10px; flex-wrap:wrap}
-    .chip-list{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
-    .chip{
-      background:#eef2ff; color:#374151; border:1px solid #c7d2fe; padding:6px 10px;
-      border-radius:999px; font-size:13px; display:inline-flex; align-items:center; gap:8px
-    }
-    .chip button{border:0; background:transparent; color:#6b7280; cursor:pointer; font-size:16px; line-height:1}
-    .muted{color:var(--muted)}
-    .divider{height:1px; background:#eef2f7; margin:12px 0}
-    .small{font-size:12px}
-    .pill{display:inline-block; padding:3px 10px; border-radius:999px; background:#f1f5f9; font-size:12px}
-    /* Drag list */
-    .dnd{display:flex; gap:8px; flex-direction:column}
-    .dnd .item{
-      padding:10px 12px; border:1px dashed #cbd5e1; border-radius:10px; background:#fff;
-      display:flex; align-items:center; justify-content:space-between; cursor:grab;
-    }
-    .dnd .item.dragging{opacity:.6}
-    .handle{cursor:grab; font-size:18px; color:#64748b}
-    /* Two-column summary */
-    .summary{
-      display:grid; gap:16px; grid-template-columns: 1fr 1fr;
-    }
-    table{width:100%; border-collapse:separate; border-spacing:0; font-size:14px}
-    th,td{padding:10px 12px; border-bottom:1px solid #e5e7eb}
-    thead th{background:#f8fafc; text-align:left; font-weight:700}
-    tfoot td{font-weight:700}
-    .right{text-align:right}
-    .tag{background:#dbf4ff; color:#0c4a6e; padding:2px 8px; border-radius:10px; font-size:12px}
-    .kpi{display:flex; gap:16px; flex-wrap:wrap}
-    .kpi .k{
-      background:linear-gradient(180deg,#ffffff 0%, #f8fafc 100%);
-      border:1px solid #e5e7eb; border-radius:14px; padding:14px 16px; box-shadow:var(--shadow);
-      flex:1; min-width:220px
-    }
-    .k .v{font-size:22px; font-weight:800}
-    .k .t{font-size:12px; color:var(--muted)}
-    .sticky-actions{
-      position:sticky; bottom:0; background:rgba(255,255,255,.85); backdrop-filter:blur(8px);
-      border-top:1px solid #e5e7eb; padding:10px; display:flex; gap:10px; justify-content:flex-end
-    }
-    .note{font-size:12px; color:#475569}
-    details summary{cursor:pointer; color:#0f172a; font-weight:600}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-    /* Print (A4) */
-    @media print{
-      header, .sticky-actions, .no-print{display:none !important}
-      body{background:white}
-      .wrap{padding:0; max-width:800px}
-      .card{box-shadow:none; border:0}
-      .print-page{page-break-after:always}
-      .grid{grid-template-columns: 1fr}
-      .summary{grid-template-columns:1fr 1fr}
-    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; }
+    .chip { @apply inline-flex items-center bg-gray-100 border border-gray-300 rounded-full px-3 py-1 mr-2 mb-2; }
+    .chip button { @apply ml-2 text-red-600; }
+    .section-title { @apply text-xl font-bold text-red-600 mb-4; }
+    @media print { .no-print { display: none !important; } }
   </style>
 </head>
-<body>
-  <header>
-    <div class="wrap">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px">
-        <div>
-          <h1>🗺️ Bản đồ tài chính cá nhân</h1>
-          <div class="sub">Thu thập thông tin & tính nhanh các quỹ mục tiêu. Có thể in ra PDF đẹp.</div>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-red-600 mb-8">Bản đồ tài chính cá nhân</h1>
+
+    <!-- Phần 1 -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">Phần 1: Làm rõ mục tiêu tài chính</h2>
+
+      <!-- 1 -->
+      <div class="mb-6">
+        <label class="font-medium block mb-2">1. Mục tiêu/Kế hoạch dài hạn</label>
+        <div class="flex gap-2">
+          <input id="goal-input" list="goal-suggest" class="flex-1 border rounded px-3 py-2" placeholder="Nhập mục tiêu...">
+          <button id="add-goal" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
         </div>
-        <div class="actions no-print">
-          <button class="btn ghost" id="btn-preview" type="button">Xem bản in</button>
-          <button class="btn" id="btn-print" type="button">Xuất PDF</button>
+        <datalist id="goal-suggest">
+          <option value="Vận hành gia đình">
+          <option value="Quỹ học vấn cho con">
+          <option value="Quỹ hưu trí">
+          <option value="Trả nợ">
+          <option value="Gia tăng tài sản/ Để lại di sản">
+          <option value="Mở doanh nghiệp riêng">
+        </datalist>
+      </div>
+
+      <!-- 2 -->
+      <div class="mb-6">
+        <label class="font-medium block mb-2">2. Mục tiêu bắt buộc (chọn nhiều)</label>
+        <div id="must-goals" class="flex flex-wrap"></div>
+      </div>
+
+      <!-- 3 -->
+      <div class="mb-6">
+        <label class="font-medium block mb-2">3. Lý do</label>
+        <div class="flex gap-2">
+          <input id="reason-input" class="flex-1 border rounded px-3 py-2" placeholder="Nhập lý do...">
+          <button id="add-reason" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
+        </div>
+        <div id="reasons" class="mt-2 flex flex-wrap"></div>
+      </div>
+
+      <!-- 4: Quỹ cần thiết -->
+      <div id="funds"></div>
+    </section>
+
+    <!-- 5 + 6 -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">5–6. Đồng hành & Thời hạn</h2>
+      <div class="mb-4">
+        <label class="block mb-2">Có ai cùng thực hiện không?</label>
+        <label><input type="radio" name="partner" value="no" checked> Không</label>
+        <label class="ml-4"><input type="radio" name="partner" value="yes"> Có</label>
+      </div>
+      <div id="partner-extra" class="hidden mb-4">
+        <label class="block mb-2">% đóng góp</label>
+        <input id="partner-perc" type="number" class="border rounded px-3 py-2 w-32">
+      </div>
+      <div>
+        <label class="block mb-2">Hoàn thành trong bao lâu (năm)</label>
+        <input id="years-all" type="number" class="border rounded px-3 py-2 w-32">
+      </div>
+    </section>
+
+    <!-- Phần 2 -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">Phần 2: Những yếu tố ảnh hưởng</h2>
+
+      <div class="mb-6">
+        <label class="block mb-2">7. Thuận lợi</label>
+        <div class="flex gap-2">
+          <input id="pos-input" class="flex-1 border rounded px-3 py-2" placeholder="Nhập yếu tố thuận lợi...">
+          <button id="add-pos" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
+        </div>
+        <div id="positives" class="mt-2 flex flex-wrap"></div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2">8. Khó khăn</label>
+        <div class="flex gap-2">
+          <input id="neg-input" class="flex-1 border rounded px-3 py-2" placeholder="Nhập yếu tố khó khăn...">
+          <button id="add-neg" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
+        </div>
+        <div id="negatives" class="mt-2 flex flex-wrap"></div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2">9. Khó khăn không thể khắc phục</label>
+        <div id="unmit" class="flex flex-wrap"></div>
+      </div>
+
+      <div>
+        <label class="block mb-2">10. Phương án thay thế</label>
+        <div class="flex gap-2">
+          <input id="alt-input" class="flex-1 border rounded px-3 py-2" placeholder="Nhập phương án...">
+          <button id="add-alt" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
+        </div>
+        <div id="alts" class="mt-2 flex flex-wrap"></div>
+      </div>
+    </section>
+
+    <!-- Phần 3 -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">Phần 3: Tổng hợp</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
+          <ul id="resp-list" class="space-y-1"></ul>
+          <div class="font-bold mt-2">Tổng: <span id="resp-total">₫0</span></div>
+          <div class="mt-4">
+            <label class="block mb-2">Đã chuẩn bị</label>
+            <input id="resp-prepared" data-money class="border rounded px-3 py-2 w-40">
+          </div>
+          <div class="mt-2 font-bold text-red-600">Khoảng thiếu: <span id="resp-gap">₫0</span></div>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
+          <ul id="save-list" class="space-y-1"></ul>
+          <div class="font-bold mt-2">Tổng: <span id="save-total">₫0</span></div>
+          <div class="mt-4">
+            <label class="block mb-2">Mong muốn hoàn thành (%)</label>
+            <input id="goal-percent" type="number" class="border rounded px-3 py-2 w-32">
+          </div>
         </div>
       </div>
+    </section>
+
+    <div class="no-print flex gap-4">
+      <button onclick="window.print()" class="px-6 py-3 bg-red-600 text-white rounded">Xuất PDF</button>
     </div>
-  </header>
-
-  <main class="wrap" id="app">
-    <div class="grid">
-      <!-- LEFT: FORM -->
-      <section class="card">
-        <div class="hd"><h2>Thông tin chung</h2><span class="pill">Phần đầu</span></div>
-        <div class="bd">
-          <div class="row">
-            <div>
-              <label>Họ và tên</label>
-              <input id="fullname" type="text" placeholder="Nguyễn Văn A" />
-            </div>
-            <div>
-              <label>Ngày sinh</label>
-              <input id="dob" type="date" />
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label>Nghề nghiệp</label>
-              <input id="job" type="text" placeholder="Chuyên viên tài chính..." />
-            </div>
-            <div>
-              <label>Người phụ thuộc trực tiếp</label>
-              <input id="dep-direct" type="text" placeholder="Vợ/chồng, con nhỏ..." />
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label>Người phụ thuộc gián tiếp</label>
-              <input id="dep-indirect" type="text" placeholder="Bố mẹ, thân nhân..." />
-            </div>
-            <div>
-              <label>Video 1: Chiếc thuyền ra khơi (URL)</label>
-              <input id="vid-boat" type="url" placeholder="https://..." />
-              <div class="hint">Có thể chèn video sau. Tạm thời nhập URL để lưu lại.</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="hd"><h2>Video gặp bão</h2><span class="pill">Phần 8</span></div>
-        <div class="bd">
-          <label>Video 2: Đi biển gặp bão (URL)</label>
-          <input id="vid-storm" type="url" placeholder="https://..." />
-          <div class="hint">Nhập URL video minh hoạ rủi ro khi không có kế hoạch.</div>
-        </div>
-      </section>
-
-      <!-- LEFT CONTINUE -->
-      <section class="card">
-        <div class="hd"><h2>Mục tiêu/Kế hoạch</h2><span class="pill">Phần 2 & 3</span></div>
-        <div class="bd">
-          <div>
-            <label>Thêm mục tiêu (gợi ý phía dưới)</label>
-            <div class="row">
-              <div>
-                <input id="goal-input" list="goal-suggest" placeholder="Ví dụ: Vận hành gia đình" />
-                <datalist id="goal-suggest">
-                  <option value="Vận hành gia đình"></option>
-                  <option value="Quỹ học vấn cho con"></option>
-                  <option value="Quỹ hưu trí"></option>
-                  <option value="Trả nợ"></option>
-                  <option value="Gia tăng tài sản/ Để lại di sản"></option>
-                  <option value="Mở doanh nghiệp riêng"></option>
-                </datalist>
-              </div>
-              <div class="actions">
-                <button class="btn" id="add-goal" type="button">Thêm mục tiêu</button>
-              </div>
-            </div>
-            <div class="chip-list" id="goals"></div>
-            <div class="divider"></div>
-          </div>
-
-          <div>
-            <label>Những mục tiêu bắt buộc phải làm bằng mọi giá (chọn nhiều)</label>
-            <select id="must-goals" multiple size="6" style="width:100%"></select>
-            <div class="hint small">Giữ Ctrl/Cmd để chọn nhiều.</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="hd"><h2>Lý do bắt buộc</h2><span class="pill">Phần 4</span></div>
-        <div class="bd">
-          <div class="row">
-            <div>
-              <label>Thêm lý do</label>
-              <input id="reason-input" type="text" placeholder="Ví dụ: Bảo vệ con cái trước rủi ro" />
-            </div>
-            <div class="actions">
-              <button class="btn" id="add-reason" type="button">Thêm lý do</button>
-            </div>
-          </div>
-          <div class="chip-list" id="reasons"></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="hd"><h2>Ưu tiên mục tiêu</h2><span class="pill">Phần 5</span></div>
-        <div class="bd">
-          <div class="hint">Kéo thả để sắp xếp từ quan trọng nhất (trên) tới ít quan trọng nhất (dưới). Danh sách lấy từ mục 3.</div>
-          <div class="dnd" id="priority-list"></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="hd"><h2>Thành viên cùng thực hiện & Thời hạn</h2><span class="pill">Phần 6 & 7</span></div>
-        <div class="bd">
-          <div class="row">
-            <div>
-              <label>Có ai cùng thực hiện mục tiêu không?</label>
-              <div style="display:flex; gap:10px; align-items:center">
-                <label><input type="radio" name="partner" value="no" checked/> Không</label>
-                <label><input type="radio" name="partner" value="yes"/> Có</label>
-              </div>
-            </div>
-            <div id="partner-perc-wrap" style="display:none">
-              <label>Anh/chị đóng góp % công sức</label>
-              <input id="partner-perc" type="number" min="0" max="100" step="1" placeholder="%" />
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label>Dự định hoàn thành tất cả mục tiêu trong bao lâu (năm)?</label>
-              <input id="years-all" type="number" min="0" step="1" placeholder="Số năm" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="hd"><h2>Rào cản & Phương án</h2><span class="pill">Phần 9–11</span></div>
-        <div class="bd">
-          <details open>
-            <summary>9) Yếu tố khiến không đạt mục tiêu</summary>
-            <div class="row" style="margin-top:8px">
-              <div>
-                <label>Thêm yếu tố</label>
-                <input id="risk-input" type="text" placeholder="Ví dụ: Ốm đau, thất nghiệp..." />
-              </div>
-              <div class="actions">
-                <button class="btn" id="add-risk" type="button">Thêm yếu tố</button>
-              </div>
-            </div>
-            <div class="chip-list" id="risks"></div>
-          </details>
-          <div class="divider"></div>
-          <details open>
-            <summary>10) Yếu tố không thể lường trước & không thể khắc phục (chọn nhiều)</summary>
-            <select id="unmit-select" multiple size="6" style="width:100%"></select>
-            <div class="hint small">Chọn các yếu tố từ danh sách trên.</div>
-          </details>
-          <div class="divider"></div>
-          <details open>
-            <summary>11) Phương án thay thế</summary>
-            <div class="row" style="margin-top:8px">
-              <div>
-                <label>Thêm phương án</label>
-                <input id="alt-input" type="text" placeholder="Ví dụ: Dự phòng 12 tháng chi tiêu..." />
-              </div>
-              <div class="actions">
-                <button class="btn" id="add-alt" type="button">Thêm phương án</button>
-              </div>
-            </div>
-            <div class="chip-list" id="alts"></div>
-          </details>
-        </div>
-      </section>
-
-      <!-- RIGHT: FUNDS -->
-      <section class="card">
-        <div class="hd"><h2>12) Các quỹ cần thiết</h2><span class="pill">Tự động hiển thị theo ưu tiên</span></div>
-        <div class="bd" id="funds">
-          <details open id="fund-family" data-match="Vận hành gia đình">
-            <summary>Vận hành gia đình</summary>
-            <div class="row">
-              <div>
-                <label>Chi phí thiết yếu / tháng (₫)</label>
-                <input id="fam-monthly" type="text" inputmode="numeric" data-money min="0" step="1000" placeholder="XX" />
-              </div>
-              <div>
-                <label>Trang trải tối thiểu trong (năm)</label>
-                <input id="fam-years" type="number" min="0" step="1" placeholder="YY" />
-              </div>
-            </div>
-            <div class="kpi" style="margin-top:10px">
-              <div class="k"><div class="t">Quỹ vận hành gia đình cần có</div><div class="v mono" id="fam-total">₫0</div></div>
-            </div>
-          </details>
-
-          <details id="fund-edu" data-match="Quỹ học vấn cho con">
-            <summary>Quỹ học vấn đại học cho con</summary>
-            <div id="children"></div>
-            <div class="actions" style="margin-top:8px">
-              <button class="btn" id="add-child" type="button">Thêm con</button>
-              <span class="note">Tối đa 6 con.</span>
-            </div>
-            <div class="kpi" style="margin-top:10px">
-              <div class="k"><div class="t">Tổng quỹ học vấn</div><div class="v mono" id="edu-total">₫0</div></div>
-            </div>
-          </details>
-
-          <details id="fund-retire" data-match="Quỹ hưu trí">
-            <summary>Quỹ hưu trí</summary>
-            <div class="row-3">
-              <div>
-                <label>Tuổi nghỉ hưu</label>
-                <input id="ret-age" type="number" min="0" step="1" />
-              </div>
-              <div>
-                <label>Sống an nhàn trong (năm) – xx</label>
-                <input id="ret-years" type="number" min="0" step="1" />
-              </div>
-              <div>
-                <label>Chi tiêu cá nhân / tháng – yy (₫)</label>
-                <input id="ret-month" type="text" inputmode="numeric" data-money min="0" step="1000" />
-              </div>
-            </div>
-            <div class="kpi" style="margin-top:10px">
-              <div class="k"><div class="t">Tổng quỹ hưu trí = xx × yy × 12</div><div class="v mono" id="ret-total">₫0</div></div>
-            </div>
-          </details>
-
-          <details id="fund-debt" data-match="Trả nợ">
-            <summary>Thanh khoản các khoản nợ</summary>
-            <div class="row">
-              <div>
-                <label>Khoản nợ hiện tại (₫)</label>
-                <input id="debt-amt" type="text" inputmode="numeric" data-money min="0" step="1000" />
-              </div>
-              <div>
-                <label>Thời hạn cần trả (năm)</label>
-                <input id="debt-years" type="number" min="0" step="1" />
-              </div>
-            </div>
-          </details>
-
-          <details id="fund-legacy" data-match="Gia tăng tài sản/ Để lại di sản">
-            <summary>Gia tăng tài sản / Để lại di sản</summary>
-            <div class="row">
-              <div>
-                <label>Giá trị tài sản kỳ vọng (₫)</label>
-                <input id="legacy-amt" type="text" inputmode="numeric" data-money min="0" step="1000" />
-              </div>
-              <div>
-                <label>Thời gian dự kiến (năm)</label>
-                <input id="legacy-years" type="number" min="0" step="1" />
-              </div>
-            </div>
-          </details>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="hd"><h2>Tổng hợp quỹ trách nhiệm</h2><span class="pill">Nút tổng kết</span></div>
-        <div class="bd">
-          <div class="actions" style="margin-bottom:10px">
-            <button class="btn secondary" id="btn-calc" type="button">Cập nhật tổng hợp</button>
-          </div>
-          <div class="summary">
-            <div>
-              <h3>Số tiền trách nhiệm – <span class="tag">cần luôn sẵn sàng</span></h3>
-              <table>
-                <thead><tr><th>Mục</th><th class="right">Số tiền (₫)</th></tr></thead>
-                <tbody id="resp-body"></tbody>
-                <tfoot><tr><td>Tổng</td><td class="right mono" id="resp-total">₫0</td></tr></tfoot>
-              </table>
-              <div class="row" style="margin-top:10px">
-                <div>
-                  <label>Số tiền trách nhiệm đã chuẩn bị (₫)</label>
-                  <input id="resp-prepared" type="text" inputmode="numeric" data-money min="0" step="1000" />
-                </div>
-                <div class="k kpi"><div class="t">Khoảng thiếu (ước tính)</div><div class="v mono" id="resp-gap">₫0</div></div>
-              </div>
-            </div>
-            <div>
-              <h3>Số tiền phải tích luỹ – <span class="tag">dùng trong tương lai</span></h3>
-              <table>
-                <thead><tr><th>Mục</th><th class="right">Số tiền (₫)</th></tr></thead>
-                <tbody id="save-body"></tbody>
-                <tfoot><tr><td>Tổng</td><td class="right mono" id="save-total">₫0</td></tr></tfoot>
-              </table>
-              <div class="row" style="margin-top:10px">
-                <div>
-                  <label>Mong muốn hoàn thành (%)</label>
-                  <input id="goal-percent" type="number" min="0" max="100" step="1" placeholder="%" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div class="sticky-actions no-print">
-      <span class="muted">💡 Tip: Nhấn <b>Xem bản in</b> để xem PDF trước khi xuất.</span>
-      <span style="flex:1"></span>
-      <button class="btn ghost" id="btn-reset" type="button">Xoá dữ liệu</button>
-      <button class="btn" id="btn-print-2" type="button">Xuất PDF</button>
-    </div>
-  </main>
-
-  <!-- PRINT PREVIEW CONTAINER (hidden until needed) -->
-  <section id="print-view" class="wrap" style="display:none">
-    <div class="card print-page">
-      <div class="hd"><h2>Tóm tắt khách hàng</h2><span class="pill">Bản in</span></div>
-      <div class="bd" id="print-client"></div>
-    </div>
-    <div class="card print-page">
-      <div class="hd"><h2>Mục tiêu & Ưu tiên</h2></div>
-      <div class="bd" id="print-goals"></div>
-    </div>
-    <div class="card print-page">
-      <div class="hd"><h2>Các quỹ & Tổng hợp</h2></div>
-      <div class="bd" id="print-funds"></div>
-    </div>
-  </section>
+  </div>
 
   <script>
-  // --------- Utilities ---------
-  const fmt = new Intl.NumberFormat('vi-VN');
-  const el = id => document.getElementById(id);
-  const money = v => '₫' + fmt.format(Number(v||0));
-
-  const digitsOnly = s => (s||'').toString().replace(/\D/g,'');
-  const getNum = id => Number(digitsOnly(el(id)?.value)||0);
-  function bindMoneyMask(input){
-    if(!input) return;
-    const format = () => { const raw = digitsOnly(input.value); input.value = raw ? fmt.format(Number(raw)) : ''; };
-    input.addEventListener('input', ()=>{ format(); try{ calcAll(); }catch(e){} });
-    input.addEventListener('blur', format);
-    format();
-  }
-  function bindAllMoneyMasks(scope=document){ scope.querySelectorAll('input[data-money]').forEach(bindMoneyMask); }
-
-  const state = {
-    goals: [],        // list of all goals (strings)
-    mustGoals: [],    // selected from goals (strings)
-    reasons: [],
-    risks: [],
-    unmitigable: [],
-    alts: [],
-    children: []      // {name, school, cost, years}
-  };
-
-  function renderChips(arr, mountId){
-    const mount = el(mountId);
-    mount.innerHTML = '';
-    arr.forEach((txt, i)=>{
-      const chip = document.createElement('span');
-      chip.className = 'chip';
-      chip.innerHTML = '<span>'+txt+'</span><button title="Xóa" data-i="'+i+'">×</button>';
-      chip.querySelector('button').onclick = (e)=>{ e.preventDefault();  arr.splice(i,1); render(); };
-      mount.appendChild(chip);
-    });
-  }
-
-  function uniquePush(arr, item){
-    const s = item.trim();
-    if(!s) return;
-    if(!arr.includes(s)) arr.push(s);
-  }
-
-  function syncMustGoals(){
-    const sel = el('must-goals');
-    sel.innerHTML = '';
-    state.goals.forEach(g=>{
-      const opt = document.createElement('option');
-      opt.value = g; opt.textContent = g;
-      sel.appendChild(opt);
-    });
-    // re-apply selections
-    Array.from(sel.options).forEach(op=> op.selected = state.mustGoals.includes(op.value));
-  }
-
-  function syncUnmitigable(){
-    const sel = el('unmit-select');
-    sel.innerHTML = '';
-    state.risks.forEach(r=>{
-      const opt = document.createElement('option');
-      opt.value = r; opt.textContent = r;
-      sel.appendChild(opt);
-    });
-    Array.from(sel.options).forEach(op=> op.selected = state.unmitigable.includes(op.value));
-  }
-
-  function buildPriorityList(){
-    const mount = el('priority-list');
-    mount.innerHTML='';
-    // ensure items == mustGoals (in order of existing priority if possible)
-    let ordered = state.mustGoals.filter(g=>state._priority?.includes(g));
-    const rest = state.mustGoals.filter(g=>!ordered.includes(g));
-    ordered = [...(state._priority||[]).filter(x=>state.mustGoals.includes(x)), ...rest];
-    state._priority = ordered;
-
-    ordered.forEach((g)=>{
-      const it = document.createElement('div');
-      it.className = 'item';
-      it.draggable = true;
-      it.innerHTML = '<span class="mono">☰</span> <span>'+g+'</span>';
-      it.querySelector('span').className='handle';
-
-      it.addEventListener('dragstart', e=>{
-        it.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', g);
+    const fmt = new Intl.NumberFormat('vi-VN');
+    const money = v => '₫' + fmt.format(+v||0);
+    const digits = s => (s||'').replace(/\D/g,'');
+    const bindMoney = inp => {
+      inp.addEventListener('input', e=>{
+        let val = digits(inp.value);
+        inp.value = val ? fmt.format(+val) : '';
+        calc();
       });
-      it.addEventListener('dragend', ()=> it.classList.remove('dragging'));
+    };
 
-      mount.appendChild(it);
-    });
+    // state
+    const state = { goals:[], must:[], reasons:[], pos:[], neg:[], unmit:[], alts:[] };
 
-    mount.addEventListener('dragover', (e)=>{
-      e.preventDefault();
-      const dragging = mount.querySelector('.dragging');
-      const after = getDragAfterElement(mount, e.clientY);
-      if(after == null) mount.appendChild(dragging);
-      else mount.insertBefore(dragging, after);
-    });
+    // add goal
+    document.getElementById('add-goal').onclick = ()=>{
+      const v = document.getElementById('goal-input').value.trim();
+      if(v && !state.goals.includes(v)){ state.goals.push(v); }
+      document.getElementById('goal-input').value='';
+      render();
+    };
+    // add reason
+    document.getElementById('add-reason').onclick = ()=>{
+      const v=document.getElementById('reason-input').value.trim();
+      if(v){ state.reasons.push(v); }
+      document.getElementById('reason-input').value='';
+      render();
+    };
+    // positives
+    document.getElementById('add-pos').onclick = ()=>{
+      const v=document.getElementById('pos-input').value.trim();
+      if(v){ state.pos.push(v); }
+      document.getElementById('pos-input').value='';
+      render();
+    };
+    // negatives
+    document.getElementById('add-neg').onclick = ()=>{
+      const v=document.getElementById('neg-input').value.trim();
+      if(v){ state.neg.push(v); }
+      document.getElementById('neg-input').value='';
+      render();
+    };
+    // alternatives
+    document.getElementById('add-alt').onclick = ()=>{
+      const v=document.getElementById('alt-input').value.trim();
+      if(v){ state.alts.push(v); }
+      document.getElementById('alt-input').value='';
+      render();
+    };
 
-    mount.addEventListener('drop', ()=>{
-      const items = Array.from(mount.querySelectorAll('.item')).map(x=>x.textContent.trim());
-      // textContent includes handle icon; clean it:
-      state._priority = items.map(t=> t.replace(/^☰\s*/,''));
-      updateFundsVisibility();
-    });
-
-    function getDragAfterElement(container, y){
-      const els = [...container.querySelectorAll('.item:not(.dragging)')];
-      return els.reduce((closest, child)=>{
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if(offset < 0 && offset > closest.offset) return {offset, element: child};
-        else return closest;
-      }, {offset: Number.NEGATIVE_INFINITY}).element;
+    // render lists
+    function renderChips(arr,id){
+      const box=document.getElementById(id); box.innerHTML='';
+      arr.forEach((txt,i)=>{
+        const c=document.createElement('span');
+        c.className='chip'; c.innerHTML=txt+' <button>&times;</button>';
+        c.querySelector('button').onclick=()=>{arr.splice(i,1);render();};
+        box.appendChild(c);
+      });
     }
-  }
 
-  function render(){
-    bindAllMoneyMasks(document);
-
-    renderChips(state.goals, 'goals');
-    syncMustGoals();
-    renderChips(state.reasons, 'reasons');
-    renderChips(state.risks, 'risks');
-    syncUnmitigable();
-    renderChips(state.alts, 'alts');
-    buildPriorityList();
-    updateFundsVisibility();
-    calcAll();
-  }
-
-  // --------- Events for adding items ---------
-  el('add-goal').onclick = (e)=>{ e.preventDefault();  uniquePush(state.goals, el('goal-input').value); el('goal-input').value=''; render(); };
-  el('add-reason').onclick = (e)=>{ e.preventDefault();  uniquePush(state.reasons, el('reason-input').value); el('reason-input').value=''; render(); };
-  el('add-risk').onclick = (e)=>{ e.preventDefault();  uniquePush(state.risks, el('risk-input').value); el('risk-input').value=''; render(); };
-  el('add-alt').onclick = (e)=>{ e.preventDefault();  uniquePush(state.alts, el('alt-input').value); el('alt-input').value=''; render(); };
-
-  el('must-goals').addEventListener('change', ()=>{
-    const sel = el('must-goals');
-    state.mustGoals = Array.from(sel.selectedOptions).map(o=>o.value);
-    render();
-  });
-
-  el('unmit-select').addEventListener('change', ()=>{
-    const sel = el('unmit-select');
-    state.unmitigable = Array.from(sel.selectedOptions).map(o=>o.value);
-  });
-
-  // partner % visibility
-  Array.from(document.querySelectorAll('input[name="partner"]')).forEach(r=>{
-    r.addEventListener('change', ()=>{
-      el('partner-perc-wrap').style.display = (r.value==='yes' && r.checked) ? 'block' : 'none';
-    });
-  });
-
-  // --------- Funds calc & visibility ---------
-  function goalMatchName(txt){
-    return (txt||'').trim().toLowerCase();
-  }
-  const NAME_FAMILY = goalMatchName('Vận hành gia đình');
-  const NAME_EDU = goalMatchName('Quỹ học vấn cho con');
-  const NAME_RET = goalMatchName('Quỹ hưu trí');
-  const NAME_DEBT = goalMatchName('Trả nợ');
-  const NAME_LEG = goalMatchName('Gia tăng tài sản/ Để lại di sản');
-
-  function updateFundsVisibility(){
-    // show details if the prioritized goals include the matched ones
-    const pr = (state._priority||[]).map(goalMatchName);
-    const map = {
-      'fund-family': pr.includes(NAME_FAMILY),
-      'fund-edu': pr.includes(NAME_EDU),
-      'fund-retire': pr.includes(NAME_RET),
-      'fund-debt': pr.includes(NAME_DEBT),
-      'fund-legacy': pr.includes(NAME_LEG),
-    };
-    Object.entries(map).forEach(([id, show])=>{
-      const d = el(id);
-      if(!d) return;
-      d.style.display = show ? 'block' : 'none';
-    });
-  }
-
-  // children component
-  const childMax = 6;
-  function childRow(idx, data){
-    const wrap = document.createElement('div');
-    wrap.className='card';
-    wrap.style.marginTop='10px';
-    wrap.innerHTML = `
-      <div class="bd">
-        <div class="row-3">
-          <div><label>Con thứ #${idx+1} - Họ tên</label><input data-k="name" type="text" value="${data?.name||''}" placeholder="Tên con"/></div>
-          <div><label>Trường dự định</label><input data-k="school" type="text" value="${data?.school||''}" placeholder="Tên trường"/></div>
-          <div><label>Chi phí 1 năm (₫)</label><input data-k="cost" type="text" inputmode="numeric" data-money min="0" step="1000" value="${data?.cost||''}"/></div>
-        </div>
-        <div class="row" style="margin-top:8px">
-          <div><label>Số năm học đại học</label><input data-k="years" type="number" min="0" step="1" value="${data?.years||''}"/></div>
-          <div class="k kpi"><div class="t">Tổng học phí (#${idx+1})</div><div class="v mono child-total">₫0</div></div>
-          <div class="actions"><button class="btn danger">Xoá</button></div>
-        </div>
-      </div>`;
-    const inputs = wrap.querySelectorAll('input[data-k]');
-    inputs.forEach(inp=>{
-      inp.addEventListener('input', ()=>{
-        const k = inp.getAttribute('data-k');
-        state.children[idx][k] = inp.type==='number' ? Number(inp.value||0) : inp.value;
-        calcEdu();
+    function render(){
+      // must goals
+      const must=document.getElementById('must-goals'); must.innerHTML='';
+      state.goals.forEach(g=>{
+        const s=document.createElement('div');
+        s.className='px-3 py-1 border rounded cursor-pointer mr-2 mb-2';
+        if(state.must.includes(g)){ s.classList.add('font-bold','bg-red-50'); }
+        s.textContent=g;
+        s.onclick=()=>{ if(state.must.includes(g)) state.must=state.must.filter(x=>x!==g); else state.must.push(g); render(); };
+        must.appendChild(s);
       });
-    });
-    wrap.querySelector('.btn.danger').onclick = (e)=>{ e.preventDefault(); 
-      state.children.splice(idx,1);
-      renderChildren();
-    };
-    return wrap;
-  }
-  function renderChildren(){
-    const mount = el('children');
-    mount.innerHTML='';
-    state.children.forEach((c,i)=> mount.appendChild(childRow(i,c)));
-    calcEdu();
-  }
+      // chips
+      renderChips(state.reasons,'reasons');
+      renderChips(state.pos,'positives');
+      renderChips(state.neg,'negatives');
+      renderChips(state.unmit,'unmit');
+      renderChips(state.alts,'alts');
+      calc();
+    }
 
-  el('add-child').onclick = (e)=>{ e.preventDefault(); 
-    if(state.children.length >= childMax){ alert('Tối đa 6 con.'); return; }
-    state.children.push({name:'', school:'', cost:0, years:0});
-    renderChildren();
-  };
+    // calc quỹ
+    function val(id){ return +digits(document.getElementById(id)?.value)||0; }
+    function calc(){
+      let respSum=0, saveSum=0;
+      const respList=document.getElementById('resp-list'); respList.innerHTML='';
+      const saveList=document.getElementById('save-list'); saveList.innerHTML='';
 
-  function calcFamily(){
-    const monthly = getNum('fam-monthly');
-    const years = Number(el('fam-years').value||0);
-    const total = monthly * 12 * years;
-    el('fam-total').textContent = money(total);
-    return total;
-  }
-
-  function calcEdu(){
-    let sum = 0;
-    state.children.forEach((c, i)=>{
-      const t = Number(c.cost||0) * Number(c.years||0);
-      sum += t;
-      // update UI row total
-      const mount = el('children').children[i];
-      if(mount){
-        const tv = mount.querySelector('.child-total');
-        if(tv) tv.textContent = money(t);
+      // demo: chỉ add các mục chính nếu có trong must
+      if(state.must.includes('Vận hành gia đình')){
+        const x=val('fam')*val('fam-years'); respSum+=x;
+        respList.innerHTML+=`<li>Vận hành gia đình: ${money(x)}</li>`;
       }
-    });
-    el('edu-total').textContent = money(sum);
-    return sum;
-  }
+      if(state.must.includes('Quỹ học vấn cho con')){
+        const x=0; respSum+=x; saveSum+=x;
+        respList.innerHTML+=`<li>Quỹ học vấn: ${money(x)}</li>`;
+        saveList.innerHTML+=`<li>Quỹ học vấn: ${money(x)}</li>`;
+      }
+      if(state.must.includes('Quỹ hưu trí')){
+        const x=0; saveSum+=x; saveList.innerHTML+=`<li>Quỹ hưu trí: ${money(x)}</li>`;
+      }
+      if(state.must.includes('Trả nợ')){
+        const x=val('debt'); respSum+=x;
+        respList.innerHTML+=`<li>Trả nợ: ${money(x)}</li>`;
+      }
+      if(state.must.includes('Gia tăng tài sản/ Để lại di sản')){
+        const x=val('legacy'); respSum+=x;
+        respList.innerHTML+=`<li>Di sản: ${money(x)}</li>`;
+      }
 
-  function calcRetire(){
-    const xx = Number(el('ret-years').value||0);
-    const yy = getNum('ret-month');
-    const total = xx * yy * 12;
-    el('ret-total').textContent = money(total);
-    return total;
-  }
+      document.getElementById('resp-total').textContent=money(respSum);
+      document.getElementById('save-total').textContent=money(saveSum);
+      const prepared=val('resp-prepared');
+      document.getElementById('resp-gap').textContent=money(Math.max(respSum-prepared,0));
+    }
 
-  function calcDebt(){
-    return Number(el('debt-amt').value||0);
-  }
-  function calcLegacy(){
-    return Number(el('legacy-amt').value||0);
-  }
+    // bind money inputs
+    document.querySelectorAll('[data-money]').forEach(bindMoney);
 
-  function calcAll(){
-    const fam = calcFamily();
-    const edu = calcEdu();
-    const ret = calcRetire();
-    const debt = calcDebt();
-    const leg = calcLegacy();
-
-    // Left column (Responsibility): family + education + debt + legacy
-    const respItems = [];
-    if(el('fund-family').style.display!=='none') respItems.push(['Vận hành gia đình', fam]);
-    if(el('fund-edu').style.display!=='none') respItems.push(['Quỹ học vấn cho con', edu]);
-    if(el('fund-debt').style.display!=='none') respItems.push(['Thanh khoản các khoản nợ', debt]);
-    if(el('fund-legacy').style.display!=='none') respItems.push(['Để lại di sản', leg]);
-    const respBody = el('resp-body');
-    respBody.innerHTML = respItems.map(([k,v])=> `<tr><td>${k}</td><td class="right mono">${money(v)}</td></tr>`).join('');
-    const respSum = respItems.reduce((a, [,v])=>a+Number(v||0), 0);
-    el('resp-total').textContent = money(respSum);
-
-    const prepared = getNum('resp-prepared');
-    el('resp-gap').textContent = money(Math.max(respSum - prepared, 0));
-
-    // Right column (Savings): retirement + education
-    const saveItems = [];
-    if(el('fund-retire').style.display!=='none') saveItems.push(['Quỹ hưu trí', ret]);
-    if(el('fund-edu').style.display!=='none') saveItems.push(['Quỹ học vấn cho con', edu]);
-    const saveBody = el('save-body');
-    saveBody.innerHTML = saveItems.map(([k,v])=> `<tr><td>${k}</td><td class="right mono">${money(v)}</td></tr>`).join('');
-    const saveSum = saveItems.reduce((a, [,v])=>a+Number(v||0), 0);
-    el('save-total').textContent = money(saveSum);
-  }
-
-  // recalc on inputs
-  ['fam-monthly','fam-years','ret-years','ret-month','debt-amt','legacy-amt','resp-prepared']
-    .forEach(id=> el(id).addEventListener('input', calcAll));
-
-  // button calc
-  el('btn-calc').onclick = calcAll;
-
-  // --------- Print Preview ---------
-  function buildPrint(){
-    // 1) client
-    const client = `
-      <div class="row">
-        <div><label>Họ và tên</label><div class="mono">${el('fullname').value||''}</div></div>
-        <div><label>Ngày sinh</label><div class="mono">${el('dob').value||''}</div></div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div><label>Nghề nghiệp</label><div class="mono">${el('job').value||''}</div></div>
-        <div><label>Phụ thuộc trực tiếp</label><div class="mono">${el('dep-direct').value||''}</div></div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div><label>Phụ thuộc gián tiếp</label><div class="mono">${el('dep-indirect').value||''}</div></div>
-        <div><label>Video: Chiếc thuyền (URL)</label><div class="mono">${el('vid-boat').value||''}</div></div>
-      </div>
-      <div style="margin-top:8px"><label>Video: Gặp bão (URL)</label><div class="mono">${el('vid-storm').value||''}</div></div>
-    `;
-    el('print-client').innerHTML = client;
-
-    // 2) goals & reasons
-    const goalsHtml = `
-      <div><label>Tất cả mục tiêu</label><div class="mono">${state.goals.join(' · ')||'—'}</div></div>
-      <div style="margin-top:8px"><label>Mục tiêu bắt buộc</label><div class="mono">${state.mustGoals.join(' · ')||'—'}</div></div>
-      <div style="margin-top:8px"><label>Ưu tiên</label><div class="mono">${(state._priority||[]).map((g,i)=> (i+1)+'. '+g).join('<br/>') || '—'}</div></div>
-      <div class="divider"></div>
-      <div><label>Lý do</label><div class="mono">${state.reasons.join(' · ')||'—'}</div></div>
-      <div style="margin-top:8px"><label>Yếu tố cản trở</label><div class="mono">${state.risks.join(' · ')||'—'}</div></div>
-      <div style="margin-top:8px"><label>Không lường trước/khó khắc phục</label><div class="mono">${state.unmitigable.join(' · ')||'—'}</div></div>
-      <div style="margin-top:8px"><label>Phương án thay thế</label><div class="mono">${state.alts.join(' · ')||'—'}</div></div>
-      <div class="divider"></div>
-      <div class="row">
-        <div><label>Có đồng hành</label><div class="mono">${document.querySelector('input[name="partner"]:checked')?.value==='yes'?'Có':'Không'}</div></div>
-        <div><label>% đóng góp</label><div class="mono">${el('partner-perc').value||'—'}</div></div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div><label>Thời gian hoàn thành (năm)</label><div class="mono">${el('years-all').value||'—'}</div></div>
-      </div>
-    `;
-    el('print-goals').innerHTML = goalsHtml;
-
-    // 3) funds & totals
-    calcAll(); // ensure fresh
-    const fundsHtml = `
-      <div class="summary">
-        <div>
-          <h3>Số tiền trách nhiệm</h3>
-          <table>${el('resp-body').parentElement.outerHTML}</table>
-        </div>
-        <div>
-          <h3>Số tiền phải tích luỹ</h3>
-          <table>${el('save-body').parentElement.outerHTML}</table>
-        </div>
-      </div>
-    `;
-    el('print-funds').innerHTML = fundsHtml;
-  }
-
-  el('btn-preview').onclick = (e)=>{ e.preventDefault(); 
-    buildPrint();
-    document.querySelector('main').style.display='none';
-    el('print-view').style.display='block';
-    window.scrollTo(0,0);
-  };
-  function exitPreview(){
-    el('print-view').style.display='none';
-    document.querySelector('main').style.display='block';
-  }
-
-  el('btn-print').onclick = (e)=>{ e.preventDefault();  buildPrint(); window.print(); };
-  el('btn-print-2').onclick = (e)=>{ e.preventDefault();  buildPrint(); window.print(); };
-
-  // reset
-  el('btn-reset').onclick = (e)=>{ e.preventDefault(); 
-    if(!confirm('Xoá toàn bộ dữ liệu đã nhập?')) return;
-    Object.assign(state, {goals:[], mustGoals:[], reasons:[], risks:[], unmitigable:[], alts:[], children:[]});
-    document.querySelectorAll('input').forEach(i=>{
-      if(i.type==='radio'){ if(i.value==='no') i.checked=true; }
-      else i.value='';
-    });
-    renderChildren();
     render();
-  };
-
-  // init
-  render();
   </script>
 </body>
 </html>
