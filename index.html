@@ -229,8 +229,6 @@
             <div id="alts" class="mt-3"></div>
           </details>
         </section>
-
-        
       </div>
 
       <!-- RIGHT 1/3: Totals -->
@@ -295,331 +293,363 @@
   </div>
 
   <script>
-    // ===== Utilities & shared state (khớp với bản quy tắc) =====
-    const fmt = new Intl.NumberFormat('vi-VN');
-    const el = id => document.getElementById(id);
-    const money = v => '₫' + fmt.format(Number(v||0));
+  // ===== Utilities & shared state (khớp với bản quy tắc) =====
+  const fmt = new Intl.NumberFormat('vi-VN');
+  const el = id => document.getElementById(id);
+  const money = v => '₫' + fmt.format(Number(v||0));
 
-    const state = {
-      goals: [], mustGoals: [], reasons: [], risks: [], unmitigable: [], alts: [],
-      children: [],  // {name, school, cost, years}
-      _priority: []  // key giống file gốc
-    };
+  const state = {
+    goals: [], mustGoals: [], reasons: [], risks: [], unmitigable: [], alts: [],
+    children: [],  // {name, school, cost, years}
+    _priority: []  // mục tiêu quan trọng nhất
+  };
 
-    function renderChips(arr, mountId){
-      const mount = el(mountId);
-      mount.innerHTML = '';
-      arr.forEach((txt, i)=>{
-        const chip = document.createElement('span');
-        chip.className = 'chip';
-        chip.innerHTML = '<span>'+txt+'</span><button title="Xóa" data-i="'+i+'">×</button>';
-        chip.querySelector('button').onclick = ()=>{ arr.splice(i,1); render(); };
-        mount.appendChild(chip);
-      });
-    }
-    function uniquePush(arr, item){
-      const s = (item||'').trim();
-      if(!s) return;
-      if(!arr.includes(s)) arr.push(s);
-    }
-    function syncMustGoals(){
-      const sel = el('must-goals');
-      sel.innerHTML = '';
-      state.goals.forEach(g=>{
-        const opt = document.createElement('option');
-        opt.value = g; opt.textContent = g;
-        sel.appendChild(opt);
-      });
-      Array.from(sel.options).forEach(op=> op.selected = state.mustGoals.includes(op.value));
-    }
-    function syncUnmitigable(){
-      const sel = el('unmit-select');
-      sel.innerHTML = '';
-      state.risks.forEach(r=>{
-        const opt = document.createElement('option');
-        opt.value = r; opt.textContent = r;
-        sel.appendChild(opt);
-      });
-      Array.from(sel.options).forEach(op=> op.selected = state.unmitigable.includes(op.value));
-    }
+  // ===== Render chips =====
+  function renderChips(arr, mountId){
+    const mount = el(mountId);
+    mount.innerHTML = '';
+    arr.forEach((txt, i)=>{
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.innerHTML = '<span>'+txt+'</span><button title="Xóa" data-i="'+i+'">×</button>';
+      chip.querySelector('button').onclick = ()=>{ arr.splice(i,1); render(); };
+      mount.appendChild(chip);
+    });
+  }
+  function uniquePush(arr, item){
+    const s = (item||'').trim();
+    if(!s) return;
+    if(!arr.includes(s)) arr.push(s);
+  }
+  function syncMustGoals(){
+    const sel = el('must-goals');
+    sel.innerHTML = '';
+    state.goals.forEach(g=>{
+      const opt = document.createElement('option');
+      opt.value = g; opt.textContent = g;
+      sel.appendChild(opt);
+    });
+    Array.from(sel.options).forEach(op=> op.selected = state.mustGoals.includes(op.value));
+  }
+  function syncUnmitigable(){
+    const sel = el('unmit-select');
+    sel.innerHTML = '';
+    state.risks.forEach(r=>{
+      const opt = document.createElement('option');
+      opt.value = r; opt.textContent = r;
+      sel.appendChild(opt);
+    });
+    Array.from(sel.options).forEach(op=> op.selected = state.unmitigable.includes(op.value));
+    updateUnmitSelectStyles();
+  }
 
-    // ===== Priority (drag & drop) =====
-    function buildPriorityList(){
-      const mount = el('priority-list');
-      mount.innerHTML='';
-      let ordered = state.mustGoals.filter(g=>state._priority?.includes(g));
-      const rest = state.mustGoals.filter(g=>!ordered.includes(g));
-      ordered = [...(state._priority||[]).filter(x=>state.mustGoals.includes(x)), ...rest];
-      state._priority = ordered;
+  // ===== Priority (mục tiêu quan trọng nhất) =====
+  function buildPriorityList(){
+    const mount = el('priority-list');
+    mount.innerHTML = '';
 
-      ordered.forEach((g)=>{
-        const it = document.createElement('div');
-        it.className = 'item';
-        it.draggable = true;
-        it.innerHTML = '<span class="mono">☰</span> <span>'+g+'</span>';
+    if (!Array.isArray(state._priority)) state._priority = [];
 
-        it.addEventListener('dragstart', e=>{
-          it.classList.add('dragging');
-          e.dataTransfer.setData('text/plain', g);
-        });
-        it.addEventListener('dragend', ()=> it.classList.remove('dragging'));
-        mount.appendChild(it);
-      });
+    state.goals.forEach((goal) => {
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.textContent = goal;
+      item.style.cursor = 'pointer';
 
-      mount.addEventListener('dragover', (e)=>{
-        e.preventDefault();
-        const dragging = mount.querySelector('.dragging');
-        const after = getDragAfterElement(mount, e.clientY);
-        if(after == null) mount.appendChild(dragging);
-        else mount.insertBefore(dragging, after);
-      });
-      mount.addEventListener('drop', ()=>{
-        const items = Array.from(mount.querySelectorAll('.item')).map(x=>x.textContent.trim());
-        state._priority = items.map(t=> t.replace(/^☰\s*/, ''));
+      if (state._priority.includes(goal)) {
+        item.style.backgroundColor = 'var(--aia)';
+        item.style.color = '#fff';
+        item.style.fontWeight = '600';
+      } else {
+        item.style.backgroundColor = '';
+        item.style.color = '';
+        item.style.fontWeight = '';
+      }
+
+      item.addEventListener('click', () => {
+        const index = state._priority.indexOf(goal);
+        if (index === -1) {
+          state._priority.push(goal);
+        } else {
+          state._priority.splice(index, 1);
+        }
+        buildPriorityList();
         updateFundsVisibility();
       });
 
-      function getDragAfterElement(container, y){
-        const els = [...container.querySelectorAll('.item:not(.dragging)')];
-        return els.reduce((closest, child)=>{
-          const box = child.getBoundingClientRect();
-          const offset = y - box.top - box.height / 2;
-          if(offset < 0 && offset > closest.offset) return {offset, element: child};
-          else return closest;
-        }, {offset: Number.NEGATIVE_INFINITY}).element;
-      }
-    }
-
-    // ===== Events =====
-    el('add-goal').onclick = ()=>{ uniquePush(state.goals, el('goal-input').value); el('goal-input').value=''; render(); };
-    el('add-reason').onclick = ()=>{ uniquePush(state.reasons, el('reason-input').value); el('reason-input').value=''; render(); };
-    el('add-risk').onclick = ()=>{ uniquePush(state.risks, el('risk-input').value); el('risk-input').value=''; render(); };
-    el('add-alt').onclick = ()=>{ uniquePush(state.alts, el('alt-input').value); el('alt-input').value=''; render(); };
-
-    el('must-goals').addEventListener('change', ()=>{
-      const sel = el('must-goals');
-      state.mustGoals = Array.from(sel.selectedOptions).map(o=>o.value);
-      render();
+      mount.appendChild(item);
     });
-    el('unmit-select').addEventListener('change', ()=>{
-      const sel = el('unmit-select');
-      state.unmitigable = Array.from(sel.selectedOptions).map(o=>o.value);
-    });
+  }
 
-    Array.from(document.querySelectorAll('input[name="partner"]')).forEach(r=>{
-      r.addEventListener('change', ()=>{
-        el('partner-perc-wrap').style.display = (r.value==='yes' && r.checked) ? 'block' : 'none';
-      });
-    });
+  // ===== Events =====
+  el('add-goal').onclick = ()=>{ uniquePush(state.goals, el('goal-input').value); el('goal-input').value=''; render(); };
+  el('add-reason').onclick = ()=>{ uniquePush(state.reasons, el('reason-input').value); el('reason-input').value=''; render(); };
+  el('add-risk').onclick = ()=>{ uniquePush(state.risks, el('risk-input').value); el('risk-input').value=''; render(); };
+  el('add-alt').onclick = ()=>{ uniquePush(state.alts, el('alt-input').value); el('alt-input').value=''; render(); };
 
-    // ===== Visibility rules =====
-    function goalMatchName(txt){ return (txt||'').trim().toLowerCase(); }
-    const NAME_FAMILY = goalMatchName('Vận hành gia đình');
-    const NAME_EDU = goalMatchName('Quỹ học vấn cho con');
-    const NAME_RET = goalMatchName('Quỹ hưu trí');
-    const NAME_DEBT = goalMatchName('Trả nợ');
-    const NAME_LEG = goalMatchName('Gia tăng tài sản/ Để lại di sản');
-
-    function updateFundsVisibility(){
-      const pr = (state._priority||[]).map(goalMatchName);
-      const map = {
-        'fund-family': pr.includes(NAME_FAMILY),
-        'fund-edu': pr.includes(NAME_EDU),
-        'fund-retire': pr.includes(NAME_RET),
-        'fund-debt': pr.includes(NAME_DEBT),
-        'fund-legacy': pr.includes(NAME_LEG),
-      };
-      Object.entries(map).forEach(([id, show])=>{
-        const d = el(id);
-        if(!d) return;
-        d.style.display = show ? 'block' : 'none';
-      });
-    }
-
-    // ===== Children (6 tối đa) =====
-    const childMax = 6;
-    function childRow(idx, data){
-      const wrap = document.createElement('div');
-      wrap.className='card p-4 mt-3 border border-gray-200';
-      wrap.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div><label class="block text-sm text-gray-600 mb-1">Con thứ #${idx+1} - Họ tên</label><input data-k="name" class="form-input" value="${data?.name||''}" placeholder="Tên con"/></div>
-          <div><label class="block text-sm text-gray-600 mb-1">Trường dự định</label><input data-k="school" class="form-input" value="${data?.school||''}" placeholder="Tên trường"/></div>
-          <div><label class="block text-sm text-gray-600 mb-1">Chi phí 1 năm (₫)</label><input data-k="cost" type="number" min="0" step="1000" class="form-input" value="${data?.cost||''}"/></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-          <div><label class="block text-sm text-gray-600 mb-1">Số năm học đại học</label><input data-k="years" type="number" min="0" step="1" class="form-input" value="${data?.years||''}"/></div>
-          <div class="flex flex-col justify-center"><div class="text-sm text-gray-600">Tổng học phí (#${idx+1})</div><div class="font-bold text-[var(--aia)] mono child-total">₫0</div></div>
-          <div class="flex items-center justify-end"><button class="btn btn-ghost border text-red-600">Xoá</button></div>
-        </div>`;
-      wrap.querySelectorAll('input[data-k]').forEach(inp=>{
-        inp.addEventListener('input', ()=>{
-          const k = inp.getAttribute('data-k');
-          state.children[idx][k] = inp.type==='number' ? Number(inp.value||0) : inp.value;
-          calcEdu();
-        });
-      });
-      wrap.querySelector('button').onclick = ()=>{
-        state.children.splice(idx,1);
-        renderChildren();
-      };
-      return wrap;
-    }
-    function renderChildren(){
-      const mount = el('children');
-      mount.innerHTML='';
-      state.children.forEach((c,i)=> mount.appendChild(childRow(i,c)));
-      calcEdu();
-    }
-    el('add-child').onclick = ()=>{
-      if(state.children.length >= childMax){ alert('Tối đa 6 con.'); return; }
-      state.children.push({name:'', school:'', cost:0, years:0});
-      renderChildren();
-    };
-
-    // ===== Tính toán =====
-    function calcFamily(){
-      const monthly = Number(el('fam-monthly').value||0);
-      const years = Number(el('fam-years').value||0);
-      const total = monthly * 12 * years;
-      el('fam-total').textContent = money(total);
-      return total;
-    }
-    function calcEdu(){
-      let sum = 0;
-      state.children.forEach((c, i)=>{
-        const t = Number(c.cost||0) * Number(c.years||0);
-        sum += t;
-        const mount = el('children').children[i];
-        if(mount){
-          const tv = mount.querySelector('.child-total');
-          if(tv) tv.textContent = money(t);
-        }
-      });
-      el('edu-total').textContent = money(sum);
-      return sum;
-    }
-    function calcRetire(){
-      const xx = Number(el('ret-years').value||0);
-      const yy = Number(el('ret-month').value||0);
-      const total = xx * yy * 12;
-      el('ret-total').textContent = money(total);
-      return total;
-    }
-    function calcDebt(){ return Number(el('debt-amt').value||0); }
-    function calcLegacy(){ return Number(el('legacy-amt').value||0); }
-
-    function calcAll(){
-      const fam = calcFamily();
-      const edu = calcEdu();
-      const ret = calcRetire();
-      const debt = calcDebt();
-      const leg = calcLegacy();
-
-      const respItems = [];
-      if(el('fund-family').style.display!=='none') respItems.push(['Vận hành gia đình', fam]);
-      if(el('fund-edu').style.display!=='none') respItems.push(['Quỹ học vấn cho con', edu]);
-      if(el('fund-debt').style.display!=='none') respItems.push(['Thanh khoản các khoản nợ', debt]);
-      if(el('fund-legacy').style.display!=='none') respItems.push(['Để lại di sản', leg]);
-      const respBody = el('resp-body');
-      respBody.innerHTML = respItems.map(([k,v])=> `<tr><td class="py-1">${k}</td><td class="py-1 text-right mono">${money(v)}</td></tr>`).join('');
-      const respSum = respItems.reduce((a, [,v])=>a+Number(v||0), 0);
-      el('resp-total').textContent = money(respSum);
-
-      const prepared = Number(el('resp-prepared').value||0);
-      el('resp-gap').textContent = money(Math.max(respSum - prepared, 0));
-
-      const saveItems = [];
-      if(el('fund-retire').style.display!=='none') saveItems.push(['Quỹ hưu trí', ret]);
-      if(el('fund-edu').style.display!=='none') saveItems.push(['Quỹ học vấn cho con', edu]);
-      const saveBody = el('save-body');
-      saveBody.innerHTML = saveItems.map(([k,v])=> `<tr><td class="py-1">${k}</td><td class="py-1 text-right mono">${money(v)}</td></tr>`).join('');
-      const saveSum = saveItems.reduce((a, [,v])=>a+Number(v||0), 0);
-      el('save-total').textContent = money(saveSum);
-    }
-    ['fam-monthly','fam-years','ret-years','ret-month','debt-amt','legacy-amt','resp-prepared'].forEach(id=> el(id).addEventListener('input', calcAll));
-    el('btn-calc').onclick = calcAll;
-
-    // ===== Print =====
-    function buildPrint(){
-      const client = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div><div class="text-sm text-gray-500">Họ và tên</div><div class="mono">${el('fullname').value||''}</div></div>
-          <div><div class="text-sm text-gray-500">Ngày sinh</div><div class="mono">${el('dob').value||''}</div></div>
-          <div><div class="text-sm text-gray-500">Nghề nghiệp</div><div class="mono">${el('job').value||''}</div></div>
-          <div><div class="text-sm text-gray-500">Phụ thuộc trực tiếp</div><div class="mono">${el('dep-direct').value||''}</div></div>
-          <div><div class="text-sm text-gray-500">Phụ thuộc gián tiếp</div><div class="mono">${el('dep-indirect').value||''}</div></div>
-          <div><div class="text-sm text-gray-500">Video: Chiếc thuyền (URL)</div><div class="mono">${el('vid-boat').value||''}</div></div>
-          <div class="md:col-span-2"><div class="text-sm text-gray-500">Video: Gặp bão (URL)</div><div class="mono">${el('vid-storm').value||''}</div></div>
-        </div>`;
-      el('print-client').innerHTML = client;
-
-      const goalsHtml = `
-        <div><span class="text-gray-600">Tất cả mục tiêu:</span> <span class="font-medium">${state.goals.join(' · ')||'—'}</span></div>
-        <div><span class="text-gray-600">Mục tiêu bắt buộc:</span> <span class="font-medium">${state.mustGoals.join(' · ')||'—'}</span></div>
-        <div><span class="text-gray-600">Ưu tiên:</span><div class="mt-1">${(state._priority||[]).map((g,i)=> (i+1)+'. '+g).join('<br/>') || '—'}</div></div>
-        <hr class="my-2"/>
-        <div><span class="text-gray-600">Lý do:</span> <span class="font-medium">${state.reasons.join(' · ')||'—'}</span></div>
-        <div><span class="text-gray-600">Yếu tố cản trở:</span> <span class="font-medium">${state.risks.join(' · ')||'—'}</span></div>
-        <div><span class="text-gray-600">Không lường trước/khó khắc phục:</span> <span class="font-medium">${state.unmitigable.join(' · ')||'—'}</span></div>
-        <div><span class="text-gray-600">Phương án thay thế:</span> <span class="font-medium">${state.alts.join(' · ')||'—'}</span></div>
-        <div class="mt-2"><span class="text-gray-600">Có đồng hành:</span> <span class="font-medium">${document.querySelector('input[name="partner"]:checked')?.value==='yes'?'Có':'Không'}</span></div>
-        <div><span class="text-gray-600">% đóng góp:</span> <span class="font-medium">${el('partner-perc').value||'—'}</span></div>
-        <div><span class="text-gray-600">Thời gian hoàn thành (năm):</span> <span class="font-medium">${el('years-all').value||'—'}</span></div>`;
-      el('print-goals').innerHTML = goalsHtml;
-
-      calcAll();
-      const fundsHtml = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
-            <table class="w-full text-sm">
-              <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
-              <tbody>${el('resp-body').innerHTML}</tbody>
-              <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td class="py-2 text-right font-semibold mono">${el('resp-total').textContent}</td></tr></tfoot>
-            </table>
-          </div>
-          <div>
-            <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
-            <table class="w-full text-sm">
-              <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
-              <tbody>${el('save-body').innerHTML}</tbody>
-              <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td class="py-2 text-right font-semibold mono">${el('save-total').textContent}</td></tr></tfoot>
-            </table>
-          </div>
-        </div>`;
-      el('print-funds').innerHTML = fundsHtml;
-    }
-
-    // ===== Buttons =====
-    el('btn-preview').onclick = ()=>{ buildPrint(); el('print-view').classList.remove('hidden'); window.scrollTo(0, el('print-view').offsetTop); };
-    el('btn-print').onclick = ()=>{ buildPrint(); window.print(); };
-    el('btn-print-2').onclick = ()=>{ buildPrint(); window.print(); };
-
-    // Reset
-    el('btn-reset').onclick = ()=>{
-      if(!confirm('Xoá toàn bộ dữ liệu đã nhập?')) return;
-      Object.assign(state, {goals:[], mustGoals:[], reasons:[], risks:[], unmitigable:[], alts:[], children:[], _priority:[]});
-      document.querySelectorAll('input').forEach(i=>{
-        if(i.type==='radio'){ if(i.value==='no') i.checked=true; } else i.value='';
-      });
-      renderChildren();
-      render();
-    };
-
-    // ===== Initial render =====
-    function render(){
-      renderChips(state.goals, 'goals');
-      syncMustGoals();
-      renderChips(state.reasons, 'reasons');
-      renderChips(state.risks, 'risks');
-      syncUnmitigable();
-      renderChips(state.alts, 'alts');
-      buildPriorityList();
-      updateFundsVisibility();
-      calcAll();
-    }
+  el('must-goals').addEventListener('change', ()=>{
+    const sel = el('must-goals');
+    state.mustGoals = Array.from(sel.selectedOptions).map(o=>o.value);
     render();
-  </script>
+  });
+
+  el('unmit-select').addEventListener('change', () => {
+    const sel = el('unmit-select');
+    state.unmitigable = Array.from(sel.selectedOptions).map(o => o.value);
+    updateUnmitSelectStyles();
+  });
+
+  // ===== Style cho các option được chọn trong unmit-select =====
+  function updateUnmitSelectStyles() {
+    const unmitSelect = el('unmit-select');
+    Array.from(unmitSelect.options).forEach(opt => {
+      if (state.unmitigable.includes(opt.value)) {
+        opt.classList.add('selected-option');
+      } else {
+        opt.classList.remove('selected-option');
+      }
+    });
+  }
+
+  // ===== Visibility rules =====
+  function goalMatchName(txt){ return (txt||'').trim().toLowerCase(); }
+  const NAME_FAMILY = goalMatchName('Vận hành gia đình');
+  const NAME_EDU = goalMatchName('Quỹ học vấn cho con');
+  const NAME_RET = goalMatchName('Quỹ hưu trí');
+  const NAME_DEBT = goalMatchName('Trả nợ');
+  const NAME_LEG = goalMatchName('Gia tăng tài sản/ Để lại di sản');
+
+  function updateFundsVisibility(){
+    const pr = (state._priority||[]).map(goalMatchName);
+    const map = {
+      'fund-family': pr.includes(NAME_FAMILY),
+      'fund-edu': pr.includes(NAME_EDU),
+      'fund-retire': pr.includes(NAME_RET),
+      'fund-debt': pr.includes(NAME_DEBT),
+      'fund-legacy': pr.includes(NAME_LEG),
+    };
+    Object.entries(map).forEach(([id, show])=>{
+      const d = el(id);
+      if(!d) return;
+      d.style.display = show ? 'block' : 'none';
+    });
+  }
+
+  // ===== Children (6 tối đa) =====
+  const childMax = 6;
+  function childRow(idx, data){
+    const wrap = document.createElement('div');
+    wrap.className='card p-4 mt-3 border border-gray-200';
+    wrap.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div><label class="block text-sm text-gray-600 mb-1">Con thứ #${idx+1} - Họ tên</label><input data-k="name" class="form-input" value="${data?.name||''}" placeholder="Tên con"/></div>
+        <div><label class="block text-sm text-gray-600 mb-1">Trường dự định</label><input data-k="school" class="form-input" value="${data?.school||''}" placeholder="Tên trường"/></div>
+        <div><label class="block text-sm text-gray-600 mb-1">Chi phí 1 năm (₫)</label><input data-k="cost" type="number" min="0" step="1000" class="form-input" value="${data?.cost||''}"/></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+        <div><label class="block text-sm text-gray-600 mb-1">Số năm học đại học</label><input data-k="years" type="number" min="0" step="1" class="form-input" value="${data?.years||''}"/></div>
+        <div class="flex flex-col justify-center"><div class="text-sm text-gray-600">Tổng học phí (#${idx+1})</div><div class="font-bold text-[var(--aia)] mono child-total">₫0</div></div>
+        <div class="flex items-center justify-end"><button class="btn btn-ghost border text-red-600">Xoá</button></div>
+      </div>`;
+    wrap.querySelectorAll('input[data-k]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const k = inp.getAttribute('data-k');
+        state.children[idx][k] = inp.type==='number' ? Number(inp.value||0) : inp.value;
+        calcEdu();
+      });
+    });
+    wrap.querySelector('button').onclick = ()=>{
+      state.children.splice(idx,1);
+      renderChildren();
+    };
+    return wrap;
+  }
+  function renderChildren(){
+    const mount = el('children');
+    mount.innerHTML='';
+    state.children.forEach((c,i)=> mount.appendChild(childRow(i,c)));
+    calcEdu();
+  }
+  el('add-child').onclick = ()=>{
+    if(state.children.length >= childMax){ alert('Tối đa 6 con.'); return; }
+    state.children.push({name:'', school:'', cost:0, years:0});
+    renderChildren();
+  };
+
+  // ===== Tính toán =====
+  function calcFamily(){
+    const monthly = parseNumber(el('fam-monthly').value);
+    const years = parseNumber(el('fam-years').value);
+    const total = monthly * 12 * years;
+    el('fam-total').textContent = money(total);
+    return total;
+  }
+  function calcEdu(){
+    let sum = 0;
+    state.children.forEach((c, i)=>{
+      const t = Number(c.cost||0) * Number(c.years||0);
+      sum += t;
+      const mount = el('children').children[i];
+      if(mount){
+        const tv = mount.querySelector('.child-total');
+        if(tv) tv.textContent = money(t);
+      }
+    });
+    el('edu-total').textContent = money(sum);
+    return sum;
+  }
+  function calcRetire(){
+    const xx = parseNumber(el('ret-years').value);
+    const yy = parseNumber(el('ret-month').value);
+    const total = xx * yy * 12;
+    el('ret-total').textContent = money(total);
+    return total;
+  }
+  function calcDebt(){ return parseNumber(el('debt-amt').value); }
+  function calcLegacy(){ return parseNumber(el('legacy-amt').value); }
+
+  function calcAll(){
+    const fam = calcFamily();
+    const edu = calcEdu();
+    const ret = calcRetire();
+    const debt = calcDebt();
+    const leg = calcLegacy();
+
+    const respItems = [];
+    if(el('fund-family').style.display!=='none') respItems.push(['Vận hành gia đình', fam]);
+    if(el('fund-edu').style.display!=='none') respItems.push(['Quỹ học vấn cho con', edu]);
+    if(el('fund-debt').style.display!=='none') respItems.push(['Thanh khoản các khoản nợ', debt]);
+    if(el('fund-legacy').style.display!=='none') respItems.push(['Để lại di sản', leg]);
+    const respBody = el('resp-body');
+    respBody.innerHTML = respItems.map(([k,v])=> `<tr><td class="py-1">${k}</td><td class="py-1 text-right mono">${money(v)}</td></tr>`).join('');
+    const respSum = respItems.reduce((a, [,v])=>a+Number(v||0), 0);
+    el('resp-total').textContent = money(respSum);
+
+    const prepared = parseNumber(el('resp-prepared').value);
+    el('resp-gap').textContent = money(Math.max(respSum - prepared, 0));
+
+    const saveItems = [];
+    if(el('fund-retire').style.display!=='none') saveItems.push(['Quỹ hưu trí', ret]);
+    if(el('fund-edu').style.display!=='none') saveItems.push(['Quỹ học vấn cho con', edu]);
+    const saveBody = el('save-body');
+    saveBody.innerHTML = saveItems.map(([k,v])=> `<tr><td class="py-1">${k}</td><td class="py-1 text-right mono">${money(v)}</td></tr>`).join('');
+    const saveSum = saveItems.reduce((a, [,v])=>a+Number(v||0), 0);
+    el('save-total').textContent = money(saveSum);
+  }
+
+  // Hàm parse số từ chuỗi có dấu chấm ngăn cách
+  function parseNumber(str){
+    if(!str) return 0;
+    return Number(str.toString().replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
+  }
+
+  // ===== Format input số có dấu chấm ngăn cách phần nghìn =====
+  function formatNumberInput(input) {
+    let value = input.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+    if (value === '') {
+      input.value = '';
+      return;
+    }
+    let num = parseInt(value, 10);
+    if (isNaN(num)) {
+      input.value = '';
+      return;
+    }
+    input.value = num.toLocaleString('vi-VN');
+  }
+
+  // Áp dụng format cho tất cả input tiền, bỏ tự động tính khi nhập
+  ['fam-monthly','fam-years','ret-years','ret-month','debt-amt','legacy-amt','resp-prepared'].forEach(id => {
+    const input = el(id);
+    input.removeEventListener('input', calcAll); // Bỏ tự động tính
+    input.addEventListener('input', () => {
+      formatNumberInput(input);
+    });
+  });
+
+  // Nút cập nhật tổng hợp vẫn giữ tính năng
+  el('btn-calc').onclick = calcAll;
+
+  // ===== Print =====
+  function buildPrint(){
+    const client = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div><div class="text-sm text-gray-500">Họ và tên</div><div class="mono">${el('fullname').value||''}</div></div>
+        <div><div class="text-sm text-gray-500">Ngày sinh</div><div class="mono">${el('dob').value||''}</div></div>
+        <div><div class="text-sm text-gray-500">Nghề nghiệp</div><div class="mono">${el('job').value||''}</div></div>
+        <div><div class="text-sm text-gray-500">Phụ thuộc trực tiếp</div><div class="mono">${el('dep-direct').value||''}</div></div>
+        <div><div class="text-sm text-gray-500">Phụ thuộc gián tiếp</div><div class="mono">${el('dep-indirect').value||''}</div></div>
+        <div><div class="text-sm text-gray-500">Video: Chiếc thuyền (URL)</div><div class="mono">${el('vid-boat')?.value||''}</div></div>
+        <div class="md:col-span-2"><div class="text-sm text-gray-500">Video: Gặp bão (URL)</div><div class="mono">${el('vid-storm')?.value||''}</div></div>
+      </div>`;
+    el('print-client').innerHTML = client;
+
+    const goalsHtml = `
+      <div><span class="text-gray-600">Tất cả mục tiêu:</span> <span class="font-medium">${state.goals.join(' · ')||'—'}</span></div>
+      <div><span class="text-gray-600">Mục tiêu bắt buộc:</span> <span class="font-medium">${state.mustGoals.join(' · ')||'—'}</span></div>
+      <div><span class="text-gray-600">Ưu tiên:</span><div class="mt-1">${(state._priority||[]).map((g,i)=> (i+1)+'. '+g).join('<br/>') || '—'}</div></div>
+      <hr class="my-2"/>
+      <div><span class="text-gray-600">Lý do:</span> <span class="font-medium">${state.reasons.join(' · ')||'—'}</span></div>
+      <div><span class="text-gray-600">Yếu tố cản trở:</span> <span class="font-medium">${state.risks.join(' · ')||'—'}</span></div>
+      <div><span class="text-gray-600">Không lường trước/khó khắc phục:</span> <span class="font-medium">${state.unmitigable.join(' · ')||'—'}</span></div>
+      <div><span class="text-gray-600">Phương án thay thế:</span> <span class="font-medium">${state.alts.join(' · ')||'—'}</span></div>
+      <div class="mt-2"><span class="text-gray-600">Có đồng hành:</span> <span class="font-medium">${document.querySelector('input[name="partner"]:checked')?.value==='yes'?'Có':'Không'}</span></div>
+      <div><span class="text-gray-600">% đóng góp:</span> <span class="font-medium">${el('partner-perc').value||'—'}</span></div>
+      <div><span class="text-gray-600">Thời gian hoàn thành (năm):</span> <span class="font-medium">${el('years-all').value||'—'}</span></div>`;
+    el('print-goals').innerHTML = goalsHtml;
+
+    calcAll();
+    const fundsHtml = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
+          <table class="w-full text-sm">
+            <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
+            <tbody>${el('resp-body').innerHTML}</tbody>
+            <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td class="py-2 text-right font-semibold mono">${el('resp-total').textContent}</td></tr></tfoot>
+          </table>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
+          <table class="w-full text-sm">
+            <thead><tr class="text-left"><th class="py-2">Mục</th><th class="py-2 text-right">Số tiền (₫)</th></tr></thead>
+            <tbody>${el('save-body').innerHTML}</tbody>
+            <tfoot><tr><td class="py-2 font-semibold">Tổng</td><td class="py-2 text-right font-semibold mono">${el('save-total').textContent}</td></tr></tfoot>
+          </table>
+        </div>
+      </div>`;
+    el('print-funds').innerHTML = fundsHtml;
+  }
+
+  // ===== Buttons =====
+  el('btn-preview').onclick = ()=>{ buildPrint(); el('print-view').classList.remove('hidden'); window.scrollTo(0, el('print-view').offsetTop); };
+  el('btn-print').onclick = ()=>{ buildPrint(); window.print(); };
+  el('btn-print-2').onclick = ()=>{ buildPrint(); window.print(); };
+
+  // Reset
+  el('btn-reset').onclick = ()=>{
+    if(!confirm('Xoá toàn bộ dữ liệu đã nhập?')) return;
+    Object.assign(state, {goals:[], mustGoals:[], reasons:[], risks:[], unmitigable:[], alts:[], children:[], _priority:[]});
+    document.querySelectorAll('input').forEach(i=>{
+      if(i.type==='radio'){ if(i.value==='no') i.checked=true; } else i.value='';
+    });
+    renderChildren();
+    render();
+  };
+
+  // ===== Initial render =====
+  function render(){
+    renderChips(state.goals, 'goals');
+    syncMustGoals();
+    renderChips(state.reasons, 'reasons');
+    renderChips(state.risks, 'risks');
+    syncUnmitigable();
+    renderChips(state.alts, 'alts');
+    buildPriorityList();
+    updateFundsVisibility();
+    calcAll();
+  }
+  render();
+</script>
 </body>
 </html>
