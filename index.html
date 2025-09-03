@@ -1,23 +1,43 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Bản đồ tài chính cá nhân</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Be Vietnam Pro', sans-serif; }
-    .chip { @apply inline-flex items-center bg-gray-100 border border-gray-300 rounded-full px-3 py-1 mr-2 mb-2; }
-    .chip button { @apply ml-2 text-red-600; }
-    .section-title { @apply text-xl font-bold text-red-600 mb-4; }
-    @media print { .no-print { display: none !important; } }
+    .chip {
+      @apply inline-flex items-center bg-gray-100 border border-gray-300 rounded-full px-3 py-1 mr-2 mb-2;
+    }
+    .chip button {
+      @apply ml-2 text-red-600;
+    }
+    .section-title {
+      @apply text-xl font-bold text-red-600 mb-4;
+    }
+    .priority-item {
+      @apply cursor-pointer border border-gray-300 rounded px-3 py-2 mb-2 select-none;
+      transition: background-color 0.2s;
+    }
+    .priority-item.selected {
+      @apply bg-red-600 text-white font-semibold;
+    }
+    .priority-item:hover {
+      @apply bg-red-100;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
-  <div class="container mx-auto p-6">
+  <div class="container mx-auto p-6 max-w-5xl">
     <h1 class="text-3xl font-bold text-red-600 mb-8">Bản đồ tài chính cá nhân</h1>
 
-    <!-- ================= PHẦN 1 ================= -->
+    <!-- Phần 1 -->
     <section class="bg-white shadow rounded-lg p-6 mb-8">
       <h2 class="section-title">Phần 1: Làm rõ mục tiêu tài chính</h2>
 
@@ -25,30 +45,30 @@
       <div class="mb-6">
         <label class="font-medium block mb-2">1. Mục tiêu/Kế hoạch dài hạn</label>
         <div class="flex gap-2">
-          <input id="goal-input" list="goal-suggest" class="flex-1 border rounded px-3 py-2" placeholder="Nhập mục tiêu...">
+          <input id="goal-input" list="goal-suggest" class="flex-1 border rounded px-3 py-2" placeholder="Nhập mục tiêu..." autocomplete="off" />
           <button id="add-goal" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
         </div>
         <datalist id="goal-suggest">
-          <option value="Vận hành gia đình">
-          <option value="Quỹ học vấn cho con">
-          <option value="Quỹ hưu trí">
-          <option value="Trả nợ">
-          <option value="Gia tăng tài sản/ Để lại di sản">
-          <option value="Mở doanh nghiệp riêng">
+          <option value="Vận hành gia đình" />
+          <option value="Quỹ học vấn cho con" />
+          <option value="Quỹ hưu trí" />
+          <option value="Trả nợ" />
+          <option value="Gia tăng tài sản/ Để lại di sản" />
+          <option value="Mở doanh nghiệp riêng" />
         </datalist>
       </div>
 
-      <!-- 2 -->
+      <!-- 2. Mục tiêu quan trọng nhất -->
       <div class="mb-6">
-        <label class="font-medium block mb-2">2. Mục tiêu bắt buộc (chọn nhiều)</label>
-        <div id="must-goals" class="flex flex-wrap"></div>
+        <label class="font-medium block mb-2">2. Mục tiêu nào là quan trọng nhất, phải làm bằng mọi giá (chọn nhiều)</label>
+        <div id="priority-list" class="flex flex-wrap gap-2"></div>
       </div>
 
       <!-- 3 -->
       <div class="mb-6">
         <label class="font-medium block mb-2">3. Lý do</label>
         <div class="flex gap-2">
-          <input id="reason-input" class="flex-1 border rounded px-3 py-2" placeholder="Nhập lý do...">
+          <input id="reason-input" class="flex-1 border rounded px-3 py-2" placeholder="Nhập lý do..." />
           <button id="add-reason" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
         </div>
         <div id="reasons" class="mt-2 flex flex-wrap"></div>
@@ -60,8 +80,14 @@
         <div id="fund-family" class="hidden">
           <h3 class="font-semibold mb-2">Quỹ vận hành gia đình</h3>
           <div class="grid md:grid-cols-3 gap-4">
-            <div><label>Chi phí/tháng (₫)</label><input id="fam-monthly" data-money class="border rounded px-3 py-2 w-full"></div>
-            <div><label>Số năm</label><input id="fam-years" type="number" class="border rounded px-3 py-2 w-full"></div>
+            <div>
+              <label>Chi phí/tháng (₫)</label>
+              <input id="fam-monthly" data-money class="border rounded px-3 py-2 w-full" />
+            </div>
+            <div>
+              <label>Số năm</label>
+              <input id="fam-years" type="number" min="0" class="border rounded px-3 py-2 w-full" />
+            </div>
             <div class="flex flex-col justify-end font-bold text-red-600">Tổng: <span id="fam-total">₫0</span></div>
           </div>
         </div>
@@ -76,32 +102,58 @@
         <div id="fund-retire" class="hidden">
           <h3 class="font-semibold mb-2">Quỹ hưu trí</h3>
           <div class="grid md:grid-cols-3 gap-4">
-            <div><label>Số năm an nhàn</label><input id="ret-years" type="number" class="border rounded px-3 py-2 w-full"></div>
-            <div><label>Chi tiêu/tháng (₫)</label><input id="ret-month" data-money class="border rounded px-3 py-2 w-full"></div>
+            <div>
+              <label>Số năm an nhàn</label>
+              <input id="ret-years" type="number" min="0" class="border rounded px-3 py-2 w-full" />
+            </div>
+            <div>
+              <label>Chi tiêu/tháng (₫)</label>
+              <input id="ret-month" data-money class="border rounded px-3 py-2 w-full" />
+            </div>
             <div class="flex flex-col justify-end font-bold text-red-600">Tổng: <span id="ret-total">₫0</span></div>
           </div>
         </div>
         <!-- Nợ -->
         <div id="fund-debt" class="hidden">
           <h3 class="font-semibold mb-2">Thanh khoản nợ</h3>
-          <label>Số nợ hiện tại (₫)</label><input id="debt" data-money class="border rounded px-3 py-2 w-full">
+          <label>Số nợ hiện tại (₫)</label>
+          <input id="debt" data-money class="border rounded px-3 py-2 w-full" />
         </div>
         <!-- Di sản -->
         <div id="fund-legacy" class="hidden">
           <h3 class="font-semibold mb-2">Gia tăng tài sản/Di sản</h3>
-          <label>Giá trị kỳ vọng (₫)</label><input id="legacy" data-money class="border rounded px-3 py-2 w-full">
+          <label>Giá trị kỳ vọng (₫)</label>
+          <input id="legacy" data-money class="border rounded px-3 py-2 w-full" />
         </div>
       </div>
     </section>
 
-    <!-- ================= PHẦN 2 ================= -->
+    <!-- 5 + 6 -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">5–6. Đồng hành & Thời hạn</h2>
+      <div class="mb-4">
+        <label class="block mb-2">Có ai cùng thực hiện không?</label>
+        <label><input type="radio" name="partner" value="no" checked /> Không</label>
+        <label class="ml-4"><input type="radio" name="partner" value="yes" /> Có</label>
+      </div>
+      <div id="partner-extra" class="hidden mb-4">
+        <label>% đóng góp</label>
+        <input id="partner-perc" type="number" min="0" max="100" class="border rounded px-3 py-2 w-32" />
+      </div>
+      <div>
+        <label>Hoàn thành trong bao lâu (năm)</label>
+        <input id="years-all" type="number" min="0" class="border rounded px-3 py-2 w-32" />
+      </div>
+    </section>
+
+    <!-- Phần 2 -->
     <section class="bg-white shadow rounded-lg p-6 mb-8">
       <h2 class="section-title">Phần 2: Những yếu tố ảnh hưởng</h2>
 
       <div class="mb-6">
         <label>7. Thuận lợi</label>
         <div class="flex gap-2">
-          <input id="pos-input" class="flex-1 border rounded px-3 py-2">
+          <input id="pos-input" class="flex-1 border rounded px-3 py-2" />
           <button id="add-pos" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
         </div>
         <div id="positives" class="mt-2 flex flex-wrap"></div>
@@ -110,28 +162,28 @@
       <div class="mb-6">
         <label>8. Khó khăn</label>
         <div class="flex gap-2">
-          <input id="neg-input" class="flex-1 border rounded px-3 py-2">
+          <input id="neg-input" class="flex-1 border rounded px-3 py-2" />
           <button id="add-neg" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
         </div>
         <div id="negatives" class="mt-2 flex flex-wrap"></div>
       </div>
 
       <div class="mb-6">
-        <label>9. Khó khăn không thể khắc phục</label>
+        <label>9. Khó khăn không thể khắc phục (chọn)</label>
         <div id="unmit" class="flex flex-wrap"></div>
       </div>
 
       <div>
         <label>10. Phương án thay thế</label>
         <div class="flex gap-2">
-          <input id="alt-input" class="flex-1 border rounded px-3 py-2">
+          <input id="alt-input" class="flex-1 border rounded px-3 py-2" />
           <button id="add-alt" type="button" class="px-4 py-2 bg-red-600 text-white rounded">+ Thêm</button>
         </div>
         <div id="alts" class="mt-2 flex flex-wrap"></div>
       </div>
     </section>
 
-    <!-- ================= PHẦN 3 ================= -->
+    <!-- Phần 3 -->
     <section class="bg-white shadow rounded-lg p-6 mb-8">
       <h2 class="section-title">Phần 3: Tổng hợp</h2>
       <div class="grid md:grid-cols-2 gap-6">
@@ -141,7 +193,7 @@
           <div class="font-bold mt-2">Tổng: <span id="resp-total">₫0</span></div>
           <div class="mt-4">
             <label>Đã chuẩn bị</label>
-            <input id="resp-prepared" data-money class="border rounded px-3 py-2 w-40">
+            <input id="resp-prepared" data-money class="border rounded px-3 py-2 w-40" />
           </div>
           <div class="mt-2 font-bold text-red-600">Khoảng thiếu: <span id="resp-gap">₫0</span></div>
         </div>
@@ -151,7 +203,7 @@
           <div class="font-bold mt-2">Tổng: <span id="save-total">₫0</span></div>
           <div class="mt-4">
             <label>Mong muốn hoàn thành (%)</label>
-            <input id="goal-percent" type="number" class="border rounded px-3 py-2 w-32">
+            <input id="goal-percent" type="number" min="0" max="100" class="border rounded px-3 py-2 w-32" />
           </div>
         </div>
       </div>
@@ -164,125 +216,239 @@
 
   <script>
     const fmt = new Intl.NumberFormat('vi-VN');
-    const money = v => '₫' + fmt.format(+v||0);
-    const digits = s => (s||'').replace(/\D/g,'');
-    const state = { goals:[], must:[], reasons:[], pos:[], neg:[], unmit:[], alts:[], children:[] };
-
-    function getNum(id){ return +digits(document.getElementById(id)?.value)||0; }
-    function bindMoney(inp){
-      inp.addEventListener('input',()=>{
-        const raw=digits(inp.value);
-        inp.value= raw?fmt.format(+raw):'';
+    const money = v => '₫' + fmt.format(+v || 0);
+    const digits = s => (s || '').replace(/\D/g, '');
+    const bindMoney = inp => {
+      inp.addEventListener('input', () => {
+        let val = digits(inp.value);
+        inp.value = val ? fmt.format(+val) : '';
         calc();
+      });
+    };
+
+    // State
+    const state = {
+      goals: [],
+      must: [], // mục tiêu quan trọng nhất, có thể chọn nhiều
+      reasons: [],
+      pos: [],
+      neg: [],
+      unmit: [],
+      alts: [],
+      children: [],
+    };
+
+    // Helpers
+    function val(id) {
+      return +digits(document.getElementById(id)?.value) || 0;
+    }
+    function addChip(arr, idInput) {
+      const v = document.getElementById(idInput).value.trim();
+      if (!v) return;
+      if (!arr.includes(v)) {
+        arr.push(v);
+        document.getElementById(idInput).value = '';
+        render();
+      } else {
+        alert('Giá trị đã tồn tại.');
+      }
+    }
+    function renderChips(arr, id) {
+      const box = document.getElementById(id);
+      box.innerHTML = '';
+      arr.forEach((txt, i) => {
+        const c = document.createElement('span');
+        c.className = 'chip';
+        c.innerHTML = txt + ' <button aria-label="Xóa">&times;</button>';
+        c.querySelector('button').onclick = () => {
+          arr.splice(i, 1);
+          render();
+        };
+        box.appendChild(c);
       });
     }
 
-    // children
-    function renderChildren(){
-      const box=document.getElementById('children'); box.innerHTML='';
-      state.children.forEach((c,i)=>{
-        const row=document.createElement('div');
-        row.className="border p-3 mb-2 rounded";
-        row.innerHTML=`
+    // Render mục tiêu quan trọng nhất (priority)
+    function renderPriority() {
+      const box = document.getElementById('priority-list');
+      box.innerHTML = '';
+      state.goals.forEach(goal => {
+        const div = document.createElement('div');
+        div.textContent = goal;
+        div.className = 'priority-item';
+        if (state.must.includes(goal)) {
+          div.classList.add('selected');
+        }
+        div.tabIndex = 0;
+        div.setAttribute('role', 'button');
+        div.setAttribute('aria-pressed', state.must.includes(goal));
+        div.onclick = () => {
+          if (state.must.includes(goal)) {
+            state.must = state.must.filter(x => x !== goal);
+          } else {
+            state.must.push(goal);
+          }
+          render();
+        };
+        div.onkeydown = e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            div.click();
+          }
+        };
+        box.appendChild(div);
+      });
+    }
+
+    // Children rows
+    function renderChildren() {
+      const box = document.getElementById('children');
+      box.innerHTML = '';
+      state.children.forEach((c, i) => {
+        const row = document.createElement('div');
+        row.className = 'border p-3 mb-2 rounded';
+        row.innerHTML = `
           <div class="grid md:grid-cols-4 gap-2 mb-2">
-            <input data-k="name" value="${c.name||''}" placeholder="Tên con" class="border rounded px-2 py-1">
-            <input data-k="school" value="${c.school||''}" placeholder="Trường" class="border rounded px-2 py-1">
-            <input data-k="cost" value="${c.cost?fmt.format(c.cost):''}" data-money placeholder="Chi phí/năm" class="border rounded px-2 py-1">
-            <input data-k="years" value="${c.years||''}" type="number" placeholder="Số năm" class="border rounded px-2 py-1">
+            <input data-k="name" value="${c.name || ''}" placeholder="Tên con" class="border rounded px-2 py-1" />
+            <input data-k="school" value="${c.school || ''}" placeholder="Trường" class="border rounded px-2 py-1" />
+            <input data-k="cost" value="${c.cost ? fmt.format(c.cost) : ''}" data-money placeholder="Chi phí/năm" class="border rounded px-2 py-1" />
+            <input data-k="years" value="${c.years || ''}" type="number" min="0" placeholder="Số năm" class="border rounded px-2 py-1" />
           </div>
           <div class="flex justify-between text-sm">
-            <span>Tổng: <span class="child-total">${money((c.cost||0)*(c.years||0))}</span></span>
-            <button class="text-red-600">Xoá</button>
-          </div>`;
-        row.querySelectorAll('input').forEach(inp=>{
-          inp.oninput=()=>{
-            const k=inp.dataset.k;
-            if(k==='cost') c.cost=+digits(inp.value)||0;
-            else if(k==='years') c.years=+inp.value||0;
-            else c[k]=inp.value;
-            if(inp.dataset.money) bindMoney(inp);
+            <span>Tổng: <span class="child-total">${money((c.cost || 0) * (c.years || 0))}</span></span>
+            <button class="text-red-600" aria-label="Xóa con">Xoá</button>
+          </div>
+        `;
+        row.querySelectorAll('input').forEach(inp => {
+          inp.oninput = () => {
+            const k = inp.dataset.k;
+            if (k === 'cost') c.cost = +digits(inp.value) || 0;
+            else if (k === 'years') c.years = +inp.value || 0;
+            else c[k] = inp.value;
+            renderChildren();
             calc();
           };
+          if (inp.dataset.money) bindMoney(inp);
         });
-        row.querySelector('button').onclick=()=>{ state.children.splice(i,1); renderChildren(); calc(); };
+        row.querySelector('button').onclick = () => {
+          state.children.splice(i, 1);
+          renderChildren();
+          calc();
+        };
         box.appendChild(row);
       });
     }
 
-    function updateFundsVisibility(){
-      document.getElementById('fund-family').style.display= state.must.includes('Vận hành gia đình')?'block':'none';
-      document.getElementById('fund-edu').style.display= state.must.includes('Quỹ học vấn cho con')?'block':'none';
-      document.getElementById('fund-retire').style.display= state.must.includes('Quỹ hưu trí')?'block':'none';
-      document.getElementById('fund-debt').style.display= state.must.includes('Trả nợ')?'block':'none';
-      document.getElementById('fund-legacy').style.display= state.must.includes('Gia tăng tài sản/ Để lại di sản')?'block':'none';
-    }
-
-    function calc(){
-      let resp=0, save=0;
-      const respList=document.getElementById('resp-list'); respList.innerHTML='';
-      const saveList=document.getElementById('save-list'); saveList.innerHTML='';
-
-      // gia đình
-      if(state.must.includes('Vận hành gia đình')){
-        const x=getNum('fam-monthly')*12*getNum('fam-years');
-        resp+=x; document.getElementById('fam-total').textContent=money(x);
-        respList.innerHTML+=`<li>Vận hành gia đình: ${money(x)}</li>`;
-      }
-      // học vấn
-      if(state.must.includes('Quỹ học vấn cho con')){
-        let total=0; state.children.forEach(c=> total+=(c.cost||0)*(c.years||0));
-        resp+=total; save+=total;
-        document.getElementById('edu-total').textContent=money(total);
-        respList.innerHTML+=`<li>Quỹ học vấn: ${money(total)}</li>`;
-        saveList.innerHTML+=`<li>Quỹ học vấn: ${money(total)}</li>`;
-      }
-      // hưu trí
-      if(state.must.includes('Quỹ hưu trí')){
-        const x=getNum('ret-years')*getNum('ret-month')*12;
-        save+=x; document.getElementById('ret-total').textContent=money(x);
-        saveList.innerHTML+=`<li>Quỹ hưu trí: ${money(x)}</li>`;
-      }
-      // nợ
-      if(state.must.includes('Trả nợ')){
-        const x=getNum('debt'); resp+=x;
-        respList.innerHTML+=`<li>Trả nợ: ${money(x)}</li>`;
-      }
-      // di sản
-      if(state.must.includes('Gia tăng tài sản/ Để lại di sản')){
-        const x=getNum('legacy'); resp+=x;
-        respList.innerHTML+=`<li>Di sản: ${money(x)}</li>`;
-      }
-
-      document.getElementById('resp-total').textContent=money(resp);
-      document.getElementById('save-total').textContent=money(save);
-      const prepared=getNum('resp-prepared');
-      document.getElementById('resp-gap').textContent=money(Math.max(resp-prepared,0));
-    }
-
-    // init
-    document.querySelectorAll('[data-money]').forEach(bindMoney);
-    document.getElementById('add-goal').onclick=()=>{ const v=document.getElementById('goal-input').value.trim(); if(v){ state.goals.push(v); document.getElementById('goal-input').value=''; render(); } };
-    document.getElementById('add-reason').onclick=()=>{ const v=document.getElementById('reason-input').value.trim(); if(v){ state.reasons.push(v); document.getElementById('reason-input').value=''; render(); } };
-    document.getElementById('add-pos').onclick=()=>{ const v=document.getElementById('pos-input').value.trim(); if(v){ state.pos.push(v); document.getElementById('pos-input').value=''; render(); } };
-    document.getElementById('add-neg').onclick=()=>{ const v=document.getElementById('neg-input').value.trim(); if(v){ state.neg.push(v); document.getElementById('neg-input').value=''; render(); } };
-    document.getElementById('add-alt').onclick=()=>{ const v=document.getElementById('alt-input').value.trim(); if(v){ state.alts.push(v); document.getElementById('alt-input').value=''; render(); } };
-    document.getElementById('add-child').onclick=()=>{ if(state.children.length<6){ state.children.push({}); renderChildren(); calc(); } };
-
-    function render(){
-      const must=document.getElementById('must-goals'); must.innerHTML='';
-      state.goals.forEach(g=>{
-        const s=document.createElement('div');
-        s.className='px-3 py-1 border rounded cursor-pointer mr-2 mb-2';
-        if(state.must.includes(g)){ s.classList.add('font-bold','bg-red-50'); }
-        s.textContent=g;
-        s.onclick=()=>{ if(state.must.includes(g)) state.must=state.must.filter(x=>x!==g); else state.must.push(g); render(); };
-        must.appendChild(s);
-      });
+    // Render tất cả
+    function render() {
+      renderPriority();
+      renderChips(state.reasons, 'reasons');
+      renderChips(state.pos, 'positives');
+      renderChips(state.neg, 'negatives');
+      renderChips(state.unmit, 'unmit');
+      renderChips(state.alts, 'alts');
       renderChildren();
       updateFundsVisibility();
       calc();
     }
 
+    function updateFundsVisibility() {
+      document.getElementById('fund-family').style.display = state.must.includes('Vận hành gia đình') ? 'block' : 'none';
+      document.getElementById('fund-edu').style.display = state.must.includes('Quỹ học vấn cho con') ? 'block' : 'none';
+      document.getElementById('fund-retire').style.display = state.must.includes('Quỹ hưu trí') ? 'block' : 'none';
+      document.getElementById('fund-debt').style.display = state.must.includes('Trả nợ') ? 'block' : 'none';
+      document.getElementById('fund-legacy').style.display = state.must.includes('Gia tăng tài sản/ Để lại di sản') ? 'block' : 'none';
+    }
+
+    // Tính toán tổng các quỹ
+    function calc() {
+      let respSum = 0,
+        saveSum = 0;
+      const respList = document.getElementById('resp-list');
+      const saveList = document.getElementById('save-list');
+      respList.innerHTML = '';
+      saveList.innerHTML = '';
+
+      // Gia đình
+      if (state.must.includes('Vận hành gia đình')) {
+        const x = val('fam-monthly') * 12 * val('fam-years');
+        respSum += x;
+        document.getElementById('fam-total').textContent = money(x);
+        respList.innerHTML += `<li>Vận hành gia đình: ${money(x)}</li>`;
+      } else {
+        document.getElementById('fam-total').textContent = money(0);
+      }
+
+      // Học vấn
+      if (state.must.includes('Quỹ học vấn cho con')) {
+        let total = 0;
+        state.children.forEach(c => (total += (c.cost || 0) * (c.years || 0)));
+        respSum += total;
+        saveSum += total;
+        document.getElementById('edu-total').textContent = money(total);
+        respList.innerHTML += `<li>Quỹ học vấn: ${money(total)}</li>`;
+        saveList.innerHTML += `<li>Quỹ học vấn: ${money(total)}</li>`;
+      } else {
+        document.getElementById('edu-total').textContent = money(0);
+      }
+
+      // Hưu trí
+      if (state.must.includes('Quỹ hưu trí')) {
+        const x = val('ret-years') * val('ret-month') * 12;
+        saveSum += x;
+        document.getElementById('ret-total').textContent = money(x);
+        saveList.innerHTML += `<li>Quỹ hưu trí: ${money(x)}</li>`;
+      } else {
+        document.getElementById('ret-total').textContent = money(0);
+      }
+
+      // Nợ
+      if (state.must.includes('Trả nợ')) {
+        const x = val('debt');
+        respSum += x;
+        respList.innerHTML += `<li>Trả nợ: ${money(x)}</li>`;
+      }
+
+      // Di sản
+      if (state.must.includes('Gia tăng tài sản/ Để lại di sản')) {
+        const x = val('legacy');
+        respSum += x;
+        respList.innerHTML += `<li>Di sản: ${money(x)}</li>`;
+      }
+
+      // Tổng hợp
+      document.getElementById('resp-total').textContent = money(respSum);
+      document.getElementById('save-total').textContent = money(saveSum);
+      const prepared = val('resp-prepared');
+      document.getElementById('resp-gap').textContent = money(Math.max(respSum - prepared, 0));
+    }
+
+    // Bind mask tiền
+    document.querySelectorAll('[data-money]').forEach(bindMoney);
+
+    // Các sự kiện thêm mục tiêu, lý do, thuận lợi, khó khăn, phương án, con
+    document.getElementById('add-goal').onclick = () => addChip(state.goals, 'goal-input');
+    document.getElementById('add-reason').onclick = () => addChip(state.reasons, 'reason-input');
+    document.getElementById('add-pos').onclick = () => addChip(state.pos, 'pos-input');
+    document.getElementById('add-neg').onclick = () => addChip(state.neg, 'neg-input');
+    document.getElementById('add-alt').onclick = () => addChip(state.alts, 'alt-input');
+    document.getElementById('add-child').onclick = () => {
+      if (state.children.length < 6) {
+        state.children.push({ name: '', school: '', cost: 0, years: 0 });
+        renderChildren();
+        calc();
+      } else {
+        alert('Tối đa 6 con.');
+      }
+    };
+
+    // Hiện/ẩn phần đóng góp khi chọn đồng hành
+    document.querySelectorAll('[name="partner"]').forEach(r =>
+      r.onchange = () =>
+        document.getElementById('partner-extra').classList.toggle('hidden', r.value !== 'yes')
+    );
+
+    // Khởi tạo
     render();
   </script>
 </body>
