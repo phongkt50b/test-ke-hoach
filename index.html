@@ -125,6 +125,8 @@
 <body>
   <div class="container mx-auto p-6 max-w-5xl">
     <h1 class="text-3xl font-bold text-red-600 mb-8">Bản đồ tài chính cá nhân</h1>
+<!-- Ảnh minh họa -->
+    <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/fAwgCtbpSwrBz3hw.png?Expires=1758166712&Signature=hLRVoU6sb~ES9vWl0Ha1Q-5-mvE9PoqXNHWwtfIqz-0PmWG78iyLBPxODZR-5PBBGD8hr6qrs8jH172YDY9eZO~nsbBaoCc1PFOBKmOuKW0d9EK15ar5uF~pzgGIiU10yquSllZWvfaxtQ2uAmP3kNfXhHfv17bCkS-0cY3RW-YYftfHqEe03RAxnVsaVOtprR4mbP3Yd3FnZmBauW9ypVYGXBPfIzDBEhbUeDb8jlESdx0HqvlJXF09mPhoKdW68ZA7Wu1QxyMLVuydMI-Ye01FGQo6Vbqlz3F2NzM6mZT7p575Zcbnx3C~BwgJphddN5VPq6Fu44ake-igvs181Q__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Financial Goal Illustration" class="header-image" />
 
     <!-- Phần 1 -->
     <section class="bg-white shadow rounded-lg p-6 mb-8">
@@ -216,6 +218,31 @@
         </div>
       </div>
     </section>
+<!-- Phần 3 -->
+    <section class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="section-title">Phần 3: Tổng hợp</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
+          <ul id="resp-list" class="list-disc pl-5 space-y-1"></ul>
+          <div class="font-bold mt-2 text-lg font-mono">Tổng: <span id="resp-total">₫0</span></div>
+          <div class="mt-4">
+            <label>Đã chuẩn bị</label>
+            <input id="resp-prepared" data-money class="form-input w-40" />
+          </div>
+          <div class="mt-2 font-bold text-red-600 text-lg">Khoảng thiếu: <span id="resp-gap">₫0</span></div>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
+          <ul id="save-list" class="list-disc pl-5 space-y-1"></ul>
+          <div class="font-bold mt-2 text-lg font-mono">Tổng: <span id="save-total">₫0</span></div>
+          <div class="mt-4">
+            <label>Mong muốn hoàn thành (%)</label>
+            <input id="goal-percent" type="number" min="0" max="100" class="form-input w-32" />
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- 5 + 6 -->
     <section class="bg-white shadow rounded-lg p-6 mb-8">
@@ -234,6 +261,8 @@
         <input id="years-all" type="number" min="0" class="form-input w-32" />
       </div>
     </section>
+<!-- Ảnh minh họa mới chèn trước phần 2 -->
+    <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/VAdBwf1MJatv8jOd.jpeg?Expires=1758167176&Signature=MaEh1gUZNHzEQaAvdc~dX4lhKvJuvWCJ2gB3JbaRTK5m3X9K3OrKKBim-24BVvfmnb1hgcwvVZcJxYDfJGDwzlShT80zhGRTzHJgmh5ruG13ChdKJfSQ6LevntcxU~WuISW-LSb-6cz0ShzwutxEo5w~9eRQYLwr6CFKZfsOCxgXXgatSBQSH8ahX4NlepdA601Fsx1uZGUNf9p9JRAkYKdPdaITCdG6sI9kJdReGPsGzI0pSTme5khN0a4KdWyz6V5Zw8mZc602nZcjUlonxJjgkkfxLbZoUUN--c0euhkuukKMdSxLd9t29w7N-UmwQ7ui8K19E02Ob2f7FkD-yA__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Financial Goal Storm Illustration" class="header-image" />
 
     <!-- Phần 2 -->
     <section class="bg-white shadow rounded-lg p-6 mb-8">
@@ -272,31 +301,9 @@
       </div>
     </section>
 
-    <!-- Phần 3 -->
-    <section class="bg-white shadow rounded-lg p-6 mb-8">
-      <h2 class="section-title">Phần 3: Tổng hợp</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
-          <ul id="resp-list" class="list-disc pl-5 space-y-1"></ul>
-          <div class="font-bold mt-2 text-lg font-mono">Tổng: <span id="resp-total">₫0</span></div>
-          <div class="mt-4">
-            <label>Đã chuẩn bị</label>
-            <input id="resp-prepared" data-money class="form-input w-40" />
-          </div>
-          <div class="mt-2 font-bold text-red-600 text-lg">Khoảng thiếu: <span id="resp-gap">₫0</span></div>
-        </div>
-        <div>
-          <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
-          <ul id="save-list" class="list-disc pl-5 space-y-1"></ul>
-          <div class="font-bold mt-2 text-lg font-mono">Tổng: <span id="save-total">₫0</span></div>
-          <div class="mt-4">
-            <label>Mong muốn hoàn thành (%)</label>
-            <input id="goal-percent" type="number" min="0" max="100" class="form-input w-32" />
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="mb-6">
+  <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/Y7H8r9xIVLLxQAvv.jpeg?Expires=1758168985&Signature=wGBiM8ilydW85duH5Kktqo-Jf~STdkTTUgl-7BVWKCzVgURI3MoAF2InHFvRzDnfusLbXKn22grGmrbXtXMN2XmP675PMTi~C3-tJLzocdRNqmJxcLyhRvVXC3g1SqnP1Z9aNf5Jvt7lL2j6FNg3Si7Tdjovmk-TjIbQ2bBnB1SfIbaoVyXlEGsumLKSsVIMNTpQodh5FjbYtXYJzj8QU60xvje1EW6eP-z-0zBpw~-NwxHdq4W2OnB-ir970HmsZ2QTG007k2NFHZt1bCdE~YlLig149CsE606xzE1t0m-mivmIjKQbgJ1zXRaeb9enj4Zq1uBdODNRHUK7PQFGYQ__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Financial Goal Ship Illustration" class="w-full rounded-lg shadow-md" />
+</div>
 
     <div class="no-print flex gap-4">
       <button onclick="window.print()" class="btn-primary px-6 py-3 rounded">Xuất PDF</button>
