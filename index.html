@@ -1,661 +1,755 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8"/>
-  <title>Bản đồ tài chính cá nhân - Fix nhập liệu & real-time</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    body {
-      font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f9fafb;
-      color: #1f2937;
-    }
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #C81E26;
-      margin-bottom: 1rem;
-    }
-    .form-input, .form-select {
-      width: 100%;
-      background: #fff;
-      border: 1px solid #D1D5DB;
-      border-radius: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      font-size: 1rem;
-      line-height: 1.25;
-      transition: border-color 0.3s ease;
-    }
-    .form-input:focus, .form-select:focus {
-      outline: none;
-      border-color: #C81E26;
-      box-shadow: 0 0 0 3px rgba(200,30,38,0.3);
-    }
-    .btn-primary {
-      background-color: #C81E26;
-      color: white;
-      font-weight: 600;
-      padding: 0.5rem 1rem;
-      border-radius: 0.6rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .btn-primary:hover {
-      background-color: #9f1922;
-    }
-    .btn-ghost {
-      background: white;
-      border: 1px solid #E5E7EB;
-      color: #111827;
-      font-weight: 600;
-      padding: 0.5rem 1rem;
-      border-radius: 0.6rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .btn-ghost:hover {
-      background-color: #f9fafb;
-    }
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.6rem;
-      border-radius: 9999px;
-      background: #F3F4F6;
-      border: 1px solid #E5E7EB;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-    }
-    .chip button {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: #6B7280;
-      font-size: 1rem;
-      line-height: 1;
-      margin-left: 0.5rem;
-    }
-    .priority-item {
-      padding: 0.5rem 1rem;
-      border: 1px solid #D1D5DB;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s ease;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .priority-item.selected {
-      background-color: #C81E26;
-      color: white;
-      font-weight: 600;
-      border-color: #9f1922;
-    }
-    .priority-item:hover {
-      background-color: #fee2e2;
-    }
-    .child-row {
-      border: 1px solid #D1D5DB;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      background: white;
-    }
-    .child-row input {
-      font-size: 1rem;
-    }
-    .child-total {
-      font-weight: 700;
-      color: #C81E26;
-      font-family: monospace;
-    }
-    .font-mono {
-      font-family: monospace;
-    }
-    @media print {
-      .no-print {
-        display: none !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<title>Bản đồ tài chính cá nhân - Chi tiết & Đồng bộ font</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --base-font-size:15px;
+  --base-font:"Be Vietnam Pro",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  --main-red:#C81E26;
+  --gray:#374151;
+}
+* {box-sizing:border-box;}
+body, h1, h2, h3, h4, h5, h6, p, li, input, button, label, span, div, textarea {
+  font-family: var(--base-font);
+  font-size: var(--base-font-size);
+  line-height:1.5;
+  letter-spacing:.2px;
+  color: var(--gray);
+}
+body {background:#f9fafb; margin:0;}
+h1,h2,h3 {font-weight:600; margin:0 0 .75rem;}
+.section-title {color:var(--main-red); font-weight:600; margin-bottom:1rem;}
+.form-input,.form-select {
+  width:100%;background:#fff;border:1px solid #D1D5DB;border-radius:0.5rem;
+  padding:0.55rem 0.75rem;transition:border-color .25s, box-shadow .25s;
+}
+.form-input:focus,.form-select:focus {outline:none;border-color:var(--main-red);box-shadow:0 0 0 3px rgba(200,30,38,.25);}
+.btn-primary {
+  background:var(--main-red);color:#fff;font-weight:600;padding:0.5rem 1rem;border-radius:0.55rem;
+  cursor:pointer;border:none;display:inline-flex;align-items:center;gap:.25rem;transition:.25s;
+}
+.btn-primary:hover {background:#9f1922;}
+.btn-ghost {
+  background:#fff;border:1px solid #E5E7EB;color:#111827;font-weight:600;
+  padding:0.5rem 1rem;border-radius:0.55rem;cursor:pointer;transition:.25s;
+}
+.btn-ghost:hover {background:#f3f4f6;}
+.chip {
+  display:inline-flex;align-items:center;padding:0.25rem 0.6rem;border-radius:9999px;
+  background:#F3F4F6;border:1px solid #E5E7EB;margin:0 0.5rem 0.5rem 0;font-weight:500;
+}
+.chip button {
+  background:transparent;border:none;cursor:pointer;color:#6B7280;font-size:1rem;
+  line-height:1;margin-left:0.4rem;padding:0;
+}
+.chip-positive {background:#16A34A !important;border-color:#15803D !important;color:#fff;}
+.chip-positive button {color:#fff;}
+.priority-item {
+  position:relative;display:flex;align-items:center;gap:.4rem;padding:0.45rem 0.7rem;
+  border:1px solid #D1D5DB;border-radius:0.55rem;cursor:pointer;user-select:none;
+  transition:background-color .2s,border-color .2s; margin:0 0.5rem 0.5rem 0;
+}
+.priority-item.selected {background:var(--main-red);color:#fff;font-weight:600;border-color:#9f1922;}
+.priority-item:hover {background:#fee2e2;}
+.priority-item button.remove-goal {
+  background:#e5e7eb;color:#374151;font-size:.75rem;padding:0 6px;border-radius:0.375rem;cursor:pointer;border:none;
+}
+.priority-item.selected button.remove-goal {background:#f87171;color:#fff;}
+.priority-item button.remove-goal:hover {background:#9ca3af;color:#111827;}
+.priority-item.selected button.remove-goal:hover {background:#dc2626;}
+.child-row {border:1px solid #D1D5DB;border-radius:0.55rem;padding:1rem;margin-bottom:1rem;background:#fff;}
+.child-total {font-weight:600;color:var(--main-red);font-family:monospace;}
+.summary-box {background:#fff;border:1px solid #e5e7eb;border-radius:0.75rem;padding:1.25rem;}
+.summary-box h3 {font-weight:600;color:var(--main-red);margin-bottom:.4rem;}
+.summary-grid {display:grid;gap:1rem;}
+@media(min-width:900px){.summary-grid.three-cols{grid-template-columns:repeat(3,1fr);} .summary-grid.two-cols{grid-template-columns:repeat(2,1fr);} }
+.mono {font-family:monospace;font-weight:500;}
+.formula {font-family:monospace; background:#f3f4f6; padding:2px 6px; border-radius:4px; display:inline-block;}
+.goal-breakdown ul {margin:.25rem 0 0 .75rem; padding:0; list-style:disc;}
+.divider {height:1px;background:#e5e7eb;margin:1rem 0;}
+@media print {
+  .no-print {display:none!important;}
+  body {background:#fff;}
+  .summary-box {break-inside:avoid;}
+}
+</style>
 </head>
 <body>
-  <div class="container mx-auto p-6 max-w-5xl">
-    <h1 class="text-3xl font-bold text-red-600 mb-8">Bản đồ tài chính cá nhân</h1>
-<!-- Ảnh minh họa -->
-    <video class="header-image w-full rounded-lg shadow-md" autoplay muted loop playsinline>
-<source src="https://phongkt50b.github.io/test-ke-hoach/video1.mp4" type="video/mp4" />
-Trình duyệt của bạn không hỗ trợ thẻ video.
-</video>
-    <!-- Phần 1 -->
-    <section class="bg-white shadow rounded-lg p-6 mb-8">
-      <h2 class="section-title">Phần 1: Làm rõ mục tiêu tài chính</h2>
+<div class="container mx-auto p-6 max-w-6xl">
+<h1 class="section-title" style="margin-top:0;">Bản đồ tài chính cá nhân</h1>
 
-      <!-- 1 -->
-      <div class="mb-6">
-        <label class="font-medium block mb-2">1. Mục tiêu/Kế hoạch dài hạn</label>
-        <div class="flex gap-2">
-          <input id="goal-input" list="goal-suggest" class="form-input flex-1" placeholder="Nhập mục tiêu..." autocomplete="off" />
-          <button id="add-goal" type="button" class="btn-primary">+ Thêm</button>
-        </div>
-        <datalist id="goal-suggest">
-          <option value="Vận hành gia đình" />
-          <option value="Quỹ học vấn cho con" />
-          <option value="Quỹ hưu trí" />
-          <option value="Trả nợ" />
-          <option value="Gia tăng tài sản/ Để lại di sản" />
-          <option value="Mở doanh nghiệp riêng" />
-        </datalist>
-      </div>
+<div style="max-width:560px;margin:auto;">
+  <iframe width="100%" height="315"
+    src="https://www.youtube.com/embed/WbGeIDKdrdo?autoplay=1&loop=1&playlist=WbGeIDKdrdo&mute=1"
+    title="Video giới thiệu" frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>
+</div>
 
-      <!-- 2. Mục tiêu quan trọng nhất -->
-      <div class="mb-6">
-        <label class="font-medium block mb-2">2. Mục tiêu nào là quan trọng nhất, phải làm bằng mọi giá (chọn nhiều)</label>
-        <div id="priority-list" class="flex flex-wrap"></div>
-      </div>
+<!-- PHẦN 1 -->
+<section class="bg-white shadow rounded-lg p-6 mt-8 mb-8">
+  <h2 class="section-title">Phần 1: Làm rõ mục tiêu tài chính</h2>
 
-      <!-- 3 -->
-      <div class="mb-6">
-        <label class="font-medium block mb-2">3. Lý do</label>
-        <div class="flex gap-2">
-          <input id="reason-input" class="form-input flex-1" placeholder="Nhập lý do..." />
-          <button id="add-reason" type="button" class="btn-primary">+ Thêm</button>
-        </div>
-        <div id="reasons" class="mt-2 flex flex-wrap"></div>
-      </div>
+  <!-- 1 -->
+  <div class="mb-6">
+    <label class="font-medium block mb-2">1. Mục tiêu/Kế hoạch dài hạn</label>
+    <div class="flex gap-2">
+      <input id="goal-input" list="goal-suggest" class="form-input flex-1" placeholder="Nhập mục tiêu..." autocomplete="off" />
+      <button id="add-goal" type="button" class="btn-primary">+ Thêm</button>
+    </div>
+    <datalist id="goal-suggest">
+      <option value="Vận hành gia đình" />
+      <option value="Quỹ học vấn cho con" />
+      <option value="Quỹ hưu trí" />
+      <option value="Trả nợ" />
+      <option value="Gia tăng tài sản/ Để lại di sản" />
+      <option value="Mở doanh nghiệp riêng" />
+    </datalist>
+    <p class="text-gray-500 mt-2">Bấm vào để chọn mục tiêu quan trọng; nhấn x để xóa khỏi danh sách.</p>
+  </div>
 
-      <!-- 4: Quỹ cần thiết -->
-      <div id="funds" class="space-y-6">
-        <!-- Gia đình -->
-        <div id="fund-family" class="hidden">
-          <h3 class="font-semibold mb-2">Quỹ vận hành gia đình</h3>
-          <div class="grid md:grid-cols-3 gap-4">
-            <div>
-              <label>Chi phí/tháng (₫)</label>
-              <input id="fam-monthly" data-money class="form-input" />
-            </div>
-            <div>
-              <label>Số năm</label>
-              <input id="fam-years" type="number" min="0" class="form-input" />
-            </div>
-            <div class="flex flex-col justify-end font-bold text-red-600 font-mono" style="font-size:1.125rem;">Tổng: <span id="fam-total">₫0</span></div>
-          </div>
-        </div>
-        <!-- Học vấn -->
-        <div id="fund-edu" class="hidden">
-          <h3 class="font-semibold mb-2">Quỹ học vấn đại học cho con</h3>
-          <div id="children"></div>
-          <button id="add-child" type="button" class="btn-ghost">+ Thêm con</button>
-          <div class="font-bold mt-2 text-red-600 font-mono text-lg">Tổng học vấn: <span id="edu-total">₫0</span></div>
-        </div>
-        <!-- Hưu trí -->
-        <div id="fund-retire" class="hidden">
-          <h3 class="font-semibold mb-2">Quỹ hưu trí</h3>
-          <div class="grid md:grid-cols-3 gap-4">
-            <div>
-              <label>Số năm an nhàn</label>
-              <input id="ret-years" type="number" min="0" class="form-input" />
-            </div>
-            <div>
-              <label>Chi tiêu/tháng (₫)</label>
-              <input id="ret-month" data-money class="form-input" />
-            </div>
-            <div class="flex flex-col justify-end font-bold text-red-600 font-mono text-lg">Tổng: <span id="ret-total">₫0</span></div>
-          </div>
-        </div>
-        <!-- Nợ -->
-        <div id="fund-debt" class="hidden">
-          <h3 class="font-semibold mb-2">Thanh khoản nợ</h3>
-          <label>Số nợ hiện tại (₫)</label>
-          <input id="debt" data-money class="form-input" />
-        </div>
-        <!-- Di sản -->
-        <div id="fund-legacy" class="hidden">
-          <h3 class="font-semibold mb-2">Gia tăng tài sản/Di sản</h3>
-          <label>Giá trị kỳ vọng (₫)</label>
-          <input id="legacy" data-money class="form-input" />
-        </div>
-      </div>
-    </section>
-<!-- Phần 3 -->
-    <section class="bg-white shadow rounded-lg p-6 mb-8">
-      <h2 class="section-title">Phần 3: Tổng hợp</h2>
-      <div class="grid md:grid-cols-2 gap-6">
+  <!-- 2 -->
+  <div class="mb-6">
+    <label class="font-medium block mb-2">2. Mục tiêu quan trọng nhất (chọn nhiều)</label>
+    <div id="priority-list" class="flex flex-wrap"></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="mb-6">
+    <label class="font-medium block mb-2">3. Lý do</label>
+    <div class="flex gap-2">
+      <input id="reason-input" class="form-input flex-1" placeholder="Nhập lý do..." />
+      <button id="add-reason" type="button" class="btn-primary">+ Thêm</button>
+    </div>
+    <div id="reasons" class="mt-2 flex flex-wrap"></div>
+  </div>
+
+  <!-- 4: Quỹ -->
+  <div id="funds" class="space-y-6">
+    <!-- Gia đình -->
+    <div id="fund-family" class="hidden">
+      <h3>Quỹ vận hành gia đình</h3>
+      <div class="grid md:grid-cols-3 gap-4">
         <div>
-          <h3 class="font-semibold mb-2">Số tiền trách nhiệm</h3>
-          <ul id="resp-list" class="list-disc pl-5 space-y-1"></ul>
-          <div class="font-bold mt-2 text-lg font-mono">Tổng: <span id="resp-total">₫0</span></div>
-          <div class="mt-4">
-            <label>Đã chuẩn bị</label>
-            <input id="resp-prepared" data-money class="form-input w-40" />
-          </div>
-          <div class="mt-2 font-bold text-red-600 text-lg">Khoảng thiếu: <span id="resp-gap">₫0</span></div>
+          <label>Chi phí/tháng (₫)</label>
+          <input id="fam-monthly" data-money class="form-input" />
         </div>
         <div>
-          <h3 class="font-semibold mb-2">Số tiền phải tích luỹ</h3>
-          <ul id="save-list" class="list-disc pl-5 space-y-1"></ul>
-          <div class="font-bold mt-2 text-lg font-mono">Tổng: <span id="save-total">₫0</span></div>
-          <div class="mt-4">
-            <label>Mong muốn hoàn thành (%)</label>
-            <input id="goal-percent" type="number" min="0" max="100" class="form-input w-32" />
+          <label>Số năm</label>
+          <input id="fam-years" type="number" min="0" class="form-input" />
+        </div>
+        <div class="flex flex-col justify-end font-semibold text-red-600 mono">
+          Tổng: <span id="fam-total">₫0</span>
+        </div>
+      </div>
+    </div>
+    <!-- Học vấn -->
+    <div id="fund-edu" class="hidden">
+      <h3>Quỹ học vấn đại học cho con</h3>
+      <div id="children"></div>
+      <button id="add-child" type="button" class="btn-ghost">+ Thêm con</button>
+      <div class="font-semibold mt-2 text-red-600 mono">Tổng học vấn: <span id="edu-total">₫0</span></div>
+    </div>
+    <!-- Hưu trí -->
+    <div id="fund-retire" class="hidden">
+      <h3>Quỹ hưu trí</h3>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div>
+          <label>Số năm an nhàn</label>
+          <input id="ret-years" type="number" min="0" class="form-input" />
+        </div>
+          <div>
+            <label>Chi tiêu/tháng (₫)</label>
+            <input id="ret-month" data-money class="form-input" />
           </div>
-        </div>
+          <div class="flex flex-col justify-end font-semibold text-red-600 mono">
+            Tổng: <span id="ret-total">₫0</span>
+          </div>
       </div>
-    </section>
+    </div>
+    <!-- Nợ -->
+    <div id="fund-debt" class="hidden">
+      <h3>Thanh khoản nợ</h3>
+      <label>Số nợ hiện tại (₫)</label>
+      <input id="debt" data-money class="form-input" />
+    </div>
+    <!-- Di sản -->
+    <div id="fund-legacy" class="hidden">
+      <h3>Gia tăng tài sản/Di sản</h3>
+      <label>Giá trị kỳ vọng (₫)</label>
+      <input id="legacy" data-money class="form-input" />
+    </div>
+  </div>
+</section>
 
-    <!-- 5 + 6 -->
-    <section class="bg-white shadow rounded-lg p-6 mb-8">
-      <h2 class="section-title">5–6. Đồng hành & Thời hạn</h2>
-      <div class="mb-4">
-        <label class="block mb-2">Có ai cùng thực hiện không?</label>
-        <label><input type="radio" name="partner" value="no" checked /> Không</label>
-        <label class="ml-4"><input type="radio" name="partner" value="yes" /> Có</label>
+<!-- PHẦN 3 -->
+<section class="bg-white shadow rounded-lg p-6 mb-8">
+  <h2 class="section-title">Phần 3: Tổng hợp</h2>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div>
+      <h3>Số tiền trách nhiệm</h3>
+      <ul id="resp-list" class="list-disc pl-5 space-y-1"></ul>
+      <div class="font-semibold mt-2 mono">Tổng: <span id="resp-total">₫0</span></div>
+      <div class="mt-4">
+        <label>Đã chuẩn bị</label>
+        <input id="resp-prepared" data-money class="form-input w-44" />
       </div>
-      <div id="partner-extra" class="hidden mb-4">
-        <label>% đóng góp</label>
-        <input id="partner-perc" type="number" min="0" max="100" class="form-input w-32" />
+      <div class="mt-2 font-semibold text-red-600 mono">Khoảng thiếu: <span id="resp-gap">₫0</span></div>
+    </div>
+    <div>
+      <h3>Số tiền phải tích luỹ</h3>
+      <ul id="save-list" class="list-disc pl-5 space-y-1"></ul>
+      <div class="font-semibold mt-2 mono">Tổng: <span id="save-total">₫0</span></div>
+      <div class="mt-4">
+        <label>Mong muốn hoàn thành (%)</label>
+        <input id="goal-percent" type="number" min="0" max="100" class="form-input w-32" />
       </div>
-      <div>
-        <label>Hoàn thành trong bao lâu (năm)</label>
-        <input id="years-all" type="number" min="0" class="form-input w-32" />
-      </div>
-    </section>
-<!-- Ảnh minh họa mới chèn trước phần 2 -->
-    <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/VAdBwf1MJatv8jOd.jpeg?Expires=1758167176&Signature=MaEh1gUZNHzEQaAvdc~dX4lhKvJuvWCJ2gB3JbaRTK5m3X9K3OrKKBim-24BVvfmnb1hgcwvVZcJxYDfJGDwzlShT80zhGRTzHJgmh5ruG13ChdKJfSQ6LevntcxU~WuISW-LSb-6cz0ShzwutxEo5w~9eRQYLwr6CFKZfsOCxgXXgatSBQSH8ahX4NlepdA601Fsx1uZGUNf9p9JRAkYKdPdaITCdG6sI9kJdReGPsGzI0pSTme5khN0a4KdWyz6V5Zw8mZc602nZcjUlonxJjgkkfxLbZoUUN--c0euhkuukKMdSxLd9t29w7N-UmwQ7ui8K19E02Ob2f7FkD-yA__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Financial Goal Storm Illustration" class="header-image" />
+    </div>
+  </div>
+</section>
 
-    <!-- Phần 2 -->
-    <section class="bg-white shadow rounded-lg p-6 mb-8">
-      <h2 class="section-title">Phần 2: Những yếu tố ảnh hưởng</h2>
+<!-- PHẦN 5–6 -->
+<section class="bg-white shadow rounded-lg p-6 mb-8">
+  <h2 class="section-title">5–6. Đồng hành & Thời hạn</h2>
+  <div class="mb-4">
+    <label class="block mb-2">Có ai cùng thực hiện không?</label>
+    <label><input type="radio" name="partner" value="no" checked /> Không</label>
+    <label class="ml-4"><input type="radio" name="partner" value="yes" /> Có</label>
+  </div>
+  <div id="partner-extra" class="hidden mb-4">
+    <label>% đóng góp</label>
+    <input id="partner-perc" type="number" min="0" max="100" class="form-input w-32" />
+  </div>
+  <div>
+    <label>Hoàn thành trong bao lâu (năm)</label>
+    <input id="years-all" type="number" min="0" class="form-input w-32" />
+  </div>
+</section>
 
-      <div class="mb-6">
-        <label>7. Thuận lợi</label>
-        <div class="flex gap-2">
-          <input id="pos-input" class="form-input flex-1" />
-          <button id="add-pos" type="button" class="btn-primary">+ Thêm</button>
-        </div>
-        <div id="positives" class="mt-2 flex flex-wrap"></div>
-      </div>
+<!-- ẢNH + PHẦN 2 -->
+<img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/VAdBwf1MJatv8jOd.jpeg?Expires=1758167176&Signature=MaEh1gUZNHzEQaAvdc~dX4lhKvJuvWCJ2gB3JbaRTK5m3X9K3OrKKBim-24BVvfmnb1hgcwvVZcJxYDfJGDwzlShT80zhGRTzHJgmh5ruG13ChdKJfSQ6LevntcxU~WuISW-LSb-6cz0ShzwutxEo5w~9eRQYLwr6CFKZfsOCxgXXgatSBQSH8ahX4NlepdA601Fsx1uZGUNf9p9JRAkYKdPdaITCdG6sI9kJdReGPsGzI0pSTme5khN0a4KdWyz6V5Zw8mZc602nZcjUlonxJjgkkfxLbZoUUN--c0euhkuukKMdSxLd9t29w7N-UmwQ7ui8K19E02Ob2f7FkD-yA__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Financial Goal Storm Illustration" class="w-full rounded-lg my-8 shadow" />
 
-      <div class="mb-6">
-        <label>8. Khó khăn</label>
-        <div class="flex gap-2">
-          <input id="neg-input" class="form-input flex-1" />
-          <button id="add-neg" type="button" class="btn-primary">+ Thêm</button>
-        </div>
-        <div id="negatives" class="mt-2 flex flex-wrap"></div>
-      </div>
+<section class="bg-white shadow rounded-lg p-6 mb-8">
+  <h2 class="section-title">Phần 2: Những yếu tố ảnh hưởng</h2>
 
-      <div class="mb-6">
-        <label>9. Khó khăn không thể khắc phục (chọn)</label>
-        <div id="unmit" class="flex flex-wrap"></div>
-      </div>
+  <div class="mb-6">
+    <label>7. Thuận lợi</label>
+    <div class="flex gap-2">
+      <input id="pos-input" class="form-input flex-1" placeholder="Nhập thuận lợi..." />
+      <button id="add-pos" type="button" class="btn-primary">+ Thêm</button>
+    </div>
+    <div id="positives" class="mt-2 flex flex-wrap"></div>
+  </div>
 
-      <div>
-        <label>10. Phương án thay thế</label>
-        <div class="flex gap-2">
-          <input id="alt-input" class="form-input flex-1" />
-          <button id="add-alt" type="button" class="btn-primary">+ Thêm</button>
-        </div>
-        <div id="alts" class="mt-2 flex flex-wrap"></div>
-      </div>
-    </section>
+  <div class="mb-6">
+    <label>8. Khó khăn</label>
+    <div class="flex gap-2">
+      <input id="neg-input" class="form-input flex-1" placeholder="Nhập khó khăn..." />
+      <button id="add-neg" type="button" class="btn-primary">+ Thêm</button>
+    </div>
+    <div id="negatives" class="mt-2 flex flex-wrap"></div>
+    <p class="text-gray-500 mt-1">Chỉ khi bạn tự chọn ở mục 9 thì mới đánh dấu là "không thể khắc phục".</p>
+  </div>
 
-    <div class="mb-6">
+  <div class="mb-6">
+    <label>9. Khó khăn không thể khắc phục (bấm để chọn)</label>
+    <div id="unmit" class="flex flex-wrap"></div>
+  </div>
+
+  <div>
+    <label>10. Phương án thay thế</label>
+    <div class="flex gap-2">
+      <input id="alt-input" class="form-input flex-1" placeholder="Nhập phương án..." />
+      <button id="add-alt" type="button" class="btn-primary">+ Thêm</button>
+    </div>
+    <div id="alts" class="mt-2 flex flex-wrap"></div>
+  </div>
+</section>
+
+<div class="mb-8">
   <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/Y7H8r9xIVLLxQAvv.jpeg?Expires=1758168985&Signature=wGBiM8ilydW85duH5Kktqo-Jf~STdkTTUgl-7BVWKCzVgURI3MoAF2InHFvRzDnfusLbXKn22grGmrbXtXMN2XmP675PMTi~C3-tJLzocdRNqmJxcLyhRvVXC3g1SqnP1Z9aNf5Jvt7lL2j6FNg3Si7Tdjovmk-TjIbQ2bBnB1SfIbaoVyXlEGsumLKSsVIMNTpQodh5FjbYtXYJzj8QU60xvje1EW6eP-z-0zBpw~-NwxHdq4W2OnB-ir970HmsZ2QTG007k2NFHZt1bCdE~YlLig149CsE606xzE1t0m-mivmIjKQbgJ1zXRaeb9enj4Zq1uBdODNRHUK7PQFGYQ__&Key-Pair-Id=K3USGZIKWMDCSX" alt="Financial Goal Ship Illustration" class="w-full rounded-lg shadow-md" />
 </div>
 
-    <div class="no-print flex gap-4">
-      <button onclick="window.print()" class="btn-primary px-6 py-3 rounded">Xuất PDF</button>
-    </div>
+<!-- TÓM TẮT -->
+<section class="summary-box mb-10" id="summary-section">
+  <h2 class="section-title" style="margin-bottom:.75rem;">Tóm tắt tổng quan</h2>
+  <div id="summary-content" class="space-y-4">
+    <!-- Nội dung động -->
   </div>
+</section>
 
-  <script>
-    const fmt = new Intl.NumberFormat('vi-VN');
-    const money = v => '₫' + fmt.format(+v || 0);
-    const digits = s => (s || '').replace(/\D/g, '');
-    const bindMoney = inp => {
-      inp.addEventListener('input', () => {
-        let val = digits(inp.value);
-        inp.value = val ? fmt.format(+val) : '';
-        calc();
-      });
-    };
+<div class="no-print flex gap-4">
+  <button onclick="window.print()" class="btn-primary px-6 py-3 rounded">Xuất PDF</button>
+</div>
+</div>
 
-    // State
-    const state = {
-      goals: [],
-      must: [], // mục tiêu quan trọng nhất, có thể chọn nhiều
-      reasons: [],
-      pos: [],
-      neg: [],
-      unmit: [],
-      alts: [],
-      children: [],
-    };
+<script>
+const fmt = new Intl.NumberFormat('vi-VN');
+const money = v => '₫' + fmt.format(+v || 0);
+const digits = s => (s || '').replace(/\D/g,'');
+const bindMoney = inp => {
+  inp.addEventListener('input', () => {
+    let val = digits(inp.value);
+    inp.value = val ? fmt.format(+val) : '';
+    calc();
+  });
+};
 
-    // Helpers
-    function val(id) {
-      return +digits(document.getElementById(id)?.value) || 0;
-    }
-    function addChip(arr, idInput) {
-      const v = document.getElementById(idInput).value.trim();
-      if (!v) return;
-      if (!arr.includes(v)) {
-        arr.push(v);
-        document.getElementById(idInput).value = '';
-        render();
-      } else {
-        alert('Giá trị đã tồn tại.');
-      }
-    }
+const state = {
+  goals: [],
+  must: [],
+  reasons: [],
+  pos: [],
+  neg: [],
+  unmit: [],
+  alts: [],
+  children: [],
+  lastTotals: { resp:0, save:0 }
+};
 
-    // Render chips (thêm nút xóa)
-    function renderChips(arr, id) {
-      const box = document.getElementById(id);
-      box.innerHTML = '';
-      arr.forEach((txt, i) => {
-        const c = document.createElement('span');
-        c.className = 'chip';
-        c.innerHTML = txt + ' <button aria-label="Xóa">&times;</button>';
-        c.querySelector('button').onclick = () => {
-          arr.splice(i, 1);
-          if (id === 'negatives') {
-            const idxUnmit = state.unmit.indexOf(txt);
-            if (idxUnmit !== -1) state.unmit.splice(idxUnmit, 1);
-          }
-          render();
-        };
-        box.appendChild(c);
-      });
-    }
+function val(id){ return +digits(document.getElementById(id)?.value) || 0; }
 
-    // Render mục tiêu quan trọng nhất (priority)
-    function renderPriority() {
-      const box = document.getElementById('priority-list');
-      box.innerHTML = '';
-      state.goals.forEach(goal => {
-        const div = document.createElement('div');
-        div.textContent = goal;
-        div.className = 'priority-item';
-        if (state.must.includes(goal)) {
-          div.classList.add('selected');
-        }
-        div.tabIndex = 0;
-        div.setAttribute('role', 'button');
-        div.setAttribute('aria-pressed', state.must.includes(goal));
-        div.onclick = () => {
-          if (state.must.includes(goal)) {
-            state.must = state.must.filter(x => x !== goal);
-          } else {
-            state.must.push(goal);
-          }
-          render();
-        };
-        div.onkeydown = e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            div.click();
-          }
-        };
-        box.appendChild(div);
-      });
-    }
-
-    // Render khó khăn không thể khắc phục (9) dạng toggle giống mục tiêu quan trọng nhất
-    function renderUnmit() {
-      const box = document.getElementById('unmit');
-      box.innerHTML = '';
-      state.neg.forEach(item => {
-        const div = document.createElement('div');
-        div.textContent = item;
-        div.className = 'priority-item';
-        if (state.unmit.includes(item)) {
-          div.classList.add('selected');
-        }
-        div.tabIndex = 0;
-        div.setAttribute('role', 'button');
-        div.setAttribute('aria-pressed', state.unmit.includes(item));
-        div.onclick = () => {
-          if (state.unmit.includes(item)) {
-            state.unmit = state.unmit.filter(x => x !== item);
-          } else {
-            state.unmit.push(item);
-          }
-          render();
-        };
-        div.onkeydown = e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            div.click();
-          }
-        };
-        box.appendChild(div);
-      });
-    }
-
-    // Render children without full rerender to keep input focus
-    function renderChildren() {
-      const box = document.getElementById('children');
-      box.innerHTML = '';
-      state.children.forEach((c, i) => {
-        const row = document.createElement('div');
-        row.className = 'child-row';
-
-        // Tạo input elements riêng biệt
-        const nameInput = document.createElement('input');
-        nameInput.placeholder = 'Tên con';
-        nameInput.value = c.name || '';
-        nameInput.className = 'form-input';
-        nameInput.style.marginBottom = '0.5rem';
-        nameInput.oninput = e => {
-          c.name = e.target.value;
-        };
-
-        const schoolInput = document.createElement('input');
-        schoolInput.placeholder = 'Trường';
-        schoolInput.value = c.school || '';
-        schoolInput.className = 'form-input';
-        schoolInput.style.marginBottom = '0.5rem';
-        schoolInput.oninput = e => {
-          c.school = e.target.value;
-        };
-
-        const costInput = document.createElement('input');
-        costInput.placeholder = 'Chi phí/năm';
-        costInput.value = c.cost ? fmt.format(c.cost) : '';
-        costInput.className = 'form-input';
-        costInput.style.marginBottom = '0.5rem';
-        costInput.dataset.money = 'true';
-        costInput.oninput = e => {
-          let val = digits(e.target.value);
-          e.target.value = val ? fmt.format(+val) : '';
-          c.cost = +val || 0;
-          calc();
-        };
-
-        const yearsInput = document.createElement('input');
-        yearsInput.placeholder = 'Số năm';
-        yearsInput.type = 'number';
-        yearsInput.min = 0;
-        yearsInput.value = c.years || '';
-        yearsInput.className = 'form-input';
-        yearsInput.style.marginBottom = '0.5rem';
-        yearsInput.oninput = e => {
-          c.years = +e.target.value || 0;
-          calc();
-        };
-
-        const inputsWrapper = document.createElement('div');
-        inputsWrapper.className = 'grid md:grid-cols-4 gap-4 mb-3';
-        inputsWrapper.appendChild(nameInput);
-        inputsWrapper.appendChild(schoolInput);
-        inputsWrapper.appendChild(costInput);
-        inputsWrapper.appendChild(yearsInput);
-
-        const totalSpan = document.createElement('span');
-        totalSpan.className = 'child-total font-mono';
-        totalSpan.textContent = money(c.cost * c.years);
-
-        const totalDiv = document.createElement('div');
-        totalDiv.className = 'flex justify-between items-center text-sm';
-        totalDiv.innerHTML = `<span>Tổng: </span>`;
-        totalDiv.appendChild(totalSpan);
-
-        const btnDelete = document.createElement('button');
-        btnDelete.className = 'text-red-600 font-semibold';
-        btnDelete.setAttribute('aria-label', 'Xóa con');
-        btnDelete.textContent = 'Xoá';
-        btnDelete.onclick = () => {
-          state.children.splice(i, 1);
-          renderChildren();
-          calc();
-        };
-        totalDiv.appendChild(btnDelete);
-
-        row.appendChild(inputsWrapper);
-        row.appendChild(totalDiv);
-
-        box.appendChild(row);
-      });
-    }
-
-    // Render tất cả
-    function render() {
-      renderPriority();
-      renderChips(state.reasons, 'reasons');
-      renderChips(state.pos, 'positives');
-      renderChips(state.neg, 'negatives');
-      renderUnmit();
-      renderChips(state.alts, 'alts');
-      renderChildren();
-      updateFundsVisibility();
-      calc();
-    }
-
-    function updateFundsVisibility() {
-      document.getElementById('fund-family').style.display = state.must.includes('Vận hành gia đình') ? 'block' : 'none';
-      document.getElementById('fund-edu').style.display = state.must.includes('Quỹ học vấn cho con') ? 'block' : 'none';
-      document.getElementById('fund-retire').style.display = state.must.includes('Quỹ hưu trí') ? 'block' : 'none';
-      document.getElementById('fund-debt').style.display = state.must.includes('Trả nợ') ? 'block' : 'none';
-      document.getElementById('fund-legacy').style.display = state.must.includes('Gia tăng tài sản/ Để lại di sản') ? 'block' : 'none';
-    }
-
-    // Tính toán tổng các quỹ
-    function calc() {
-      let respSum = 0,
-        saveSum = 0;
-      const respList = document.getElementById('resp-list');
-      const saveList = document.getElementById('save-list');
-      respList.innerHTML = '';
-      saveList.innerHTML = '';
-
-      // Gia đình (tính real-time)
-      if (state.must.includes('Vận hành gia đình')) {
-        const famMonthly = val('fam-monthly');
-        const famYears = val('fam-years');
-        const x = famMonthly * 12 * famYears;
-        respSum += x;
-        document.getElementById('fam-total').textContent = money(x);
-        respList.innerHTML += `<li>Vận hành gia đình: ${money(x)}</li>`;
-      } else {
-        document.getElementById('fam-total').textContent = money(0);
-      }
-
-      // Học vấn
-      if (state.must.includes('Quỹ học vấn cho con')) {
-        let total = 0;
-        state.children.forEach(c => (total += (c.cost || 0) * (c.years || 0)));
-        respSum += total;
-        saveSum += total;
-        document.getElementById('edu-total').textContent = money(total);
-        respList.innerHTML += `<li>Quỹ học vấn: ${money(total)}</li>`;
-        saveList.innerHTML += `<li>Quỹ học vấn: ${money(total)}</li>`;
-      } else {
-        document.getElementById('edu-total').textContent = money(0);
-      }
-
-      // Hưu trí
-      if (state.must.includes('Quỹ hưu trí')) {
-        const x = val('ret-years') * val('ret-month') * 12;
-        saveSum += x;
-        document.getElementById('ret-total').textContent = money(x);
-        saveList.innerHTML += `<li>Quỹ hưu trí: ${money(x)}</li>`;
-      } else {
-        document.getElementById('ret-total').textContent = money(0);
-      }
-
-      // Nợ
-      if (state.must.includes('Trả nợ')) {
-        const x = val('debt');
-        respSum += x;
-        respList.innerHTML += `<li>Trả nợ: ${money(x)}</li>`;
-      }
-
-      // Di sản
-      if (state.must.includes('Gia tăng tài sản/ Để lại di sản')) {
-        const x = val('legacy');
-        respSum += x;
-        respList.innerHTML += `<li>Di sản: ${money(x)}</li>`;
-      }
-
-      // Tổng hợp
-      document.getElementById('resp-total').textContent = money(respSum);
-      document.getElementById('save-total').textContent = money(saveSum);
-      const prepared = val('resp-prepared');
-      document.getElementById('resp-gap').textContent = money(Math.max(respSum - prepared, 0));
-    }
-
-    // Bind mask tiền
-    document.querySelectorAll('[data-money]').forEach(bindMoney);
-
-    // Các sự kiện thêm mục tiêu, lý do, thuận lợi, khó khăn, phương án, con
-    document.getElementById('add-goal').onclick = () => addChip(state.goals, 'goal-input');
-    document.getElementById('add-reason').onclick = () => addChip(state.reasons, 'reason-input');
-    document.getElementById('add-pos').onclick = () => addChip(state.pos, 'pos-input');
-
-    // Thêm khó khăn (8) đồng bộ lên khó khăn không thể khắc phục (9)
-    document.getElementById('add-neg').onclick = () => {
-      const v = document.getElementById('neg-input').value.trim();
-      if (!v) return;
-      if (!state.neg.includes(v)) {
-        state.neg.push(v);
-        if (!state.unmit.includes(v)) {
-          state.unmit.push(v);
-        }
-        document.getElementById('neg-input').value = '';
-        render();
-      } else {
-        alert('Khó khăn đã tồn tại.');
-      }
-    };
-
-    document.getElementById('add-alt').onclick = () => addChip(state.alts, 'alt-input');
-
-    document.getElementById('add-child').onclick = () => {
-      if (state.children.length < 6) {
-        state.children.push({ name: '', school: '', cost: 0, years: 0 });
-        renderChildren();
-        calc();
-      } else {
-        alert('Tối đa 6 con.');
-      }
-    };
-
-    // Hiện/ẩn phần đóng góp khi chọn đồng hành
-    document.querySelectorAll('[name="partner"]').forEach(r =>
-      r.onchange = () =>
-        document.getElementById('partner-extra').classList.toggle('hidden', r.value !== 'yes')
-    );
-
-    // Bắt sự kiện input real-time cho quỹ vận hành gia đình
-    document.getElementById('fam-monthly').addEventListener('input', calc);
-    document.getElementById('fam-years').addEventListener('input', calc);
-
-    // Khởi tạo
+function addChip(arr,idInput){
+  const v = document.getElementById(idInput).value.trim();
+  if(!v) return;
+  if(!arr.includes(v)){
+    arr.push(v);
+    document.getElementById(idInput).value='';
     render();
-  </script>
+  } else alert('Giá trị đã tồn tại.');
+}
+
+function renderChips(arr,id){
+  const box = document.getElementById(id);
+  box.innerHTML='';
+  arr.forEach((txt,i)=>{
+    const c=document.createElement('span');
+    c.className='chip'+(id==='positives'?' chip-positive':'');
+    c.innerHTML = `<span>${txt}</span><button aria-label="Xóa">&times;</button>`;
+    c.querySelector('button').onclick=()=>{
+      arr.splice(i,1);
+      if(id==='negatives'){
+        const k = state.unmit.indexOf(txt);
+        if(k!==-1) state.unmit.splice(k,1);
+      }
+      render();
+    };
+    box.appendChild(c);
+  });
+}
+
+function renderPriority(){
+  const box = document.getElementById('priority-list');
+  box.innerHTML='';
+  state.goals.forEach(goal=>{
+    const div=document.createElement('div');
+    div.className='priority-item';
+    if(state.must.includes(goal)) div.classList.add('selected');
+
+    const span=document.createElement('span');
+    span.textContent=goal;
+    span.className='flex-1';
+
+    const btnRemove=document.createElement('button');
+    btnRemove.className='remove-goal';
+    btnRemove.type='button';
+    btnRemove.innerHTML='&times;';
+    btnRemove.onclick=e=>{
+      e.stopPropagation();
+      state.goals = state.goals.filter(g=>g!==goal);
+      state.must = state.must.filter(g=>g!==goal);
+      render();
+    };
+
+    div.appendChild(span);
+    div.appendChild(btnRemove);
+
+    div.onclick=e=>{
+      if(e.target===btnRemove) return;
+      if(state.must.includes(goal)) state.must = state.must.filter(x=>x!==goal);
+      else state.must.push(goal);
+      render();
+    };
+    div.tabIndex=0;
+    div.setAttribute('role','button');
+    div.setAttribute('aria-pressed', state.must.includes(goal));
+    div.onkeydown=e=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); div.click(); }
+      if(e.key==='Delete'){ btnRemove.click(); }
+    };
+    box.appendChild(div);
+  });
+}
+
+function renderUnmit(){
+  const box=document.getElementById('unmit');
+  box.innerHTML='';
+  state.neg.forEach(item=>{
+    const div=document.createElement('div');
+    div.textContent=item;
+    div.className='priority-item';
+    if(state.unmit.includes(item)) div.classList.add('selected');
+    div.onclick=()=>{
+      if(state.unmit.includes(item)) state.unmit = state.unmit.filter(x=>x!==item);
+      else state.unmit.push(item);
+      renderUnmit();
+      updateSummary();
+    };
+    box.appendChild(div);
+  });
+}
+
+function renderChildren(){
+  const box=document.getElementById('children');
+  box.innerHTML='';
+  state.children.forEach((c,i)=>{
+    const row=document.createElement('div');
+    row.className='child-row';
+
+    const nameInput=document.createElement('input');
+    nameInput.placeholder='Tên con';
+    nameInput.value=c.name||'';
+    nameInput.className='form-input mb-2';
+    nameInput.oninput=e=>{ c.name=e.target.value; updateSummary(); };
+
+    const schoolInput=document.createElement('input');
+    schoolInput.placeholder='Trường';
+    schoolInput.value=c.school||'';
+    schoolInput.className='form-input mb-2';
+    schoolInput.oninput=e=>{ c.school=e.target.value; };
+
+    const costInput=document.createElement('input');
+    costInput.placeholder='Chi phí/năm';
+    costInput.value=c.cost?fmt.format(c.cost):'';
+    costInput.className='form-input mb-2';
+    costInput.oninput=e=>{
+      let val=digits(e.target.value);
+      e.target.value = val?fmt.format(+val):'';
+      c.cost=+val||0;
+      totalSpan.textContent=money(c.cost * c.years);
+      calc();
+    };
+
+    const yearsInput=document.createElement('input');
+    yearsInput.placeholder='Số năm';
+    yearsInput.type='number'; yearsInput.min=0;
+    yearsInput.value=c.years||'';
+    yearsInput.className='form-input mb-2';
+    yearsInput.oninput=e=>{
+      c.years=+e.target.value||0;
+      totalSpan.textContent=money(c.cost * c.years);
+      calc();
+    };
+
+    const inputsWrapper=document.createElement('div');
+    inputsWrapper.className='grid md:grid-cols-4 gap-4 mb-3';
+    inputsWrapper.appendChild(nameInput);
+    inputsWrapper.appendChild(schoolInput);
+    inputsWrapper.appendChild(costInput);
+    inputsWrapper.appendChild(yearsInput);
+
+    const totalSpan=document.createElement('span');
+    totalSpan.className='child-total mono';
+    totalSpan.textContent=money(c.cost * c.years);
+
+    const totalDiv=document.createElement('div');
+    totalDiv.className='flex justify-between items-center';
+    totalDiv.innerHTML='<span>Tổng: </span>';
+    totalDiv.appendChild(totalSpan);
+
+    const btnDelete=document.createElement('button');
+    btnDelete.className='text-red-600 font-semibold';
+    btnDelete.textContent='Xoá';
+    btnDelete.onclick=()=>{
+      state.children.splice(i,1);
+      renderChildren();
+      calc();
+    };
+    totalDiv.appendChild(btnDelete);
+
+    row.appendChild(inputsWrapper);
+    row.appendChild(totalDiv);
+    box.appendChild(row);
+  });
+}
+
+function updateFundsVisibility(){
+  const show=(id,cond)=> document.getElementById(id).style.display = cond?'block':'none';
+  show('fund-family', state.must.includes('Vận hành gia đình'));
+  show('fund-edu', state.must.includes('Quỹ học vấn cho con'));
+  show('fund-retire', state.must.includes('Quỹ hưu trí'));
+  show('fund-debt', state.must.includes('Trả nợ'));
+  show('fund-legacy', state.must.includes('Gia tăng tài sản/ Để lại di sản'));
+}
+
+function calc(){
+  let respSum=0, saveSum=0;
+  const respList=document.getElementById('resp-list');
+  const saveList=document.getElementById('save-list');
+  respList.innerHTML=''; saveList.innerHTML='';
+
+  // Gia đình
+  if(state.must.includes('Vận hành gia đình')){
+    const famMonthly=val('fam-monthly');
+    const famYears=val('fam-years');
+    const x=famMonthly*12*famYears;
+    respSum += x;
+    document.getElementById('fam-total').textContent=money(x);
+    respList.innerHTML += `<li>Vận hành gia đình: ${money(x)}</li>`;
+  } else document.getElementById('fam-total').textContent=money(0);
+
+  // Học vấn
+  if(state.must.includes('Quỹ học vấn cho con')){
+    let totalEdu=0;
+    state.children.forEach(c=> totalEdu += (c.cost||0)*(c.years||0));
+    respSum += totalEdu;
+    saveSum += totalEdu;
+    document.getElementById('edu-total').textContent=money(totalEdu);
+    respList.innerHTML += `<li>Quỹ học vấn: ${money(totalEdu)}</li>`;
+    saveList.innerHTML += `<li>Quỹ học vấn: ${money(totalEdu)}</li>`;
+  } else document.getElementById('edu-total').textContent=money(0);
+
+  // Hưu trí
+  if(state.must.includes('Quỹ hưu trí')){
+    const x = val('ret-years') * val('ret-month') * 12;
+    saveSum += x;
+    document.getElementById('ret-total').textContent=money(x);
+    saveList.innerHTML += `<li>Quỹ hưu trí: ${money(x)}</li>`;
+  } else document.getElementById('ret-total').textContent=money(0);
+
+  // Nợ
+  if(state.must.includes('Trả nợ')){
+    const x=val('debt');
+    respSum += x;
+    respList.innerHTML += `<li>Trả nợ: ${money(x)}</li>`;
+  }
+
+  // Di sản
+  if(state.must.includes('Gia tăng tài sản/ Để lại di sản')){
+    const x=val('legacy');
+    respSum += x;
+    respList.innerHTML += `<li>Di sản: ${money(x)}</li>`;
+  }
+
+  document.getElementById('resp-total').textContent=money(respSum);
+  document.getElementById('save-total').textContent=money(saveSum);
+  const prepared=val('resp-prepared');
+  document.getElementById('resp-gap').textContent=money(Math.max(respSum - prepared,0));
+
+  state.lastTotals.resp=respSum;
+  state.lastTotals.save=saveSum;
+  updateSummary();
+}
+
+function buildGoalBreakdown(){
+  const blocks=[];
+  // Gia đình
+  if(state.must.includes('Vận hành gia đình')){
+    const m=val('fam-monthly');
+    const y=val('fam-years');
+    const total=m*12*y;
+    blocks.push(`
+      <li>
+        <strong>Vận hành gia đình:</strong>
+        <span class="formula">${money(m)} * 12 * ${y} năm = ${money(total)}</span>
+      </li>
+    `);
+  }
+  // Học vấn
+  if(state.must.includes('Quỹ học vấn cho con')){
+    let eduLines='';
+    let totalEdu=0;
+    state.children.forEach((c,idx)=>{
+      const sub=(c.cost||0)*(c.years||0);
+      totalEdu+=sub;
+      eduLines += `<li>${c.name||('Con '+(idx+1))}: <span class="formula">${money(c.cost||0)} * ${c.years||0} năm = ${money(sub)}</span></li>`;
+    });
+    blocks.push(`
+      <li class="goal-breakdown">
+        <strong>Quỹ học vấn:</strong> Tổng ${money(totalEdu)}
+        ${eduLines ? `<ul>${eduLines}</ul>`:''}
+      </li>
+    `);
+  }
+  // Hưu trí
+  if(state.must.includes('Quỹ hưu trí')){
+    const rm=val('ret-month');
+    const ry=val('ret-years');
+    const total=rm*12*ry;
+    blocks.push(`
+      <li>
+        <strong>Quỹ hưu trí:</strong>
+        <span class="formula">${money(rm)} * 12 * ${ry} năm = ${money(total)}</span>
+      </li>
+    `);
+  }
+  // Nợ
+  if(state.must.includes('Trả nợ')){
+    const d=val('debt');
+    blocks.push(`<li><strong>Thanh khoản nợ:</strong> <span class="formula">${money(d)}</span></li>`);
+  }
+  // Di sản
+  if(state.must.includes('Gia tăng tài sản/ Để lại di sản')){
+    const l=val('legacy');
+    blocks.push(`<li><strong>Gia tăng tài sản/Di sản:</strong> <span class="formula">${money(l)}</span></li>`);
+  }
+
+  return blocks.length
+    ? `<ul class="list-disc ml-5 space-y-1">${blocks.join('')}</ul>`
+    : '<p class="text-gray-500 italic">Chưa có dữ liệu chi tiết.</p>';
+}
+
+function updateSummary(){
+  const box=document.getElementById('summary-content');
+  if(!box) return;
+
+  const partnerYes = document.querySelector('[name="partner"][value="yes"]').checked;
+  const partnerPerc = document.getElementById('partner-perc').value;
+  const yearsAll = document.getElementById('years-all').value;
+  const goalPercent = document.getElementById('goal-percent').value;
+  const prepared=val('resp-prepared');
+  const respGap = digits(document.getElementById('resp-gap').textContent);
+
+  const mustGoals = state.must.length
+    ? '<ul class="list-disc ml-5">' + state.must.map(g=>`<li>${g}</li>`).join('') + '</ul>'
+    : '<p class="text-gray-500 italic">Chưa chọn</p>';
+
+  const reasons = state.reasons.length
+    ? '<ul class="list-disc ml-5">' + state.reasons.map(r=>`<li>${r}</li>`).join('') + '</ul>'
+    : '<p class="text-gray-500 italic">Chưa nhập</p>';
+
+  const positives = state.pos.length
+    ? '<ul class="list-disc ml-5">' + state.pos.map(p=>`<li>${p}</li>`).join('') + '</ul>'
+    : '<p class="text-gray-500 italic">Chưa có</p>';
+
+  const unmit = state.unmit.length
+    ? '<ul class="list-disc ml-5">' + state.unmit.map(p=>`<li>${p}</li>`).join('') + '</ul>'
+    : '<p class="text-gray-500 italic">Chưa chọn</p>';
+
+  const alts = state.alts.length
+    ? '<ul class="list-disc ml-5">' + state.alts.map(p=>`<li>${p}</li>`).join('') + '</ul>'
+    : '<p class="text-gray-500 italic">Chưa có</p>';
+
+  const goalDetails = buildGoalBreakdown();
+
+  box.innerHTML = `
+    <div class="summary-grid three-cols">
+      <div>
+        <h3>Mục tiêu quan trọng</h3>
+        ${mustGoals}
+      </div>
+      <div>
+        <h3>Lý do</h3>
+        ${reasons}
+      </div>
+      <div>
+        <h3>Tài chính tổng quan</h3>
+        <ul class="space-y-1">
+          <li>Số tiền trách nhiệm: <strong>${money(state.lastTotals.resp)}</strong></li>
+          <li>Số tiền phải tích luỹ: <strong>${money(state.lastTotals.save)}</strong></li>
+          <li>Đã chuẩn bị: <strong>${money(prepared)}</strong></li>
+          <li>Khoảng thiếu: <strong class="text-red-600">${money(respGap)}</strong></li>
+          ${goalPercent ? `<li>Mong muốn hoàn thành: <strong>${goalPercent}%</strong></li>`:''}
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <h3>Chi tiết các quỹ</h3>
+      ${goalDetails}
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <h3>Đồng hành & Thời gian</h3>
+      <ul class="list-disc ml-5">
+        <li>Đồng hành: <strong>${partnerYes ? 'Có' : 'Không'}</strong>${partnerYes && partnerPerc ? ` (Đóng góp: ${partnerPerc}%)`:''}</li>
+        <li>Thời gian hoàn thành: <strong>${yearsAll ? yearsAll + ' năm' : 'Chưa nhập'}</strong></li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="summary-grid two-cols">
+      <div>
+        <h3>Thuận lợi</h3>
+        ${positives}
+      </div>
+      <div>
+        <h3>Khó khăn không thể khắc phục</h3>
+        ${unmit}
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <h3>Phương án thay thế</h3>
+      ${alts}
+    </div>
+  `;
+}
+
+function render(){
+  renderPriority();
+  renderChips(state.reasons,'reasons');
+  renderChips(state.pos,'positives');
+  renderChips(state.neg,'negatives');
+  renderUnmit();
+  renderChips(state.alts,'alts');
+  renderChildren();
+  updateFundsVisibility();
+  calc();
+}
+
+// Sự kiện
+document.getElementById('add-goal').onclick = ()=> addChip(state.goals,'goal-input');
+document.getElementById('add-reason').onclick = ()=> addChip(state.reasons,'reason-input');
+document.getElementById('add-pos').onclick = ()=> addChip(state.pos,'pos-input');
+document.getElementById('add-neg').onclick = ()=>{
+  const v=document.getElementById('neg-input').value.trim();
+  if(!v) return;
+  if(!state.neg.includes(v)){
+    state.neg.push(v);
+    document.getElementById('neg-input').value='';
+    render();
+  } else alert('Khó khăn đã tồn tại.');
+};
+document.getElementById('add-alt').onclick = ()=> addChip(state.alts,'alt-input');
+
+document.getElementById('add-child').onclick = ()=>{
+  if(state.children.length < 6){
+    state.children.push({ name:'', school:'', cost:0, years:0 });
+    renderChildren(); calc();
+  } else alert('Tối đa 6 con.');
+};
+
+document.querySelectorAll('[name="partner"]').forEach(r=>{
+  r.onchange=()=>{
+    document.getElementById('partner-extra').classList.toggle('hidden', r.value!=='yes');
+    updateSummary();
+  };
+});
+
+// Gán mask tiền
+document.querySelectorAll('[data-money]').forEach(bindMoney);
+
+// Realtime inputs
+['fam-monthly','fam-years','ret-years','ret-month','resp-prepared','goal-percent','partner-perc','years-all']
+  .forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('input', ()=> { calc(); });
+  });
+
+render();
+</script>
 </body>
 </html>
