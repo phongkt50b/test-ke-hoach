@@ -393,12 +393,8 @@
         </div>
 
         <div class="flex justify-center">
-          <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/VAdBwf1MJatv8jOd.jpeg"
-            alt="Financial Illustration 1" class="w-full max-w-2xl rounded-2xl shadow-lg object-cover">
-        </div>
-        <div class="flex justify-center">
-          <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/81782302/Y7H8r9xIVLLxQAvv.jpeg"
-            alt="Financial Illustration 2" class="w-full max-w-2xl rounded-2xl shadow-lg object-cover">
+          <img src="images/anh-01.jpg"
+            alt="Minh họa tài chính" class="w-full max-w-2xl rounded-2xl shadow-lg object-cover">
         </div>
       </div>
     </section>
@@ -412,16 +408,6 @@
           </div>
           <h2 class="text-2xl md:text-3xl font-bold">Tóm tắt tổng quan</h2>
         </div>
-        <div class="flex gap-3 no-print">
-          <button onclick="window.print()"
-            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition shadow-lg flex items-center gap-2">
-            <i class="ri-download-line"></i> PDF
-          </button>
-          <button id="reset-btn"
-            class="px-6 py-3 rounded-xl font-semibold border border-red-200 text-red-600 hover:bg-red-50 transition">
-            Reset
-          </button>
-        </div>
       </div>
 
       <div id="summary-cards" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10"></div>
@@ -429,8 +415,17 @@
       <div class="grid md:grid-cols-2 gap-6 mb-10" id="mid-cards"></div>
       <div class="border-t border-slate-200 my-8"></div>
       <div id="details-section" class="space-y-10"></div>
-      <div class="border-t border-slate-200 my-8"></div>
-      <div id="progress-section"></div>
+      
+      <div class="mt-10 flex justify-center gap-4 no-print">
+        <button onclick="window.print()"
+          class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition shadow-lg flex items-center gap-2">
+          <i class="ri-download-line"></i> PDF
+        </button>
+        <button id="reset-btn"
+          class="px-6 py-3 rounded-xl font-semibold border border-red-200 text-red-600 hover:bg-red-50 transition">
+          Reset
+        </button>
+      </div>
     </section>
   </main>
 
@@ -441,7 +436,7 @@
     </div>
   </footer>
 
-  <!-- SCRIPT (V10: Detailed summary & print) -->
+  <!-- SCRIPT -->
   <script>
     /* ====== CORE UTILS ====== */
     const fmt = new Intl.NumberFormat('vi-VN');
@@ -814,58 +809,6 @@
         `;
     }
 
-    function calcProgress(){
-      let goalsScore=0, factorScore=0, timeScore=0, altScore=0;
-      if(state.goals.length>0) goalsScore+=25;
-      if(state.goals.length>=3) goalsScore+=30;
-      if(state.must.length>=1) goalsScore+=15;
-      if(state.must.length>=2) goalsScore+=15;
-      if(state.must.length>=3) goalsScore=100;
-      goalsScore=Math.min(goalsScore,100);
-      if(state.pos.length) factorScore+=30;
-      if(state.neg.length) factorScore+=30;
-      if(state.unmit.length) factorScore+=20;
-      if(state.alts.length) factorScore+=20;
-      factorScore=Math.min(factorScore,100);
-      const yrs=+document.getElementById('years-all').value||0;
-      if(yrs>0) timeScore=70;
-      if(yrs>0 && yrs<=30) timeScore=100;
-      if(state.alts.length>=1) altScore=50;
-      if(state.alts.length>=2) altScore=75;
-      if(state.alts.length>=3) altScore=100;
-      return {goalsScore,factorScore,timeScore,altScore};
-    }
-
-    function ring(percent){
-      const r=30, c=2*Math.PI*r, dash=c*(1-percent/100);
-      return `
-        <svg width="80" height="80" class="no-print">
-          <circle cx="40" cy="40" r="${r}" stroke="#e2e8f0" stroke-width="10" fill="none"/>
-          <circle cx="40" cy="40" r="${r}" stroke="url(#grad${percent})" stroke-width="10" fill="none"
-            stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${dash}" class="progress-ring"/>
-          <defs>
-            <linearGradient id="grad${percent}" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#6366f1"/>
-              <stop offset="100%" stop-color="#8b5cf6"/>
-            </linearGradient>
-          </defs>
-          <text x="40" y="44" text-anchor="middle" font-size="16" font-family="Inter" font-weight="600" fill="#334155">${percent}%</text>
-        </svg>
-      `;
-    }
-
-    function progressCard(label,icon,percent){
-      return `
-        <div class="bg-white rounded-lg p-4 shadow-sm border border-slate-200 flex flex-col items-center gap-2">
-          <div>${ring(percent)}</div>
-          <div class="flex items-center gap-2 text-sm font-medium text-slate-800">
-            <i class="${icon} text-slate-500"></i><span>${label}</span>
-          </div>
-          <div class="text-xs text-slate-500">${percent<100?'Đang tiến hành':'Hoàn thành'}</div>
-        </div>
-      `;
-    }
-
     function updateSummary(){
       const cardsBox=document.getElementById('summary-cards');
       const mustGoals = state.must.length
@@ -918,20 +861,6 @@
         <div class="summary-card">
           <h3 class="text-lg font-bold flex items-center gap-2"><i class="ri-lightbulb-flash-line text-purple-500"></i> Phương án thay thế</h3>
           ${alts}
-        </div>
-      `;
-
-      const {goalsScore,factorScore,timeScore,altScore}=calcProgress();
-      const progress=document.getElementById('progress-section');
-      progress.innerHTML=`
-        <div class="bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl p-6 border border-blue-200">
-          <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="ri-progress-line text-blue-600"></i> Tiến độ</h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            ${progressCard('Mục tiêu','ri-target-line',goalsScore)}
-            ${progressCard('Yếu tố','ri-lightbulb-line',factorScore)}
-            ${progressCard('Thời hạn','ri-time-line',timeScore)}
-            ${progressCard('Phương án','ri-lightbulb-flash-line',altScore)}
-          </div>
         </div>
       `;
     }
