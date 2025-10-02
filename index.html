@@ -112,41 +112,40 @@
 
   <!-- Hero -->
   <section class="relative overflow-hidden no-print">
-    <div class="absolute inset-0" style="background-color: #D4001A;"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.25),transparent_60%)]"></div>
-    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute inset-0" style="background: linear-gradient(140deg, var(--aia-red-deep) 0%, var(--aia-red) 70%);"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.15),transparent_50%)]"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
       <div class="grid lg:grid-cols-2 gap-14 items-center">
         <div class="text-white space-y-8">
           <div class="space-y-4">
-            <h1 class="text-4xl lg:text-6xl font-bold leading-tight">
+            <h1 class="text-4xl lg:text-5xl font-bold leading-tight">
               Xây dựng
-              <span class="block text-yellow-200">Tương lai tài chính</span>
+              <span class="block text-red-100 font-normal">Tương lai tài chính</span>
               của bạn
             </h1>
-            <p class="text-xl lg:text-2xl text-red-100 leading-relaxed">
+            <p class="text-lg lg:text-xl text-red-100/90 leading-relaxed">
               Lập kế hoạch rõ ràng, đo tiến độ và ra quyết định tự tin — miễn phí & trực quan.
             </p>
           </div>
           <div class="flex flex-col sm:flex-row gap-4">
             <button onclick="document.querySelector('#goals').scrollIntoView({behavior:'smooth'})"
-              class="bg-red-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-red-700 transition shadow-lg hover:scale-[1.03]">
+              class="bg-[var(--aia-red)] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[var(--aia-red-light)] transition shadow-lg hover:scale-[1.03]">
               Bắt đầu ngay
             </button>
             <button onclick="document.querySelector('#factors').scrollIntoView({behavior:'smooth'})"
-              class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-red-700 transition">
+              class="border-2 border-white/80 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-[var(--aia-red)] transition">
               Tìm hiểu thêm
             </button>
           </div>
           <div class="flex flex-wrap items-center gap-6 text-red-100 text-sm">
             <div class="flex items-center gap-2">
-              <i class="ri-shield-check-line text-2xl text-yellow-300"></i><span>Miễn phí</span>
+              <i class="ri-shield-check-line text-2xl text-white/70"></i><span>Miễn phí</span>
             </div>
             <div class="flex items-center gap-2">
-              <i class="ri-user-heart-line text-2xl text-yellow-300"></i><span>Dễ dùng</span>
+              <i class="ri-user-heart-line text-2xl text-white/70"></i><span>Dễ dùng</span>
             </div>
             <div class="flex items-center gap-2">
-              <i class="ri-lock-line text-2xl text-yellow-300"></i><span>Lưu cục bộ</span>
+              <i class="ri-lock-line text-2xl text-white/70"></i><span>Lưu cục bộ</span>
             </div>
           </div>
         </div>
@@ -165,7 +164,7 @@
         </div>
       </div>
     </div>
-    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-50/20 to-transparent pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-50 to-transparent pointer-events-none"></div>
   </section>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-14">
@@ -379,7 +378,7 @@
           <label class="block text-lg font-semibold mb-4 flex items-center gap-2">
             <i class="ri-alert-line text-yellow-600"></i> 3. Khó khăn không thể khắc phục
           </label>
-          <div id="unmit" class="grid sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+          <div id="unmit" class="flex flex-wrap gap-3"></div>
         </div>
 
         <div class="p-6 rounded-xl border border-purple-200 bg-purple-50">
@@ -546,17 +545,15 @@
         box.appendChild(div);
 
         if(state.must.includes(goal)){
-          const chip=document.createElement('span');
-          chip.className='chip';
-          chip.style.backgroundColor = 'var(--aia-red)';
-          chip.style.color='#fff';
-          chip.style.borderColor='var(--aia-red-mid)';
-          chip.innerHTML=goal+'<button aria-label="Bỏ chọn" style="color:white;">×</button>';
-          chip.querySelector('button').onclick=()=>{
-            state.must=state.must.filter(g=>g!==goal);
-            renderAll();
-          };
-          mustBox.appendChild(chip);
+            const chip=document.createElement('div');
+            chip.className='priority-item selected';
+            chip.style.cursor = 'auto'; // Make it non-interactive
+            chip.innerHTML='<span class="flex-1">'+goal+'</span><button type="button" class="remove-goal" aria-label="Bỏ chọn">×</button>';
+            chip.querySelector('button').onclick=()=>{
+                state.must=state.must.filter(g=>g!==goal);
+                renderAll();
+            };
+            mustBox.appendChild(chip);
         }
       });
     }
